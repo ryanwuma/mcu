@@ -9,7 +9,7 @@ A high‑fidelity, framework‑free, 3D depth interactive MCU timeline experienc
 
 ## Live (Global / Accelerated)
 
-- GitHub Pages (frontend): **TBD**
+- GitHub Pages (frontend): `https://ryanwuma.github.io/mcu/`
 - Cloudflare CDN + VPS (videos): **TBD**
 
 ## What’s inside

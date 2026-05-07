@@ -39,7 +39,7 @@
 ### GitHub Pages（国际前端）准备清单
 - [x] **初始化 Git 仓库**：整理静态文件结构，加入 `.gitignore`（过滤 `.DS_Store` 等）。
 - [x] **补齐 GitHub README（英文）**：项目介绍 + 使用说明 + 演示素材占位。
-- [ ] **发布到 GitHub Pages**：启用 Pages（或 Actions），生成国际访问地址。
+- [x] **发布到 GitHub Pages**：启用 Pages（或 Actions），生成国际访问地址：`https://ryanwuma.github.io/mcu/`
 
 ---
 
