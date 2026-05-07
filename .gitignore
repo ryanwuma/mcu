@@ -1,0 +1,23 @@
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Thumbnails
+._*
+
+# macOS volume root
+.Spotlight-V100
+.Trashes
+
+# Project large assets (serve via CDN/VPS)
+video/
+
+# Working copies / drafts
+index copy*.html
+mcuData&localVideoFiles copy.html
+
+# Node / tooling (future-proof)
+node_modules/
+dist/
+build/
+

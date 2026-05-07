@@ -1,0 +1,2232 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MARVEL MCU TIMELINE - ULTIMATE EDITION</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { margin: 0; overflow: hidden; overscroll-behavior: none; user-select: none; background-color: #020617; }
+        
+        #viewport {
+            perspective: 1200px;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+            background: transparent;
+            cursor: grab;
+        }
+        #viewport:active { cursor: grabbing; }
+
+        #camera {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            transform-style: preserve-3d;
+            transform-origin: 50% 50%;
+        }
+
+        .card-hitbox {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 360px;
+            height: 580px; 
+            margin-left: -180px;
+            margin-top: -290px;
+            transform-style: preserve-3d;
+        }
+
+        .timeline-card {
+            width: 100%;
+            height: 100%;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: linear-gradient(180deg, rgba(15,23,42,0.9) 0%, rgba(2,6,23,0.98) 100%);
+            position: relative;
+            overflow: hidden;
+            border-radius: 1rem;
+            border: 1px solid rgba(var(--card-rgb), 0.5);
+            backdrop-filter: blur(12px);
+            display: flex;
+            flex-direction: column;
+            padding: 1.25rem;
+        }
+        
+        .timeline-card::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, transparent 50%, rgba(255, 255, 255, 0.02) 51%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .card-hitbox:hover .timeline-card {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 50px -10px rgba(var(--card-rgb), 0.5), 
+                        inset 0 0 25px rgba(var(--card-rgb), 0.3);
+            border-color: rgba(var(--card-rgb), 1);
+            background: linear-gradient(180deg, rgba(15,23,42,0.95) 0%, rgba(var(--card-rgb), 0.25) 100%);
+        }
+
+        .connection-line {
+            position: absolute;
+            left: -40px;
+            top: 50%;
+            width: 40px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(var(--card-rgb), 0.8));
+            z-index: -1;
+        }
+        .glow-core {
+            position: absolute;
+            left: -48px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: rgb(var(--card-rgb));
+            box-shadow: 0 0 20px rgb(var(--card-rgb)), 0 0 40px rgb(var(--card-rgb));
+            animation: pulse-core 2s infinite alternate;
+        }
+        @keyframes pulse-core {
+            0% { transform: translateY(-50%) scale(0.8); opacity: 0.8; }
+            100% { transform: translateY(-50%) scale(1.3); opacity: 1; }
+        }
+
+        .loader { border: 3px solid rgba(255,255,255,0.1); border-top: 3px solid #a855f7; border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .spin-slow { animation: spin 20s linear infinite; }
+
+        .chat-glow { box-shadow: 0 0 30px rgba(59, 130, 246, 0.2); border: 1px solid rgba(59, 130, 246, 0.3); }
+
+        input[type=range] { -webkit-appearance: none; background: transparent; height: 20px; }
+        input[type=range]:focus { outline: none; }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%; height: 2px; cursor: pointer;
+            background: rgba(249, 115, 22, 0.5); border-radius: 1px;
+            box-shadow: 0 0 10px rgba(249, 115, 22, 0.5);
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none; height: 14px; width: 32px;
+            border-radius: 7px; background: #fff;
+            box-shadow: 0 0 12px #fff, 0 0 20px #f97316;
+            cursor: pointer; margin-top: -6px; transition: transform 0.15s;
+        }
+        input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.25); }
+        
+        .desc-scroll::-webkit-scrollbar, .custom-scroll::-webkit-scrollbar { width: 4px; }
+        .desc-scroll::-webkit-scrollbar-track, .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+        .desc-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 2px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: rgba(59, 130, 246, 0.5); border-radius: 2px; }
+
+        .holo-shield, .holo-avengers { filter: url(#hologram-outline); mix-blend-mode: screen; }
+        .holo-shield { opacity: 0.6; } .holo-avengers { opacity: 0.7; }
+
+        .gem-wrapper {
+            width: 24px; height: 32px;
+            animation: pulse-gem 2s infinite alternate;
+        }
+        @media (min-width: 768px) { .gem-wrapper { width: 32px; height: 40px; } }
+        @keyframes pulse-gem {
+            0% { filter: drop-shadow(0 0 5px currentColor) brightness(1); }
+            100% { filter: drop-shadow(0 0 20px currentColor) brightness(1.5); }
+        }
+
+        .dust-away {
+            animation: drift-fade-out var(--snap-dur, 4s) ease-in-out forwards;
+            pointer-events: none !important;
+        }
+        .dust-back {
+            animation: drift-fade-in var(--snap-dur, 4s) ease-in-out forwards;
+        }
+        @keyframes drift-fade-out {
+            0% { opacity: 1; filter: blur(0px) grayscale(0%); }
+            100% { opacity: 0; filter: blur(15px) grayscale(100%); }
+        }
+        @keyframes drift-fade-in {
+            0% { opacity: 0; filter: blur(15px) grayscale(100%); }
+            100% { opacity: 1; filter: blur(0px) grayscale(0%); }
+        }
+
+        /* Snap dust particle canvas (fast path) */
+        #dust-canvas {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 99998;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .dust-away, .dust-back { animation: none !important; }
+        }
+
+        .tva-glitch { animation: glitch-anim 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+        @keyframes glitch-anim {
+            0% { filter: hue-rotate(0deg) contrast(100%); transform: translateX(0); }
+            20% { filter: hue-rotate(90deg) contrast(200%); transform: translateX(-15px) skewX(5deg); }
+            40% { filter: hue-rotate(-90deg) contrast(300%) drop-shadow(5px 0 0 red) drop-shadow(-5px 0 0 cyan); transform: translateX(15px) skewX(-5deg); }
+            60% { filter: invert(80%); transform: translateX(-5px) scale(1.05); }
+            80% { filter: hue-rotate(45deg); transform: translateX(5px); }
+            100% { filter: hue-rotate(0deg); transform: translateX(0); }
+        }
+
+        /* Restore glitch (fast + smooth) */
+        .restore-glitch {
+            animation: restore-glitch var(--restore-dur, 900ms) steps(10, end);
+        }
+        .restore-glitch::before {
+            content: "";
+            position: absolute;
+            inset: -1px;
+            border-radius: 1rem;
+            pointer-events: none;
+            background: linear-gradient(90deg, rgba(56,189,248,0.0), rgba(56,189,248,0.25), rgba(168,85,247,0.25), rgba(56,189,248,0.0));
+            mix-blend-mode: screen;
+            opacity: 0;
+            animation: restore-scan var(--restore-dur, 900ms) ease-out;
+        }
+        @keyframes restore-glitch {
+            0%   { opacity: 0; filter: blur(10px) brightness(1.2) contrast(120%); transform: translate3d(0,0,0) scale(0.98); }
+            20%  { opacity: 1; filter: blur(0px) brightness(1.5) contrast(220%) hue-rotate(25deg); transform: translate3d(2px,-1px,0) scale(1.01); }
+            35%  { opacity: 0.65; filter: invert(10%) contrast(260%) hue-rotate(-20deg); transform: translate3d(-3px,1px,0) skewX(1deg); }
+            55%  { opacity: 1; filter: drop-shadow(6px 0 0 rgba(56,189,248,0.55)) drop-shadow(-6px 0 0 rgba(168,85,247,0.45)); transform: translate3d(1px,0,0); }
+            100% { opacity: 1; filter: none; transform: translate3d(0,0,0) scale(1); }
+        }
+        @keyframes restore-scan {
+            0% { opacity: 0; transform: translateY(18%); }
+            35% { opacity: 0.7; transform: translateY(0%); }
+            100% { opacity: 0; transform: translateY(-18%); }
+        }
+    </style>
+</head>
+<body class="text-white font-sans selection:bg-purple-500 selection:text-white" onmousedown="initAudioContext()" ontouchstart="initAudioContext()">
+
+    <div id="startup-screen" class="fixed inset-0 z-[99999] bg-[#020617] flex flex-col items-center justify-center cursor-pointer transition-opacity duration-1000">
+        <img src="img/shield_logo.svg" class="w-16 h-16 md:w-20 md:h-20 mb-8 animate-[spin_10s_linear_infinite] opacity-60" onerror="this.style.display='none'" alt="SHIELD" />
+        <h2 class="text-blue-400 font-mono tracking-[0.5em] text-sm md:text-base animate-pulse shadow-blue-500 drop-shadow-[0_0_10px_rgba(96,165,250,0.8)]">S.H.I.E.L.D. MAINFRAME</h2>
+        <p class="text-slate-500 font-mono text-[10px] md:text-xs mt-6 tracking-[0.2em] border border-slate-700/50 px-5 py-2.5 rounded bg-slate-900/50 hover:bg-slate-800 transition-colors">
+            [ 点击屏幕任意位置启动系统引擎 ]
+        </p>
+    </div>
+
+    <svg width="0" height="0" class="absolute pointer-events-none">
+        <filter id="hologram-outline">
+            <feMorphology in="SourceAlpha" operator="dilate" radius="1.5" result="expanded" />
+            <feComposite in="expanded" in2="SourceAlpha" operator="out" result="outline" />
+            <feFlood flood-color="rgba(148, 163, 184, 0.4)" result="color" />
+            <feComposite in="color" in2="outline" operator="in" result="colored_outline" />
+            <feGaussianBlur in="colored_outline" stdDeviation="1" result="glow" />
+            <feMerge><feMergeNode in="glow" /><feMergeNode in="colored_outline" /></feMerge>
+        </filter>
+    </svg>
+
+    <div id="infinity-stones" class="fixed top-[130px] md:top-24 left-1/2 -translate-x-1/2 z-[50] flex gap-3 md:gap-6 opacity-0 transition-opacity duration-[3000ms] pointer-events-none">
+        <div class="gem-wrapper text-blue-500" title="空间宝石 (Space)"><img src="img/gem_blue.svg" class="w-full h-full object-contain" alt="Space Stone"></div>
+        <div class="gem-wrapper text-green-500" title="时间宝石 (Time)"><img src="img/gem_green.svg" class="w-full h-full object-contain" alt="Time Stone"></div>
+        <div class="gem-wrapper text-orange-500" title="灵魂宝石 (Soul)"><img src="img/gem_orange.svg" class="w-full h-full object-contain" alt="Soul Stone"></div>
+        <div class="gem-wrapper text-purple-500" title="力量宝石 (Power)"><img src="img/gem_purple.svg" class="w-full h-full object-contain" alt="Power Stone"></div>
+        <div class="gem-wrapper text-yellow-400" title="心灵宝石 (Mind)"><img src="img/gem_yellow.svg" class="w-full h-full object-contain" alt="Mind Stone"></div>
+        <div class="gem-wrapper text-red-500" title="现实宝石 (Reality)"><img src="img/gem_red.svg" class="w-full h-full object-contain" alt="Reality Stone"></div>
+    </div>
+
+    <div class="fixed top-1/2 left-6 -translate-y-1/2 z-[60] flex items-center gap-4 pointer-events-auto">
+        <button type="button" class="flex flex-col items-center gap-1.5 opacity-80 p-3 rounded-2xl bg-white/5 border border-white/20 backdrop-blur-md shadow-[0_0_20px_rgba(255,255,255,0.1)] transition-all duration-300 hover:scale-110 hover:bg-white/20 hover:shadow-[0_0_30px_rgba(96,165,250,0.5)]" id="avengers-logo" title="⚠️ 最高机密：连续点击3次触发【毁灭协议】" onmouseenter="playHoverBtnSound(0)">
+            <img src="img/avengers_logo.svg" class="w-10 h-10 object-contain holo-avengers" onerror="this.style.display='none'" alt="Avengers" />
+            <span class="text-[9px] text-blue-300 font-mono tracking-widest animate-pulse drop-shadow-[0_0_5px_rgba(96,165,250,0.8)]">AVNG</span>
+        </button>
+        <div id="avengers-text" class="text-[10px] md:text-xs text-red-400 font-mono hidden opacity-0 transition-opacity duration-1000 text-left drop-shadow-[0_0_8px_rgba(248,113,113,0.8)] w-40 md:w-56 leading-relaxed"></div>
+    </div>
+
+    <div class="fixed top-1/2 right-6 -translate-y-1/2 z-[60] flex flex-row-reverse items-center gap-4 pointer-events-auto">
+        <button type="button" class="flex flex-col items-center gap-1.5 opacity-80 p-3 rounded-2xl bg-white/5 border border-white/20 backdrop-blur-md shadow-[0_0_20px_rgba(255,255,255,0.1)] transition-all duration-300 hover:scale-110 hover:bg-white/20 hover:shadow-[0_0_30px_rgba(96,165,250,0.5)]" id="shield-logo" title="🛡️ 最高机密：连续点击3次触发【复苏协议】" onmouseenter="playHoverBtnSound(1)">
+            <img src="img/shield_logo.svg" class="w-10 h-10 object-contain holo-shield spin-slow" onerror="this.style.display='none'" alt="SHIELD" />
+            <span class="text-[9px] text-blue-300 font-mono tracking-widest drop-shadow-[0_0_5px_rgba(96,165,250,0.8)]">SHIELD</span>
+        </button>
+        <div id="shield-text" class="text-[10px] md:text-xs text-blue-400 font-mono hidden opacity-0 transition-opacity duration-1000 text-right drop-shadow-[0_0_8px_rgba(96,165,250,0.8)] w-40 md:w-56 leading-relaxed"></div>
+    </div>
+
+    <canvas id="universe-bg" class="fixed inset-0 z-0 pointer-events-none opacity-100"></canvas>
+
+    <div id="viewport" class="relative z-10 w-full h-full">
+        <div id="camera"></div>
+    </div>
+
+    <header class="fixed top-0 left-0 right-0 z-20 px-4 md:px-6 py-3 md:py-4 bg-gradient-to-b from-slate-950/90 to-transparent pointer-events-none flex flex-col gap-2 md:gap-3">
+        <div class="flex justify-between items-end w-full pointer-events-auto">
+            <div class="flex flex-col gap-1 shrink-0">
+                <h1 class="text-lg md:text-2xl font-black tracking-widest bg-clip-text text-transparent bg-gradient-to-r from-slate-200 to-slate-400 drop-shadow-[0_0_10px_rgba(255,255,255,0.2)] leading-none">
+                    漫威宇宙(MARVEL)无限时间轴
+                </h1>
+                <p class="text-slate-400 text-[9px] md:text-xs flex items-center gap-1.5 font-mono uppercase tracking-widest pl-1 mt-0.5 leading-none">
+                    <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse shadow-[0_0_8px_#4ade80] shrink-0"></span>
+                    左键推拉/环视 | 松开回弹 | Shift+左键: 平移 
+                </p>
+            </div>
+            
+            <div class="relative shrink-0 flex justify-end z-[110]">
+                <div class="hidden md:flex gap-1.5">
+                    <button data-cat="ALL" onclick="filterTimeline('ALL')" onmouseenter="playHoverBtnSound(1)" class="filter-btn bg-blue-600/60 text-white border-blue-400 px-2.5 py-1.5 text-[10px] rounded border shadow-lg transition-all font-bold tracking-wider whitespace-nowrap">🌐 全宇宙</button>
+                    <button data-cat="MCU_MAIN" onclick="filterTimeline('MCU_MAIN')" onmouseenter="playHoverBtnSound(2)" class="filter-btn bg-black/50 text-slate-300 border-white/20 hover:bg-white/10 px-2.5 py-1.5 text-[10px] rounded border shadow-lg transition-all tracking-wider whitespace-nowrap">🚀 漫威主线</button>
+                    <button data-cat="MCU_MOVIES" onclick="filterTimeline('MCU_MOVIES')" onmouseenter="playHoverBtnSound(3)" class="filter-btn bg-black/50 text-slate-300 border-white/20 hover:bg-white/10 px-2.5 py-1.5 text-[10px] rounded border shadow-lg transition-all tracking-wider whitespace-nowrap">🎬 主线电影</button>
+                    <button data-cat="MCU_SHOWS" onclick="filterTimeline('MCU_SHOWS')" onmouseenter="playHoverBtnSound(4)" class="filter-btn bg-black/50 text-slate-300 border-white/20 hover:bg-white/10 px-2.5 py-1.5 text-[10px] rounded border shadow-lg transition-all tracking-wider whitespace-nowrap">📺 主线剧集</button>
+                    <button data-cat="MARVEL_TV" onclick="filterTimeline('MARVEL_TV')" onmouseenter="playHoverBtnSound(5)" class="filter-btn bg-black/50 text-slate-300 border-white/20 hover:bg-white/10 px-2.5 py-1.5 text-[10px] rounded border shadow-lg transition-all tracking-wider whitespace-nowrap">🦇 街头/特工</button>
+                    <button data-cat="MULTIVERSE" onclick="filterTimeline('MULTIVERSE')" onmouseenter="playHoverBtnSound(6)" class="filter-btn bg-black/50 text-slate-300 border-white/20 hover:bg-white/10 px-2.5 py-1.5 text-[10px] rounded border shadow-lg transition-all tracking-wider whitespace-nowrap">🌌 其他厂牌</button>
+                </div>
+                <div class="md:hidden relative h-full">
+                    <button onclick="document.getElementById('mobile-filter-menu').classList.toggle('hidden')" class="bg-black/60 border border-blue-500/40 text-blue-200 px-3 py-1.5 rounded-lg text-[10px] flex items-center gap-1 shadow-inner backdrop-blur h-full min-h-[28px]">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg> 分类
+                    </button>
+                    <div id="mobile-filter-menu" class="absolute top-full right-0 mt-2 w-32 bg-slate-900/95 border border-blue-500/30 rounded-lg hidden shadow-xl backdrop-blur-xl flex flex-col overflow-hidden z-[101]">
+                        <button data-cat="ALL" onclick="filterTimeline('ALL')" class="filter-btn-mob bg-blue-600/60 text-white text-left px-4 py-2.5 text-[10px] border-b border-white/5">🌐 全宇宙</button>
+                        <button data-cat="MCU_MAIN" onclick="filterTimeline('MCU_MAIN')" class="filter-btn-mob text-slate-300 hover:bg-white/10 text-left px-4 py-2.5 text-[10px] border-b border-white/5">🚀 漫威主线</button>
+                        <button data-cat="MCU_MOVIES" onclick="filterTimeline('MCU_MOVIES')" class="filter-btn-mob text-slate-300 hover:bg-white/10 text-left px-4 py-2.5 text-[10px] border-b border-white/5">🎬 主线电影</button>
+                        <button data-cat="MCU_SHOWS" onclick="filterTimeline('MCU_SHOWS')" class="filter-btn-mob text-slate-300 hover:bg-white/10 text-left px-4 py-2.5 text-[10px] border-b border-white/5">📺 主线剧集</button>
+                        <button data-cat="MARVEL_TV" onclick="filterTimeline('MARVEL_TV')" class="filter-btn-mob text-slate-300 hover:bg-white/10 text-left px-4 py-2.5 text-[10px] border-b border-white/5">🦇 街头/特工</button>
+                        <button data-cat="MULTIVERSE" onclick="filterTimeline('MULTIVERSE')" class="filter-btn-mob text-slate-300 hover:bg-white/10 text-left px-4 py-2.5 text-[10px]">🌌 其他厂牌</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex justify-between items-start w-full pointer-events-auto z-[100] gap-2 md:gap-3 mt-1 md:mt-0">
+            <div class="relative flex-1 md:flex-none w-full md:w-80">
+                <input type="text" id="search-input" placeholder="🔍 检索档案 (如:神盾局/Iron Man)..." class="w-full bg-black/60 border border-blue-500/40 rounded-lg px-3 md:px-4 py-1.5 md:py-2 text-[10px] md:text-xs text-blue-100 focus:outline-none focus:border-blue-400 shadow-inner backdrop-blur transition-all" autocomplete="off">
+                <div id="search-dropdown" class="absolute top-full left-0 mt-1 w-[260px] md:w-full max-h-64 overflow-y-auto bg-slate-900/95 border border-blue-500/30 rounded-lg hidden shadow-[0_10px_40px_rgba(0,0,0,0.8)] backdrop-blur-xl custom-scroll z-[9999]"></div>
+            </div>
+
+            <div class="relative shrink-0 flex justify-end">
+                <button onclick="window.toggleLegend()" onmouseenter="playHoverBtnSound(7)" class="px-2.5 py-1.5 md:px-3 md:py-1.5 rounded-full border border-purple-500/50 bg-purple-900/40 shadow-[0_0_10px_rgba(168,85,247,0.3)] backdrop-blur hover:bg-purple-600/60 transition-colors flex items-center gap-1.5 cursor-pointer text-purple-100 text-[10px] md:text-xs">
+                    <svg id="legend-icon" class="w-3 h-3 md:w-3 md:h-3 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    <span class="hidden md:inline">展开宇宙</span>图例
+                </button>
+                <div id="phase-legend" class="absolute top-full right-0 mt-3 w-[260px] md:w-[280px] bg-slate-950/95 backdrop-blur-xl border border-white/10 rounded-xl p-4 shadow-[0_0_30px_rgba(0,0,0,0.8)] flex flex-col gap-3 origin-top-right transition-all duration-300 scale-0 opacity-0 pointer-events-none z-[9999]">
+                    <div class="flex items-center gap-3"><span class="w-2.5 h-2.5 rounded-full shadow-[0_0_8px_rgb(59,130,246)] shrink-0" style="background: rgb(59,130,246)"></span><span class="text-slate-200 text-xs">第一阶段（复仇者集结）</span></div>
+                    <div class="flex items-center gap-3"><span class="w-2.5 h-2.5 rounded-full shadow-[0_0_8px_rgb(239,68,68)] shrink-0" style="background: rgb(239,68,68)"></span><span class="text-slate-200 text-xs">第二阶段（扩张与决裂）</span></div>
+                    <div class="flex items-center gap-3"><span class="w-2.5 h-2.5 rounded-full shadow-[0_0_8px_rgb(168,85,247)] shrink-0" style="background: rgb(168,85,247)"></span><span class="text-slate-200 text-xs">第三阶段（无限传奇）</span></div>
+                    <div class="flex items-center gap-3"><span class="w-2.5 h-2.5 rounded-full shadow-[0_0_8px_rgb(16,185,129)] shrink-0" style="background: rgb(16,185,129)"></span><span class="text-slate-200 text-xs">第四阶段（多元宇宙开启）</span></div>
+                    <div class="flex items-center gap-3"><span class="w-2.5 h-2.5 rounded-full shadow-[0_0_8px_rgb(249,115,22)] shrink-0" style="background: rgb(249,115,22)"></span><span class="text-slate-200 text-xs">第五阶段（变体危机）</span></div>
+                    <div class="flex items-center gap-3"><span class="w-2.5 h-2.5 rounded-full shadow-[0_0_8px_rgb(234,179,8)] shrink-0" style="background: rgb(234,179,8)"></span><span class="text-slate-200 text-xs">第六阶段（对撞与秘密战争）</span></div>
+                    <div class="flex items-start gap-3"><span class="w-2.5 h-2.5 rounded-full shadow-[0_0_8px_rgb(168,162,158)] shrink-0 mt-1" style="background: rgb(168,162,158)"></span><span class="text-slate-200 text-xs leading-relaxed text-stone-300">漫威电视 / 街头英雄（如捍卫者等）</span></div>
+                    <div class="flex items-start gap-3"><span class="w-2.5 h-2.5 rounded-full shadow-[0_0_8px_rgb(234,88,12)] shrink-0 mt-1" style="background: rgb(234,88,12)"></span><span class="text-slate-200 text-xs leading-relaxed text-orange-400">多元宇宙 (福克斯 X战警/死侍)</span></div>
+                    <div class="flex items-start gap-3"><span class="w-2.5 h-2.5 rounded-full shadow-[0_0_8px_rgb(14,165,233)] shrink-0 mt-1" style="background: rgb(14,165,233)"></span><span class="text-slate-200 text-xs leading-relaxed text-sky-400">多元宇宙 (索尼 蜘蛛侠/毒液)</span></div>
+                    <div class="flex items-start gap-3"><span class="w-2.5 h-2.5 rounded-full shadow-[0_0_8px_rgb(168,85,247)] shrink-0 mt-1" style="background: rgb(168,85,247)"></span><span class="text-slate-200 text-xs leading-relaxed text-purple-400">多元宇宙 (新线 刀锋战士)</span></div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="fixed bottom-0 left-0 right-0 z-20 px-4 md:px-8 py-6 bg-gradient-to-t from-slate-950/90 to-transparent pointer-events-none">
+        
+        <div class="absolute left-6 md:left-10 top-1/2 -translate-y-1/2 opacity-75 hidden md:block pointer-events-none z-30" style="-webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.1) 100%); mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.1) 100%); filter: brightness(0.65) contrast(1.1);">
+            <img src="img/Marvel_Studios_2016_logo.svg" class="h-[44px] md:h-[48px] w-auto object-contain drop-shadow-md" onerror="this.style.display='none'" alt="Marvel Studios" />
+        </div>
+
+        <div class="max-w-4xl mx-auto flex items-center gap-3 md:gap-4 pointer-events-auto relative">
+            <div class="absolute -top-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 opacity-90 pointer-events-none">
+                <span class="text-[9px] text-orange-400 font-mono tracking-widest border border-orange-500/50 px-2 py-0.5 rounded bg-orange-950/60 shadow-[0_0_10px_rgba(249,115,22,0.3)] backdrop-blur">
+                    <span class="font-bold text-orange-300">T.V.A.</span> // TEMPORAL LOOM MONITOR
+                </span>
+            </div>
+
+            <div class="flex items-center gap-2 md:gap-3 bg-black/60 p-2 md:p-3 rounded-full border border-purple-500/30 backdrop-blur shadow-lg z-10">
+                <button id="prev-card-btn" onmouseenter="playHoverSound()" class="w-10 h-10 md:w-8 md:h-8 rounded-full bg-white/10 hover:bg-white/20 text-slate-200 hover:text-white flex items-center justify-center transition-colors shadow-inner" title="上一部 (Previous)">
+                    <svg class="w-5 h-5 md:w-4 md:h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/></svg>
+                </button>
+                <button id="speed-down-btn" onmouseenter="playHoverSound()" class="w-10 h-10 md:w-8 md:h-8 rounded-full bg-white/10 hover:bg-white/20 text-slate-200 hover:text-white flex items-center justify-center transition-colors text-lg md:text-sm font-bold shadow-inner" title="减速 (Slower)">-</button>
+                <button id="auto-play-btn" onmouseenter="playHoverSound()" class="w-14 h-14 md:w-12 md:h-12 rounded-full bg-purple-600/80 hover:bg-purple-500 text-white flex items-center justify-center shadow-[0_0_15px_rgba(168,85,247,0.6)] transition-all flex-shrink-0 relative" title="启动宇宙自动巡航">
+                    <span id="play-icon-container" class="flex items-center justify-center"><svg class="w-6 h-6 md:w-5 md:h-5 ml-1" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4l12 6-12 6z"></path></svg></span>
+                    <span id="speed-badge" class="absolute -top-2 -right-2 bg-indigo-600 text-white text-[10px] md:text-[9px] font-mono px-1.5 py-0.5 rounded shadow-md hidden border border-white/20">1.0x</span>
+                </button>
+                <button id="speed-up-btn" onmouseenter="playHoverSound()" class="w-10 h-10 md:w-8 md:h-8 rounded-full bg-white/10 hover:bg-white/20 text-slate-200 hover:text-white flex items-center justify-center transition-colors text-lg md:text-sm font-bold shadow-inner" title="加速 (Faster)">+</button>
+                <button id="next-card-btn" onmouseenter="playHoverSound()" class="w-10 h-10 md:w-8 md:h-8 rounded-full bg-white/10 hover:bg-white/20 text-slate-200 hover:text-white flex items-center justify-center transition-colors shadow-inner" title="下一部 (Next)">
+                    <svg class="w-5 h-5 md:w-4 md:h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>
+                </button>
+            </div>
+            
+            <span class="text-[10px] text-orange-400 font-mono tracking-widest uppercase drop-shadow-[0_0_5px_#f97316] z-10">1998</span>
+            <div class="relative flex-1 group z-10 flex items-center">
+                <input type="range" id="timeline-slider" min="0" max="100" value="0" class="w-full relative z-10" onmouseenter="playHoverSound()">
+            </div>
+            <span class="text-[10px] text-orange-400 font-mono tracking-widest uppercase drop-shadow-[0_0_5px_#f97316] z-10">2027+</span>
+        </div>
+    </div>
+
+    <div id="whatif-modal" class="fixed inset-0 z-[9999] hidden flex items-center justify-center bg-black/90 backdrop-blur-md opacity-0 transition-opacity duration-300 pointer-events-none">
+        <div class="bg-slate-950 border-2 border-purple-500/30 rounded-xl p-8 max-w-xl w-full mx-4 relative shadow-[0_0_60px_rgba(168,85,247,0.3)] transform scale-95 transition-transform duration-300 pointer-events-auto" id="whatif-content-box">
+            <button onclick="window.closeWhatIfModal()" onmouseenter="playHoverSound()" class="absolute top-4 right-4 text-slate-500 hover:text-white transition-transform hover:rotate-90">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <h2 class="text-3xl font-black mb-2 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500 font-mono">WHAT IF...?</h2>
+            <p id="whatif-movie-title" class="text-xs text-purple-300/60 mb-6 border-b border-purple-500/20 pb-3 tracking-widest uppercase">Target Locating...</p>
+            <div id="whatif-body" class="min-h-[150px] flex items-center justify-center text-slate-200">
+                <div class="flex flex-col items-center gap-4 text-purple-500"><div class="loader"></div><span class="text-xs font-mono animate-pulse tracking-widest">干涉时间线中...</span></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="fixed bottom-24 right-6 z-[50] flex flex-col items-end pointer-events-none">
+        <div id="chat-window" class="hidden w-[340px] h-[480px] bg-slate-950/95 backdrop-blur-3xl chat-glow rounded-xl mb-4 flex flex-col overflow-hidden transition-all origin-bottom-right pointer-events-auto border border-blue-500/30">
+            <div class="bg-gradient-to-r from-blue-900/60 to-slate-900 p-4 border-b border-blue-500/30 flex justify-between items-center relative">
+                <div class="flex items-center gap-3 relative z-10">
+                    <div class="w-9 h-9 rounded-full border border-blue-400/50 bg-black/60 flex items-center justify-center p-1.5 shadow-[0_0_12px_rgba(59,130,246,0.6)]">
+                        <svg id="jarvis-radar" class="w-full h-full text-blue-300 opacity-90 drop-shadow-[0_0_5px_#60a5fa] transition-all duration-75" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <circle cx="12" cy="12" r="10" stroke-width="1.5" stroke-dasharray="4 2" class="animate-[spin_6s_linear_infinite]" />
+                            <circle cx="12" cy="12" r="6" stroke-width="1" class="animate-[spin_4s_linear_infinite_reverse]" stroke-dasharray="2 4" />
+                            <circle cx="12" cy="12" r="2.5" fill="currentColor" class="animate-pulse" />
+                            <path d="M12 2V4M12 20V22M2 12H4M20 12H22" stroke-width="1.5" />
+                        </svg>
+                    </div>
+                    <div class="flex flex-col">
+                        <h3 class="font-bold text-blue-100 tracking-widest font-mono text-xs uppercase leading-tight drop-shadow-[0_0_5px_rgba(96,165,250,0.8)]">J.A.R.V.I.S. Nexus</h3>
+                        <span class="text-[8px] text-blue-400/80 font-mono tracking-widest">S.H.I.E.L.D. MAINFRAME</span>
+                    </div>
+                </div>
+                <button onclick="toggleVoice()" id="voice-toggle-btn" title="开关语音播报" class="text-slate-500 hover:text-white z-10">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.415z"></path></svg>
+                </button>
+            </div>
+            <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4 hide-scrollbar">
+                <div class="flex flex-col items-start"><div class="bg-blue-900/20 border border-blue-500/30 text-blue-100 px-4 py-3 rounded-2xl rounded-tl-sm max-w-[90%] font-mono text-xs leading-relaxed shadow-[0_0_10px_rgba(59,130,246,0.1)]">系统已上线。莫比乌斯引擎运行稳定。您正在浏览漫威宇宙最高机密档案。</div></div>
+            </div>
+            <div class="p-3 bg-slate-900/90 border-t border-blue-500/30">
+                <form id="chat-form" class="flex gap-2" onsubmit="handleChatSubmit(event)">
+                    <input type="text" id="chat-input" placeholder="输入查询指令..." class="flex-1 bg-black/60 border border-blue-900/50 rounded-lg px-3 py-2 text-xs text-blue-100 focus:outline-none focus:border-blue-400 font-mono shadow-inner" autocomplete="off" required>
+                    <button type="submit" class="bg-blue-600/80 hover:bg-blue-500 text-white p-2 rounded-lg disabled:opacity-50 shadow-[0_0_10px_rgba(37,99,235,0.5)]" id="chat-submit-btn"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg></button>
+                </form>
+            </div>
+        </div>
+        <button id="chat-toggle" onclick="window.toggleChat()" onmouseenter="playHoverSound()" class="bg-slate-950 border border-blue-500/60 hover:bg-blue-900/50 text-blue-400 rounded-full p-3.5 shadow-[0_0_20px_rgba(59,130,246,0.6)] transition-all hover:scale-110 flex items-center justify-center pointer-events-auto cursor-pointer group relative">
+            <svg class="w-6 h-6 opacity-80 group-hover:animate-pulse transition-opacity" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <circle cx="12" cy="12" r="10" stroke-width="1.5" stroke-dasharray="4 2" />
+                <circle cx="12" cy="12" r="3" fill="currentColor" />
+            </svg>
+        </button>
+    </div>
+
+    <script>
+        const mcuData = [
+            { time: "平行", title: "《刀锋战士》", enTitle: "Blade", yt: "T5irwIozazw", type: "🎬", year: "1998", phase: "多元宇宙 (新线)", studio: "New Line Cinema", chars: "刀锋战士, 狄肯·费斯", impact: "漫威电影暗黑宇宙先驱。", desc: "半人半吸血鬼的日行者刀锋战士，为了保护人类，在地下世界与吸血鬼帝国展开血腥的猎杀。" },
+            { time: "平行", title: "《X战警》", enTitle: "X-Men", yt: "nb1EAxMNkLg", type: "🎬", year: "2000", phase: "多元宇宙 (福克斯)", studio: "20th Century Fox", chars: "金刚狼, X教授, 万磁王", impact: "变种人概念建立，超级英雄电影复兴之初。", desc: "变种人与人类矛盾升级，X教授的X战警与万磁王的变种人兄弟会展开首场大战。" },
+            { time: "平行", title: "《刀锋战士2》", enTitle: "Blade II", yt: "EYWdztJwRLg", type: "🎬", year: "2002", phase: "多元宇宙 (新线)", studio: "New Line Cinema", chars: "刀锋战士, 诺玛", impact: "吸血鬼变种危机爆发。", desc: "为了对抗更加致命的新型吸血鬼变种，刀锋战士不得不与吸血鬼领主结成脆弱的联盟。" },
+            { time: "平行", title: "《蜘蛛侠》", enTitle: "Spider-Man", yt: "t06RUxPbp_c", type: "🎬", year: "2002", phase: "多元宇宙 (索尼)", studio: "Sony Pictures", chars: "彼得·帕克(托比版), 绿魔", impact: "能力越大，责任越大。", desc: "彼得·帕克被变异蜘蛛咬伤后获得超能力，不仅要面对生活的重压，还要对抗邪恶的绿魔。" },
+            { time: "平行", title: "《超胆侠》", enTitle: "Daredevil", yt: "lmJDhHInW44", type: "🎬", year: "2003", phase: "多元宇宙 (福克斯)", studio: "20th Century Fox", chars: "超胆侠, 艾丽卡, 靶眼", impact: "初代街头英雄电影化尝试。", desc: "盲人律师马特·默多克在夜晚化身无畏之人，与纽约街头的犯罪分子以及黑道帝王金并展开殊死搏斗。" },
+            { time: "平行", title: "《绿巨人浩克》", enTitle: "Hulk", yt: "2ErnLuJKQA4", type: "🎬", year: "2003", phase: "多元宇宙 (环球)", studio: "Universal Pictures", chars: "浩克, 罗斯将军", impact: "早期漫威英雄探索。", desc: "布鲁斯·班纳因暴露于致命的伽马射线中，每当愤怒时便会变身为力大无穷的绿色怪物浩克。" },
+            { time: "平行", title: "《X战警2》", enTitle: "X2: X-Men United", searchAlias: "X-Men 2", yt: "Hk2yU5z06Ew", type: "🎬", year: "2003", phase: "多元宇宙 (福克斯)", studio: "20th Century Fox", chars: "金刚狼, 史崔克", impact: "变种人面临人类军方的灭绝危机。", desc: "史崔克上校意图利用X教授消灭所有变种人，X战警被迫与万磁王结盟。" },
+            { time: "平行", title: "《刀锋战士3》", enTitle: "Blade: Trinity", yt: "fPcNbsW69Eg", type: "🎬", year: "2004", phase: "多元宇宙 (新线)", studio: "New Line Cinema", chars: "刀锋战士, 德古拉", impact: "日行者的终极之战。", desc: "吸血鬼始祖德古拉苏醒，刀锋战士联合人类夜行者小队，迎接决定种族命运的最终对决。" },
+            { time: "平行", title: "《蜘蛛侠2》", enTitle: "Spider-Man 2", yt: "1s9Yln0YwvM", type: "🎬", year: "2004", phase: "多元宇宙 (索尼)", studio: "Sony Pictures", chars: "彼得·帕克, 章鱼博士", impact: "影史最佳超级英雄电影之一。", desc: "彼得在超级英雄和普通人身份间挣扎，此时面临着亦师亦友的章鱼博士的致命威胁。" },
+            { time: "平行", title: "《艾丽卡》", enTitle: "Elektra", yt: "n2WXC37jM8A", type: "🎬", year: "2005", phase: "多元宇宙 (福克斯)", studio: "20th Century Fox", chars: "艾丽卡, 手合会", impact: "女刺客的重生与救赎。", desc: "死后复活的艾丽卡成为了冷酷的刺客，但在一次任务中为了保护一对父女，她决定背叛雇主。" },
+            { time: "平行", title: "《神奇四侠》", enTitle: "Fantastic Four", yt: "_0B_UAQxR8c", type: "🎬", year: "2005", phase: "多元宇宙 (福克斯)", studio: "20th Century Fox", chars: "神奇四侠, 毁灭博士", impact: "漫威第一家庭首次集结。", desc: "四名宇航员在太空中遭遇宇宙射线风暴，获得了超能力并组建神奇四侠，对抗昔日好友毁灭博士。" },
+            { time: "平行", title: "《X战警3：背水一战》", enTitle: "X-Men: The Last Stand", yt: "V11E81Q9r-w", type: "🎬", year: "2006", phase: "多元宇宙 (福克斯)", studio: "20th Century Fox", chars: "琴·葛蕾, 金刚狼", impact: "凤凰之力觉醒，变种人社会大分裂。", desc: "变种人解药问世，同时琴·葛蕾化身黑凤凰暴走，引发了变种人内部最惨烈的战争。" },
+            { time: "平行", title: "《恶灵骑士》", enTitle: "Ghost Rider", yt: "nu6R7ypaz5g", type: "🎬", year: "2007", phase: "多元宇宙 (索尼)", studio: "Sony Pictures", chars: "强尼·布雷泽, 墨菲斯托", impact: "超自然魔法反英雄登场。", desc: "特技摩托车手强尼为了拯救父亲，将灵魂出卖给恶魔，化身浑身冒火的恶灵骑士在夜间惩恶扬善。" },
+            { time: "平行", title: "《神奇四侠2：银影侠现身》", enTitle: "Fantastic Four: Rise of the Silver Surfer", yt: "7whodtti908", type: "🎬", year: "2007", phase: "多元宇宙 (福克斯)", studio: "20th Century Fox", chars: "神奇四侠, 银影侠", impact: "引出宇宙吞噬者概念。", desc: "神秘的银影侠降临地球，预示着行星吞噬者的到来。神奇四侠必须解开他的秘密以拯救地球。" },
+            { time: "平行", title: "《蜘蛛侠3》", enTitle: "Spider-Man 3", yt: "wPosLpgMtTY", type: "🎬", year: "2007", phase: "多元宇宙 (索尼)", studio: "Sony Pictures", chars: "彼得·帕克, 毒液, 沙人", impact: "共生体首次登场。", desc: "外星共生体放大了彼得的黑暗面。他必须战胜内心的心魔，并面对沙人与毒液的双重夹击。" },
+            { time: "平行", title: "《恶灵骑士2：复仇时刻》", enTitle: "Ghost Rider: Spirit of Vengeance", yt: "ZFHyPLaENRE", type: "🎬", year: "2012", phase: "多元宇宙 (索尼)", studio: "Sony Pictures", chars: "强尼·布雷泽", impact: "复仇之灵的欧洲之战。", desc: "强尼隐居东欧，为了解除自己身上的诅咒，必须保护一名男孩免受魔鬼的侵害。" },
+            
+            { time: "1943", title: "《美国队长：复仇者先锋》", enTitle: "Captain America: The First Avenger", yt: "qi5UTD7kEr0", type: "🎬", year: "2011", phase: "第一阶段", studio: "Marvel Studios", chars: "美国队长, 佩吉·卡特, 红骷髅", impact: "空间宝石现世，神盾局雏形诞生。", desc: "布鲁克林青年史蒂夫注射超级血清成为美国队长。他摧毁了九头蛇的阴谋，为拯救平民迫降冰川被冰封70年。" },
+            { time: "1946", title: "《特工卡特》第一季", enTitle: "Agent Carter Season 1", yt: "V13W9gQ_1GA", type: "📺", year: "2015", phase: "漫威电视", studio: "Marvel Television", chars: "佩吉·卡特, 霍华德·斯塔克", impact: "SSR重组，奠定现代神盾局基石。", desc: "史蒂夫牺牲后，佩吉暗中协助遭诬陷的霍华德洗清罪名，处理危险科技产品，展现凡人英雄的无畏。" },
+            { time: "1947", title: "《特工卡特》第二季", enTitle: "Agent Carter Season 2", yt: "s148LgUfK_8", type: "📺", year: "2016", phase: "漫威电视", studio: "Marvel Television", chars: "佩吉·卡特, 零物质", impact: "暗力(零物质)首次被引入地球。", desc: "佩吉前往洛杉矶解决与“零物质”相关的离奇案件，面对好莱坞的阴暗面与新的致命敌人。" },
+            { time: "平行", title: "《金刚狼》", enTitle: "X-Men Origins: Wolverine", yt: "8IxT7WFL6Ec", type: "🎬", year: "2009", phase: "多元宇宙 (福克斯)", studio: "20th Century Fox", chars: "金刚狼, 剑齿虎, 死侍(旧)", impact: "揭示了金刚狼的钢爪与失忆起源。", desc: "罗根与哥哥维克多经历百年战争，最终被卷入X武器计划，注入了艾德曼合金，并失去了过去的记忆。" },
+            { time: "平行", title: "《X战警：第一战》", enTitle: "X-Men: First Class", yt: "UrbHykKUfTM", type: "🎬", year: "2011", phase: "多元宇宙 (福克斯)", studio: "20th Century Fox", chars: "查尔斯, 埃里克", impact: "变种人两大阵营的起源。", desc: "在冷战核危机背景下，年轻的查尔斯与埃里克相识并建立了X战警，最终因理念不同分道扬镳。" },
+            { time: "1995", title: "《惊奇队长》", enTitle: "Captain Marvel", yt: "Z1BCujX3pw8", type: "🎬", year: "2019", phase: "第三阶段", studio: "Marvel Studios", chars: "惊奇队长, 尼克·弗瑞, 塔罗斯", impact: "启发弗瑞起草“复仇者联盟”倡议。", desc: "失忆的星际战队成员卡罗尔坠落地球，找回身世记忆并觉醒双星形态，单枪匹马击退克里舰队。" },
+            { time: "2010", title: "《钢铁侠》", enTitle: "Iron Man", yt: "8ugaeA-nPMc", type: "🎬", year: "2008", phase: "第一阶段", studio: "Marvel Studios", chars: "钢铁侠, 佩珀·波茨", impact: "MCU时代开山之作，战甲科技树起点。", desc: "托尼被绑架后在绝境中打造马克1号战甲逃生，回归后关闭武器部，向世界公开了“我是钢铁侠”。" },
+            { time: "2011", title: "《钢铁侠2》", enTitle: "Iron Man 2", yt: "wKtcmiifycU", type: "🎬", year: "2010", phase: "第一阶段", studio: "Marvel Studios", chars: "钢铁侠, 黑寡妇, 战争机器", impact: "黑寡妇正式引入，新元素解决钯中毒。", desc: "面临政府施压与钯中毒，托尼在弗瑞帮助下合成新元素，并与罗德上校联手击败丧鞭。" },
+            { time: "2011", title: "《无敌浩克》", enTitle: "The Incredible Hulk", yt: "xbqNb2PFKKA", type: "🎬", year: "2008", phase: "第一阶段", studio: "Marvel Studios", chars: "浩克, 罗斯将军, 憎恶", impact: "浩克力量展现，军方超能管控起点。", desc: "班纳因伽马射线实验变身浩克，流亡全球寻找治愈方法，最终在纽约与变异的“憎恶”展开大战。" },
+            { time: "2011", title: "《雷神》", enTitle: "Thor", yt: "JOddp-nlNvQ", type: "🎬", year: "2011", phase: "第一阶段", studio: "Marvel Studios", chars: "雷神, 洛基, 简·福斯特", impact: "MCU拓展至宇宙九界，鹰眼首秀。", desc: "索尔被剥夺神力流放地球。在简的帮助下学会谦卑，重新举起雷神之锤，挫败洛基的篡位阴谋。" },
+            { time: "2012", title: "《复仇者联盟》", enTitle: "The Avengers", yt: "eOrNdBpGMv8", type: "🎬", year: "2012", phase: "第一阶段", studio: "Marvel Studios", chars: "初代复仇者联盟, 洛基, 灭霸", impact: "六人首次集结，灭霸幕后露出微笑。", desc: "洛基夺走魔方意图统治地球。弗瑞紧急启动倡议，六位英雄在纽约大战中形成默契，击退齐塔瑞大军。" },
+            { time: "平行", title: "《超凡蜘蛛侠》", enTitle: "The Amazing Spider-Man", yt: "-tnxzJ0SSOw", type: "🎬", year: "2012", phase: "多元宇宙 (索尼)", studio: "Sony Pictures", chars: "彼得·帕克(加菲版), 蜥蜴教授", impact: "奥斯本企业暗线展开。", desc: "彼得在追寻父母失踪真相的过程中获得了超能力，并与变异的蜥蜴教授展开殊死搏斗。" },
+            { time: "2012", title: "《钢铁侠3》", enTitle: "Iron Man 3", yt: "Ke1Y3P9D0Bc", type: "🎬", year: "2013", phase: "第二阶段", studio: "Marvel Studios", chars: "钢铁侠, 满大人, 绝境病毒", impact: "托尼完成精神蜕变，为奥创埋下伏笔。", desc: "纽约大战后托尼患上PTSD。在面对绝境病毒危机时，他炸毁所有战甲，证明了自己依然是钢铁侠。" },
+            { time: "平行", title: "《金刚狼2》", enTitle: "The Wolverine", yt: "WEbzZP-_Ssc", type: "🎬", year: "2013", phase: "多元宇宙 (福克斯)", studio: "20th Century Fox", chars: "金刚狼, 真理子, 银武士", impact: "罗根面临失去自愈能力的绝境。", desc: "罗根隐居日本，却卷入了一场夺取他自愈因子的阴谋，他在失去自愈能力的情况下与银武士决战。" },
+            { time: "2013", title: "《雷神2：黑暗世界》", enTitle: "Thor: The Dark World", yt: "7p7rocHEecE", type: "🎬", year: "2013", phase: "第二阶段", studio: "Marvel Studios", chars: "雷神, 洛基, 玛雷基斯", impact: "现实宝石（以太粒子）现世。", desc: "黑暗精灵苏醒意图利用以太粒子毁灭宇宙。索尔违抗父命与洛基联手，在九界中展开悲壮的拯救行动。" },
+            { time: "2013", title: "《神盾局特工》第一季", enTitle: "Agents of S.H.I.E.L.D. S1", searchAlias: "Agents of S.H.I.E.L.D. Season 1", yt: "T3T-evQZiQo", type: "📺", year: "2013", phase: "漫威电视", studio: "Marvel Television", chars: "科尔森, 震波女", impact: "纽约大战后神盾局视角扩张。", desc: "死而复生的科尔森特工组建了一支精锐小队，处理全球各地的超自然事件。同时面临九头蛇全面渗透的绝境。" },
+            { time: "2014", title: "《美国队长2：冬日战士》", enTitle: "Captain America: The Winter Soldier", yt: "7SlILk2WMTI", type: "🎬", year: "2014", phase: "第二阶段", studio: "Marvel Studios", chars: "美国队长, 黑寡妇, 猎鹰, 冬日战士", impact: "神盾局彻底覆灭，九头蛇潜伏网曝光。", desc: "史蒂夫发现神盾局已被九头蛇深度渗透。在猎鹰帮助下，美国队长直面被洗脑的昔日挚友——冬日战士。" },
+            { time: "2014", title: "《神盾局特工》第二季", enTitle: "Agents of S.H.I.E.L.D. S2", searchAlias: "Agents of S.H.I.E.L.D. Season 2", yt: "Cqo-7oli7iA", type: "📺", year: "2014", phase: "漫威电视", studio: "Marvel Television", chars: "科尔森, 斯凯, 异人族", impact: "正式引入异人族概念。", desc: "神盾局彻底转入地下运作，科尔森在重建组织的同时，斯凯觉醒了超能力，引出了潜伏地球已久的异人族。" },
+            { time: "平行", title: "《X战警：逆转未来》", enTitle: "X-Men: Days of Future Past", yt: "pK2zYHWDZKo", type: "🎬", year: "2014", phase: "多元宇宙 (福克斯)", studio: "20th Century Fox", chars: "金刚狼, 哨兵机器人", impact: "X战警旧时间线被重置。", desc: "为了阻止变种人被哨兵机器人的末日屠杀，金刚狼穿越时空回到1973年，改变历史走向。" },
+            { time: "平行", title: "《超凡蜘蛛侠2》", enTitle: "The Amazing Spider-Man 2", yt: "DlM2CWNTQ84", type: "🎬", year: "2014", phase: "多元宇宙 (索尼)", studio: "Sony Pictures", chars: "彼得·帕克, 格温, 电光人", impact: "永远的遗憾与多元宇宙执念。", desc: "彼得不仅要对付电光人和小绿魔，更遭遇了超级英雄生涯中最沉痛的打击——未能救下挚爱格温。" },
+            { time: "2014", title: "《银河护卫队》", enTitle: "Guardians of the Galaxy", yt: "d96cjJhvlMA", type: "🎬", year: "2014", phase: "第二阶段", studio: "Marvel Studios", chars: "星爵, 卡魔拉, 火箭浣熊, 格鲁特", impact: "力量宝石现身，灭霸宇宙威慑力展现。", desc: "星爵盗取宇宙灵球，被迫与四位亡命之徒结盟。这群乌合之众最终挺身而出，拯救了柴达星。" },
+            { time: "2014", title: "《我是格鲁特》第一季", enTitle: "I Am Groot Season 1", yt: "D7eFpRf4tac", type: "🌟", year: "2022", phase: "第四阶段", studio: "Marvel Studios", chars: "格鲁特宝宝", impact: "局域事件。", desc: "衍生动画短片，讲述格鲁特宝宝在银河护卫队期间于宇宙各处惹是生非的可爱成长日常。" },
+            { time: "2014", title: "《我是格鲁特》第二季", enTitle: "I Am Groot Season 2", yt: "1k8H2CywVqg", type: "🌟", year: "2023", phase: "第五阶段", studio: "Marvel Studios", chars: "格鲁特宝宝", impact: "局域事件。", desc: "格鲁特宝宝的全新星际麻烦制造之旅，甚至意外找到了守护者们的童年遗物。" },
+            { time: "2014", title: "《银河护卫队2》", enTitle: "Guardians of the Galaxy Vol. 2", yt: "wUn05hdkhjM", type: "🎬", year: "2017", phase: "第三阶段", studio: "Marvel Studios", chars: "星爵, 勇度, 伊戈, 螳螂女", impact: "天神组概念引入，家庭羁绊成型。", desc: "星爵意外见到生父天神组伊戈，却发现其吞噬宇宙的阴谋。勇度的牺牲让星爵真正理解了父亲的含义。" },
+            { time: "2015", title: "《夜魔侠》第一季", enTitle: "Daredevil Season 1", yt: "jAy6NJ_D5vU", type: "📺", year: "2015", phase: "漫威电视", studio: "Marvel Television", chars: "夜魔侠, 金并", impact: "地狱厨房黑暗秩序建立。", desc: "白天是盲人律师，夜晚化身恶魔的马特·默多克，开始与掌控纽约地狱厨房的黑道帝王金并展开残酷交锋。" },
+            { time: "2015", title: "《杰西卡·琼斯》第一季", enTitle: "Jessica Jones Season 1", yt: "nWHUjuJ8zxE", type: "📺", year: "2015", phase: "漫威电视", studio: "Marvel Television", chars: "杰西卡, 紫人", impact: "心理惊悚与精神控制的绝望体验。", desc: "患有PTSD的超能私家侦探杰西卡，被迫再次直面那个曾用意念控制、摧毁了她人生的恐怖梦魇——紫人。" },
+            { time: "2015", title: "《复仇者联盟2：奥创纪元》", enTitle: "Avengers: Age of Ultron", yt: "tmeOjFno6Do", type: "🎬", year: "2015", phase: "第二阶段", studio: "Marvel Studios", chars: "复仇者联盟全员, 奥创, 幻视, 旺达", impact: "心灵宝石创造幻视，索科维亚毁灭。", desc: "托尼激活防御项目导致奥创暴走。复仇者们付出惨痛代价阻止了索科维亚升空陨落的末日危机。" },
+            { time: "2015", title: "《蚁人》", enTitle: "Ant-Man", yt: "pWdKf3MneyI", type: "🎬", year: "2015", phase: "第二阶段", studio: "Marvel Studios", chars: "斯科特·朗, 汉克·皮姆", impact: "皮姆粒子与“量子领域”首次引入。", desc: "出狱的斯科特穿上能缩放身体的蚁人战衣，完成惊天劫案，阻止皮姆粒子落入贪婪的黄蜂战士手中。" },
+            { time: "2015", title: "《神盾局特工》第三季", enTitle: "Agents of S.H.I.E.L.D. S3", searchAlias: "Agents of S.H.I.E.L.D. Season 3", yt: "DqYfElmH2MY", type: "📺", year: "2015", phase: "漫威电视", studio: "Marvel Television", chars: "科尔森, 蜂巢", impact: "异人族爆发与神秘外星起源。", desc: "泰瑞根水晶泄漏导致全球异人觉醒，神盾局不仅要面对ATCU的监管，还要对抗被古老异人“蜂巢”控制的九头蛇。" },
+            { time: "平行", title: "《新神奇四侠》", enTitle: "Fantastic Four", yt: "e-BVs-KCSiA", type: "🎬", year: "2015", phase: "多元宇宙 (福克斯)", studio: "20th Century Fox", chars: "神奇四侠, 毁灭博士", impact: "平行宇宙的另一重起源。", desc: "四位年轻人被传送至危险的平行宇宙，身体产生了不可思议的突变，他们必须学会驾驭新能力拯救地球。" },
+            { time: "2015", title: "《夜魔侠》第二季", enTitle: "Daredevil Season 2", yt: "U1MqJBVn8Rk", type: "📺", year: "2016", phase: "漫威电视", studio: "Marvel Television", chars: "夜魔侠, 惩罚者, 艾丽卡", impact: "手合会阴谋浮现，血腥私刑者登场。", desc: "随着金并入狱，手段极度的“惩罚者”开始大开杀戒。同时，旧爱艾丽卡的回归将马特卷入手合会的阴谋。" },
+            { time: "2016", title: "《卢克·凯奇》第一季", enTitle: "Luke Cage Season 1", yt: "ORa4hPhGrpo", type: "📺", year: "2016", phase: "漫威电视", studio: "Marvel Television", chars: "卢克·凯奇, 水腹蛇", impact: "哈林区黑人社区超能者崛起。", desc: "拥有刀枪不入之躯的卢克·凯奇，意图在哈林区隐姓埋名，却被迫站出来对抗当地的黑帮大佬。" },
+            { time: "2016", title: "《神盾局特工》第四季", enTitle: "Agents of S.H.I.E.L.D. S4", searchAlias: "Agents of S.H.I.E.L.D. Season 4", yt: "gSkkI3OaOAY", type: "📺", year: "2016", phase: "漫威电视", studio: "Marvel Television", chars: "科尔森, 恶灵骑士, 艾达", impact: "黑暗神书与魔法/智能危机交织。", desc: "小队遭遇了复仇之灵“恶灵骑士”，并陷入了由黑暗神书和仿生人艾达构建的框架虚拟世界危机。" },
+            { time: "平行", title: "《死侍》", enTitle: "Deadpool", yt: "ONHBaC-pfsk", type: "🎬", year: "2016", phase: "多元宇宙 (福克斯)", studio: "20th Century Fox", chars: "死侍, 钢力士", impact: "打破第四面墙，R级英雄颠覆之作。", desc: "雇佣兵韦德因癌症接受非法实验，毁容的同时获得了不死之身。他打破第四面墙，化身死侍踏上复仇之路。" },
+            { time: "平行", title: "《X战警：天启》", enTitle: "X-Men: Apocalypse", yt: "Jer8XjMrUB4", type: "🎬", year: "2016", phase: "多元宇宙 (福克斯)", studio: "20th Century Fox", chars: "天启, X战警", impact: "世界上第一个变种人苏醒。", desc: "沉睡千年的首个变种人天启苏醒，意图毁灭人类重建秩序。年轻的X战警们必须团结一致对抗这位神级反派。" },
+            { time: "2016", title: "《铁拳》第一季", enTitle: "Iron Fist Season 1", yt: "f9OKL5no-S0", type: "📺", year: "2017", phase: "漫威电视", studio: "Marvel Television", chars: "丹尼·兰德, 科林", impact: "昆仑武学与手合会的全面开战。", desc: "失踪15年的亿万富翁之子带着神秘的昆仑武术“铁拳”回到纽约，意图夺回家族企业并清除黑暗势力。" },
+            { time: "2016", title: "《捍卫者联盟》", enTitle: "The Defenders", yt: "jYvHxEEgrPA", type: "📺", year: "2017", phase: "漫威电视", studio: "Marvel Television", chars: "夜魔侠, 杰西卡, 卢克, 铁拳", impact: "街头四巨头集结。", desc: "四个习惯独来独往的纽约街头英雄被迫结盟，在曼哈顿地下对抗试图摧毁整座城市的手合会终极阴谋。" },
+            { time: "2016", title: "《美国队长3：内战》", enTitle: "Captain America: Civil War", yt: "sfJH74eChEI", type: "🎬", year: "2016", phase: "第三阶段", studio: "Marvel Studios", chars: "美国队长, 钢铁侠, 黑豹, 蜘蛛侠", impact: "复仇者联盟因理念决裂，黑豹蜘蛛侠首秀。", desc: "索科维亚协议引发复仇者联盟内战。泽莫男爵利用冬兵暗杀托尼父母的真相，彻底点燃了内部分裂战火。" },
+            { time: "2016", title: "《黑寡妇》", enTitle: "Black Widow", yt: "Fp9pNPdNwjI", type: "🎬", year: "2021", phase: "第四阶段", studio: "Marvel Studios", chars: "黑寡妇, 叶莲娜, 红色守卫者", impact: "红房子覆灭，二代黑寡妇叶莲娜登场。", desc: "内战后逃亡的娜塔莎直面自己的黑暗过去，与“伪装家庭”重聚，彻底摧毁了控制特工的红房子。" },
+            { time: "2016", title: "《黑豹》", enTitle: "Black Panther", yt: "xjDjIWPwcPU", type: "🎬", year: "2018", phase: "第三阶段", studio: "Marvel Studios", chars: "黑豹, 金钱豹, 苏睿", impact: "瓦坎达向全球公开其振金科技。", desc: "特查拉继任国王，却遭遇堂兄金钱豹夺取王位。他必须唤醒黑豹之力，决定瓦坎达打破孤立的未来。" },
+            { time: "2016", title: "《蜘蛛侠：英雄归来》", enTitle: "Spider-Man: Homecoming", yt: "U0D3AOldjMU", type: "🎬", year: "2017", phase: "第三阶段", studio: "Marvel Studios", chars: "蜘蛛侠, 钢铁侠, 秃鹫", impact: "底层民众对斯塔克科技垄断的报复。", desc: "内战后彼得试图证明自己，却发现了倒卖外星武器的秃鹫。他最终明白了褪去战衣的自己才是英雄。" },
+            { time: "2016", title: "《惩罚者》第一季", enTitle: "The Punisher Season 1", yt: "s4QV6OZdmWY", type: "📺", year: "2017", phase: "漫威电视", studio: "Marvel Television", chars: "惩罚者, 拼图", impact: "揭开军方黑暗阴谋。", desc: "弗兰克以为复仇已经结束，却发现在他家人丧生的悲剧背后，隐藏着军方与中情局更深层的血腥阴谋。" },
+            { time: "2016", title: "《奇异博士》", enTitle: "Doctor Strange", yt: "Lt-U_t2pUHI", type: "🎬", year: "2016", phase: "第三阶段", studio: "Marvel Studios", chars: "奇异博士, 古一法师, 多玛姆", impact: "时间宝石揭晓，魔法多维空间开启。", desc: "斯特兰奇双手残废后赴卡玛泰姬学习魔法。他利用时间循环逼退多玛姆，成为地球的魔法守护者。" },
+            { time: "平行", title: "《金刚狼3：殊死一战》", enTitle: "Logan", yt: "Div0iP65aZo", type: "🎬", year: "2017", phase: "多元宇宙 (福克斯)", studio: "20th Century Fox", chars: "金刚狼, X-23, X教授", impact: "英雄迟暮的极致悲歌。", desc: "2029年变种人几乎绝迹。衰老且自愈能力消退的罗根，为了护送一名年轻的变种人女孩，展开了最后的厮杀。" },
+            { time: "2017", title: "《大群》第一季", enTitle: "Legion Season 1", yt: "4SZ3rMMYBLY", type: "📺", year: "2017", phase: "多元宇宙 (福克斯)", studio: "FX Productions", chars: "大卫, 影王", impact: "X战警宇宙极其惊艳的心理神作。", desc: "X教授的儿子大卫一直被诊断为精神分裂症，直到他发现脑海中的声音和幻象其实是极其强大的变种人能力。" },
+            { time: "2017", title: "《异人族》", enTitle: "Inhumans", yt: "1sYF1SXcWqQ", type: "📺", year: "2017", phase: "漫威电视", studio: "Marvel Television", chars: "黑蝠王, 美杜莎", impact: "月球异人王室的地球流亡。", desc: "在一次军事政变后，异人族的皇室成员被迫逃离位于月球的家园阿提兰，流落到地球的夏威夷寻求生存。" },
+            { time: "2017", title: "《天赋异禀》第一季", enTitle: "The Gifted Season 1", yt: "3pDdXYf3nfc", type: "📺", year: "2017", phase: "多元宇宙 (福克斯)", studio: "20th Century Fox TV", chars: "北极星, 闪烁, 交食", impact: "X战警消失后的变种人地下抵抗。", desc: "一对普通夫妇发现孩子们拥有变种人能力后，被迫逃离政府的追捕，加入了一个地下变种人网络组织。" },
+            { time: "2017", title: "《神盾局特工》第五季", enTitle: "Agents of S.H.I.E.L.D. S5", searchAlias: "Agents of S.H.I.E.L.D. Season 5", yt: "YQJKgtAktLQ", type: "📺", year: "2017", phase: "漫威电视", studio: "Marvel Television", chars: "科尔森, 震波女", impact: "打破时间循环，预警灭霸降临。", desc: "特工们被神秘传送到了未来破碎的地球空间站。他们必须拼死逃回现代，打破地球被震波女撕裂的时间循环诅咒。" },
+            { time: "2017", title: "《杰西卡·琼斯》第二季", enTitle: "Jessica Jones Season 2", yt: "-u2AV8z_CX0", type: "📺", year: "2018", phase: "漫威电视", studio: "Marvel Television", chars: "杰西卡, 帕翠莎", impact: "超能力起源的痛苦深挖。", desc: "杰西卡在努力回归正常生活时，被迫调查赋予她超能力的神秘实验组织，却揭开了家庭的沉痛伤疤。" },
+            { time: "2017", title: "《卢克·凯奇》第二季", enTitle: "Luke Cage Season 2", yt: "jviNt9gWaZM", type: "📺", year: "2018", phase: "漫威电视", studio: "Marvel Television", chars: "卢克·凯奇, 巨腹蛇", impact: "哈林区黑道之王的权力更迭。", desc: "成为哈林区名人的卢克遇到了一种能刺穿他皮肤的新型武器，并被迫在法律和黑暗手段之间做出选择。" },
+            { time: "2017", title: "《铁拳》第二季", enTitle: "Iron Fist Season 2", yt: "kvvWB0GwCek", type: "📺", year: "2018", phase: "漫威电视", studio: "Marvel Television", chars: "丹尼, 达沃斯", impact: "神龙之力的剥夺与传承。", desc: "丹尼致力于保护纽约，但他昔日的师兄弟达沃斯意图夺取铁拳之力，在城市里实行极端制裁。" },
+            { time: "2017", title: "《夜魔侠》第三季", enTitle: "Daredevil Season 3", yt: "n83s6NO1NE0", type: "📺", year: "2018", phase: "漫威电视", studio: "Marvel Television", chars: "夜魔侠, 金并, 靶眼", impact: "黑道帝王重夺权力，完美收官之作。", desc: "死里逃生的马特信仰崩溃。此时金并操纵系统获释，不仅掌控了FBI，还制造了一个假夜魔侠大开杀戒。" },
+            { time: "2017", title: "《雷神3：诸神黄昏》", enTitle: "Thor: Ragnarok", yt: "v7MGUNV8MxU", type: "🎬", year: "2017", phase: "第三阶段", studio: "Marvel Studios", chars: "雷神, 浩克, 海拉, 洛基", impact: "阿斯加德毁灭，直接衔接灭霸降临。", desc: "海拉捏碎了雷神锤。索尔在萨卡星与浩克重逢，最终意识到阿斯加德是人民，选择让故乡毁灭以击败海拉。" },
+            { time: "2018", title: "《惩罚者》第二季", enTitle: "The Punisher Season 2", yt: "jrLhP5sK2wI", type: "📺", year: "2019", phase: "漫威电视", studio: "Marvel Television", chars: "惩罚者, 拼图", impact: "私人恩怨的最终了断。", desc: "试图隐姓埋名的弗兰克因保护一名少女再次卷入阴谋，同时他毁容的宿敌“拼图”带着无尽的怒火卷土重来。" },
+            { time: "2018", title: "《杰西卡·琼斯》第三季", enTitle: "Jessica Jones Season 3", yt: "7DBKS2qH51I", type: "📺", year: "2019", phase: "漫威电视", studio: "Marvel Television", chars: "杰西卡, 傻瓜杀手", impact: "Netflix街头宇宙的最后落幕。", desc: "面对一个极其聪明连环杀手，杰西卡不仅要追踪凶手，还要面对与挚友 Trish 在正义理念上的彻底决裂。" },
+            { time: "2018", title: "《大群》第二季", enTitle: "Legion Season 2", yt: "HmBIn9De-Yc", type: "📺", year: "2018", phase: "多元宇宙 (福克斯)", studio: "FX Productions", chars: "大卫, 影王", impact: "精神幻境的进一步扭曲。", desc: "大卫在神秘球体中被困一年后回归，发现昔日的盟友居然与死敌影王结盟，这让他再次陷入了深刻的迷惘。" },
+            { time: "2018", title: "《天赋异禀》第二季", enTitle: "The Gifted Season 2", yt: "FLDKLPvdqnU", type: "📺", year: "2018", phase: "多元宇宙 (福克斯)", studio: "20th Century Fox TV", chars: "北极星, 核心圈", impact: "变种人两大派系的冲突加剧。", desc: "地下的变种人组织因理念不同发生分裂。北极星等激进派加入了名为“核心圈”的极端组织，意图建立变种人国度。" },
+            { time: "平行", title: "《死侍2》", enTitle: "Deadpool 2", yt: "D86RtevtfrA", type: "🎬", year: "2018", phase: "多元宇宙 (福克斯)", studio: "20th Century Fox", chars: "死侍, 电索", impact: "时空穿越概念玩梗。", desc: "死侍遭遇了来自未来的赛博格战士电索。为了保护一个变种人小胖子，他组建了非常不靠谱的 X 特攻队。" },
+            { time: "平行", title: "《毒液：致命守护者》", enTitle: "Venom", yt: "u9Mv98Gr5pY", type: "🎬", year: "2018", phase: "多元宇宙 (索尼)", studio: "Sony Pictures", chars: "埃迪·布洛克, 毒液", impact: "索尼漫威宇宙（SSU）奠基之作。", desc: "记者埃迪意外与外星共生体毒液结合，两者在互相嫌弃中渐渐默契，共同对抗邪恶的生命基金会。" },
+            { time: "2018", title: "《蚁人2：黄蜂女现身》", enTitle: "Ant-Man and the Wasp", yt: "5WfTEZJnv_8", type: "🎬", year: "2018", phase: "第三阶段", studio: "Marvel Studios", chars: "蚁人, 黄蜂女, 幽灵", impact: "深入探索量子领域，为终局逆转埋线。", desc: "斯科特与霍普携手深入量子领域解救初代黄蜂女。片尾彩蛋遭遇“烁灭”，蚁人被困量子空间。" },
+            { time: "2018", title: "《复仇者联盟3：无限战争》", enTitle: "Avengers: Infinity War", yt: "6ZfuNTqbHE8", type: "🎬", year: "2018", phase: "第三阶段", studio: "Marvel Studios", chars: "漫威电影宇宙全员, 灭霸, 黑曜五将", impact: "灭霸打响指，全宇宙半数生命灰飞烟灭。", desc: "灭霸大军横扫宇宙掠夺宝石。分裂的英雄们拼死抵抗仍遭惨败，那一声响指成为了影史最绝望的时刻。" },
+            { time: "平行", title: "《蜘蛛侠：平行宇宙》", enTitle: "Spider-Man: Into the Spider-Verse", yt: "tg52up16eq0", type: "🎬", year: "2018", phase: "多元宇宙 (索尼)", studio: "Sony Animation", chars: "迈尔斯, 彼得, 格温", impact: "动画领域的多元宇宙天花板。", desc: "布鲁克林少年迈尔斯成为新一代蜘蛛侠，并意外卷入多重宇宙对撞，与其他宇宙的蜘蛛侠并肩作战。" },
+            { time: "2019", title: "《大群》第三季", enTitle: "Legion Season 3", yt: "D8Vl1fuGn1A", type: "📺", year: "2019", phase: "多元宇宙 (福克斯)", studio: "FX Productions", chars: "大卫, X教授, 时光女", impact: "穿越时间改变自身的黑暗宿命。", desc: "化身为毁灭者的大卫建立了自己的教派。为了纠正一切，他寻求拥有时间旅行能力的变种人帮助，意图重写历史。" },
+            { time: "2019", title: "《神盾局特工》第六季", enTitle: "Agents of S.H.I.E.L.D. S6", searchAlias: "Agents of S.H.I.E.L.D. Season 6", yt: "wrKssByuVt0", type: "📺", year: "2019", phase: "漫威电视", studio: "Marvel Television", chars: "麦克, 震波女, 萨吉", impact: "面对异界生命入侵与宇宙探险。", desc: "科尔森死后，特工小队分崩离析，一部分进入深空寻找失踪的菲兹，另一部分在地球对抗拥有科尔森面孔的异界掠夺者萨吉。" },
+            { time: "2020", title: "《神盾局特工》第七季", enTitle: "Agents of S.H.I.E.L.D. S7", searchAlias: "Agents of S.H.I.E.L.D. Season 7", yt: "A4du3_6QGm8", type: "📺", year: "2020", phase: "漫威电视", studio: "Marvel Television", chars: "科尔森, 震波女", impact: "完美收官，时间线最终闭环。", desc: "为了阻止长生人抹除神盾局的历史，小队穿越回20世纪30年代，在漫威历史的各个年代穿梭，迎来了壮阔且感人的最终完结。" },
+            { time: "2023", title: "《复仇者联盟4：终局之战》", enTitle: "Avengers: Endgame", yt: "TcMBFSGVi1c", type: "🎬", year: "2019", phase: "第三阶段", studio: "Marvel Studios", chars: "初代复仇者联盟, 惊奇队长, 蚁人, 灭霸", impact: "钢铁侠牺牲，美国队长退隐，半数生命回归。", desc: "烁灭五年后，英雄们穿梭时空进行时间劫持找回宝石。在付出极其惨痛的牺牲后，宇宙迎来了逆转黎明。" },
+            { time: "分支", title: "《洛基》第一季", enTitle: "Loki Season 1", yt: "nW948Va-l10", type: "📺", year: "2021", phase: "第四阶段", studio: "Marvel Studios", chars: "洛基, 莫比乌斯, 遗留之人", impact: "神圣时间线破裂，多元宇宙爆发。", desc: "带着魔方逃跑的变体洛基被TVA逮捕，最终见证了时间线崩溃并衍生出无数平行宇宙的失控局面。" },
+            { time: "分支", title: "《假如…？》第一季", enTitle: "What If...? Season 1", yt: "x9D0uUKJ5KI", type: "📺", year: "2021", phase: "第四阶段", studio: "Marvel Studios", chars: "观察者, 卡特队长, 黑暗奇异", impact: "展示多元宇宙爆发后的无限可能。", desc: "通过驻足时间之外的“观察者”视角，展现了如果关键事件发生微小偏差，MCU将诞生的疯狂平行世界。" },
+            { time: "2023", title: "《旺达幻视》", enTitle: "WandaVision", yt: "sj9J2ecsSpo", type: "📺", year: "2021", phase: "第四阶段", studio: "Marvel Studios", chars: "旺达, 幻视, 阿加莎", impact: "旺达觉醒为足以摧毁宇宙的猩红女巫。", desc: "因悲痛失控的旺达用魔法创造了西景镇的虚假情景喜剧现实，最终在绝望中释放了混沌魔法的终极力量。" },
+            { time: "平行", title: "《X战警：黑凤凰》", enTitle: "Dark Phoenix", yt: "1-q8C_c-nlM", type: "🎬", year: "2019", phase: "多元宇宙 (福克斯)", studio: "20th Century Fox", chars: "琴·葛蕾, X教授", impact: "福克斯X战警主宇宙最后落幕。", desc: "在一次太空营救任务中，琴被神秘的宇宙力量击中，这股力量让她成为了最强大的变种人，但也逐渐失控。" },
+            { time: "平行", title: "《新变种人》", enTitle: "The New Mutants", yt: "W_vJhUAOFpI", type: "🎬", year: "2020", phase: "多元宇宙 (福克斯)", studio: "20th Century Fox", chars: "秘客, 狼毒", impact: "带有恐怖惊悚色彩的变种人外传。", desc: "五名年轻的变种人被关押在一个秘密的疗养院里，他们必须面对自己过去的罪恶以及觉醒的可怕超能力。" },
+            { time: "平行", title: "《毒液2：屠杀开始》", enTitle: "Venom: Let There Be Carnage", yt: "-FmWuCgJmxo", type: "🎬", year: "2021", phase: "多元宇宙 (索尼)", studio: "Sony Pictures", chars: "埃迪·布洛克, 屠杀", impact: "片尾彩蛋被短暂传送至MCU主宇宙。", desc: "埃迪和毒液这对欢喜冤家遭遇了疯狂连环杀手共生体“屠杀”的血腥猎杀。片尾彩蛋短暂传送至主宇宙。" },
+            { time: "2024", title: "《尚气与十环传奇》", enTitle: "Shang-Chi and the Legend of the Ten Rings", yt: "8YjFbMbfXaQ", type: "🎬", year: "2021", phase: "第四阶段", studio: "Marvel Studios", chars: "尚气, 文武, 凯蒂", impact: "十环向深空发送神秘信号，神话线扩展。", desc: "隐居的尚气被迫直面控制十环帮的父亲文武，最终解开了塔罗村的封印危机，成为新一代复仇者。" },
+            { time: "2024", title: "《猎鹰与冬兵》", enTitle: "The Falcon and the Winter Soldier", yt: "IWBsDaFWyTE", type: "📺", year: "2021", phase: "第四阶段", studio: "Marvel Studios", chars: "猎鹰, 冬日战士, 泽莫", impact: "山姆正式成为新一任美国队长。", desc: "烁灭回归后，山姆经历了种族与责任的自我挣扎，最终拿起振金盾牌；巴基则在努力赎回作为冬兵的罪孽。" },
+            { time: "2024", title: "《蜘蛛侠：英雄远征》", enTitle: "Spider-Man: Far From Home", yt: "Nt9L1jCKGnE", type: "🎬", year: "2019", phase: "第三阶段", studio: "Marvel Studios", chars: "蜘蛛侠, 神秘客, 尼克·弗瑞", impact: "彼得身份遭曝光，为多元宇宙危机埋雷。", desc: "终局之战后，彼得在欧洲游中遭遇神秘客的幻象欺骗。片尾神秘客不仅诬陷了彼得，还将他的身份公之于众。" },
+            { time: "2024", title: "《永恒族》", enTitle: "Eternals", yt: "x_me3xsvDgk", type: "🎬", year: "2021", phase: "第四阶段", studio: "Marvel Studios", chars: "瑟西, 伊卡瑞斯, 天神组", impact: "揭示地球孕育天神的真相，宇宙观再扩张。", desc: "潜伏地球数千年的外星不朽种族现身，为了保护人类，他们违抗了造物主天神组“牺牲地球”的指令。" },
+            { time: "2024", title: "《蜘蛛侠：英雄无归》", enTitle: "Spider-Man: No Way Home", yt: "JfVOs4VSpmA", type: "🎬", year: "2021", phase: "第四阶段", studio: "Marvel Studios", chars: "三代蜘蛛侠, 奇异博士, 绿魔", impact: "三代同框，彼得·帕克被世人彻底遗忘。", desc: "彼得请求奇异博士施法却导致多元反派入侵。在前辈引导下他领悟了责任，选择让全世界抹除对自己的记忆。" },
+            { time: "平行", title: "《莫比亚斯：暗夜博士》", enTitle: "Morbius", yt: "oZ6iiRrz1SY", type: "🎬", year: "2022", phase: "多元宇宙 (索尼)", studio: "Sony Pictures", chars: "莫比亚斯, 秃鹫", impact: "索尼宇宙与MCU边界进一步模糊。", desc: "患有罕见血液病的生化博士，在尝试一种极其危险的治疗方法后，变成了一只渴望鲜血的吸血鬼。" },
+            { time: "2025", title: "《奇异博士2：疯狂多元宇宙》", enTitle: "Doctor Strange in the Multiverse of Madness", yt: "aWzlQ2N6qqg", type: "🎬", year: "2022", phase: "第四阶段", studio: "Marvel Studios", chars: "奇异博士, 旺达, 阿美莉卡", impact: "触发宇宙对撞（Incursion）末日危机。", desc: "奇异博士为保护少女阿美莉卡，在多元宇宙间躲避黑化猩红女巫的追杀，见证了光照会覆灭与对撞危机。" },
+            { time: "2025", title: "《鹰眼》", enTitle: "Hawkeye", yt: "5VYb3B1ETlk", type: "📺", year: "2021", phase: "第四阶段", studio: "Marvel Studios", chars: "鹰眼, 凯特, 金并, 叶莲娜", impact: "二代鹰眼接班，黑道帝王金并回归。", desc: "圣诞期间，克林特被往事缠身，他在培养少女凯特接班的同时，遭遇了二代黑寡妇和幕后黑手金并的追杀。" },
+            { time: "2025", title: "《月光骑士》", enTitle: "Moon Knight", yt: "x7Krla_UxRg", type: "📺", year: "2022", phase: "第四阶段", studio: "Marvel Studios", chars: "马克/史蒂文, 孔苏", impact: "引入古埃及神明体系。", desc: "患有多重人格障碍的礼品店雇员发现自己是埃及月神孔苏的化身，他必须在多重身份中找到平衡阻止邪教。" },
+            { time: "2025", title: "《黑豹2：瓦坎达万岁》", enTitle: "Black Panther: Wakanda Forever", yt: "_Z3QKkl1WyM", type: "🎬", year: "2022", phase: "第四阶段", studio: "Marvel Studios", chars: "苏睿, 纳摩, 铁心", impact: "海底强国塔罗坎浮出水面，二代黑豹诞生。", desc: "特查拉离世，瓦坎达陷入悲痛。面对拥有振金的海底强国塔罗坎的宣战，苏睿继承黑豹衣钵保卫国家。" },
+            { time: "2025", title: "《回声》", enTitle: "Echo", yt: "AFUKnherhuw", type: "📺", year: "2024", phase: "第五阶段", studio: "Marvel Studios", chars: "玛雅, 金并, 夜魔侠", impact: "金并酝酿竞选纽约市长计划。", desc: "玛雅逃回故乡直面原住民血统与过去的罪恶，最终与养父金并彻底决裂，夜魔侠在街头战中客串登场。" },
+            { time: "2025", title: "《女浩克》", enTitle: "She-Hulk: Attorney at Law", yt: "gim2kprjL50", type: "📺", year: "2022", phase: "第四阶段", studio: "Marvel Studios", chars: "女浩克, 浩克, 夜魔侠", impact: "打破第四面墙，超人类法律体系建立。", desc: "班纳表妹意外获得超能力成为律师英雄。主打法庭喜剧风格，不仅打破了第四面墙，还引出了新战衣的夜魔侠。" },
+            { time: "2025", title: "《惊奇少女》", enTitle: "Ms. Marvel", yt: "m9EX0f6V11Y", type: "📺", year: "2022", phase: "第四阶段", studio: "Marvel Studios", chars: "惊奇少女, 惊奇队长", impact: "MCU主宇宙首次明确提及“变种人”基因。", desc: "穆斯林少女卡玛拉意外获得祖传量子手镯的超能力。在揭开家族历史的同时，发现自己拥有变种人基因。" },
+            { time: "2025", title: "《雷神4：爱与雷霆》", enTitle: "Thor: Love and Thunder", yt: "tgB1wUcmbbw", type: "🎬", year: "2022", phase: "第四阶段", studio: "Marvel Studios", chars: "雷神, 简·福斯特, 格尔", impact: "永恒空间现世，宇宙神明实体登场。", desc: "身患绝症的简举起雷神锤成为女雷神。两人携手踏上太空之旅，对抗企图在“永恒”处许愿消灭所有神明的格尔。" },
+            { time: "2025", title: "《暗夜狼人》", enTitle: "Werewolf by Night", yt: "bLEFqhS5WmI", type: "🌟", year: "2022", phase: "第四阶段", studio: "Marvel Studios", chars: "杰克, 类人体", impact: "开启漫威超自然怪物宇宙（暗夜之子）。", desc: "黑白复古致敬经典恐怖片。一群怪物猎人齐聚阴森庄园争夺圣物，却发现其中混入了一个致命的暗夜狼人。" },
+            { time: "2025", title: "《银河护卫队：假日特辑》", enTitle: "The Guardians of the Galaxy Holiday Special", yt: "OYhFFQl4fLs", type: "🌟", year: "2022", phase: "第四阶段", studio: "Marvel Studios", chars: "螳螂女, 德拉克斯", impact: "知无领域成为银护的新基地。", desc: "为了让星爵过一个难忘的圣诞节，螳螂女和德拉克斯前往地球绑架了他最喜欢的地球明星凯文·贝肯。" },
+            { time: "分支", title: "《洛基》第二季", enTitle: "Loki Season 2", yt: "dug56u8NN7g", type: "📺", year: "2023", phase: "第五阶段", studio: "Marvel Studios", chars: "洛基, 莫比乌斯, 希尔维", impact: "洛基化身故事之神，重塑世界树。", desc: "面对时间织布机的超载末日，洛基在时间滑脱中领悟了终极牺牲，以凡人之躯承受万界时间的重量。" },
+            { time: "分支", title: "《假如…？》第二季", enTitle: "What If...? Season 2", yt: "TiEVqZ2Bc_c", type: "📺", year: "2023", phase: "第五阶段", studio: "Marvel Studios", chars: "观察者, 卡特队长", impact: "继续探索被篡改的疯狂宇宙。", desc: "新的变体英雄在无数个被颠覆的命运节点上，展开了更加意想不到的冒险。继续探索疯狂宇宙。" },
+            { time: "平行", title: "《蜘蛛夫人：超感觉醒》", enTitle: "Madame Web", yt: "s_76M4c4LTo", type: "🎬", year: "2024", phase: "多元宇宙 (索尼)", studio: "Sony Pictures", chars: "卡桑德拉, 蜘蛛女", impact: "索尼蜘蛛侠宇宙的衍生扩展。", desc: "急救员卡桑德拉在一次事故后觉醒了预知未来的能力，她必须保护三名拥有蜘蛛超能力的少女逃离致命追杀。" },
+            { time: "平行", title: "《蜘蛛侠：纵横宇宙》", enTitle: "Spider-Man: Across the Spider-Verse", yt: "shW9i6k8cB0", type: "🎬", year: "2023", phase: "多元宇宙 (索尼)", studio: "Sony Animation", chars: "迈尔斯, 格温, 2099", impact: "揭示蜘蛛侠宿命与织网事件。", desc: "迈尔斯穿越多元宇宙，遇到了由无数个宇宙的蜘蛛侠组成的精英团队，却在拯救世界和拯救亲人之间产生巨大分歧。" },
+            { time: "2026", title: "《蚁人3：量子狂潮》", enTitle: "Ant-Man and the Wasp: Quantumania", yt: "ZlNFpri-Y40", type: "🎬", year: "2023", phase: "第五阶段", studio: "Marvel Studios", chars: "蚁人家族, 征服者康", impact: "多元核心反派“康之议会”发出战争警告。", desc: "蚁人家族跌入隐秘的微观量子领域。他们正面对抗了被流放于此、掌控时间科技的恐怖暴君征服者康。" },
+            { time: "2026", title: "《银河护卫队3》", enTitle: "Guardians of the Galaxy Vol. 3", yt: "u3V5KDHRQvk", type: "🎬", year: "2023", phase: "第五阶段", studio: "Marvel Studios", chars: "星爵, 火箭浣熊, 至高进化", impact: "初代银河护卫队完美谢幕解散。", desc: "为解救重伤的火箭，影片揭露了其被残忍改造的过去。伴随催泪的告别，这群宇宙浪子迎来了最完美的谢幕。" },
+            { time: "2026", title: "《秘密入侵》", enTitle: "Secret Invasion", yt: "qZVTkn2NjS0", type: "📺", year: "2023", phase: "第五阶段", studio: "Marvel Studios", chars: "尼克·弗瑞, 塔罗斯, 斯克鲁人", impact: "地球高层被外星渗透，信任危机爆发。", desc: "尼克·弗瑞重返地球，应对会变形的斯克鲁反叛军对全球政治高层的深度渗透危机，这是一场无人可信的谍战。" },
+            { time: "2026", title: "《惊奇队长2》", enTitle: "The Marvels", yt: "iuk77TjvfmE", type: "🎬", year: "2023", phase: "第五阶段", studio: "Marvel Studios", chars: "惊奇队长, 惊奇少女, 莫妮卡", impact: "时空裂缝开启，莫妮卡流落至X战警宇宙。", desc: "三位光系英雄因能力纠缠被迫组队。在修复时空裂缝时，莫妮卡做出了流落X战警异宇宙的牺牲。" },
+            { time: "平行", title: "《毒液：最后一舞》", enTitle: "Venom: The Last Dance", yt: "HyIyd9joTTc", type: "🎬", year: "2024", phase: "多元宇宙 (索尼)", studio: "Sony Pictures", chars: "埃迪, 毒液, 纳尔", impact: "共生体之神纳尔现身。", desc: "埃迪与毒液不仅遭到军方追捕，更面临来自母星共生体大军的疯狂入侵，这对搭档迎来了最后的谢幕。" },
+            { time: "平行", title: "《猎人克莱文》", enTitle: "Kraven the Hunter", yt: "I8gFw4-2RBM", type: "🎬", year: "2024", phase: "多元宇宙 (索尼)", studio: "Sony Pictures", chars: "克莱文, 犀牛人", impact: "经典蜘蛛侠反派的起源。", desc: "俄罗斯贵族后裔谢尔盖在一次狩猎中被狮子袭击，血液融合后获得了野兽般的力量和直觉，成为了顶级猎手。" },
+            { time: "2026", title: "《死侍与金刚狼》", enTitle: "Deadpool & Wolverine", yt: "73_1biulkYk", type: "🎬", year: "2024", phase: "第五阶段", studio: "Marvel Studios", chars: "死侍, 金刚狼, 卡桑德拉", impact: "福克斯X战警宇宙遗产完美并入主线。", desc: "为了拯救濒临毁灭的时间线，死侍穿越虚空带回了充满遗憾的金刚狼变体，上演了一场血浆齐飞的拯救大戏。" },
+            { time: "2026", title: "《阿加莎：暗黑浩劫》", enTitle: "Agatha All Along", yt: "R9pXbNz6Vbw", type: "📺", year: "2024", phase: "第五阶段", studio: "Marvel Studios", chars: "阿加莎, 比利(巫术)", impact: "旺达之子比利以新躯体回归，魔法线深化。", desc: "失去法力的阿加莎组建非主流女巫团，踏上致命的女巫之路，最终揭开了身边的少年正是旺达转世之子。" },
+            { time: "2027", title: "《美国队长4：勇敢新世界》", enTitle: "Captain America: Brave New World", yt: "1pHDWnXmK7Y", type: "🎬", year: "2025", phase: "第五阶段", studio: "Marvel Studios", chars: "猎鹰美队, 罗斯总统, 首脑", impact: "艾德曼合金引发全球争夺，红浩克诞生。", desc: "新任美队山姆被卷入国际危机。他不仅要面对意图将超级英雄军事化的罗斯总统，还要应对变异的红浩克。" },
+            { time: "2027", title: "《夜魔侠：重生》", enTitle: "Daredevil: Born Again", yt: "7xALolZzhSM", type: "📺", year: "2025", phase: "第五阶段", studio: "Marvel Studios", chars: "夜魔侠, 金并, 惩罚者", impact: "纽约市黑暗政治格局彻底重塑。", desc: "盲人律师马特发现宿敌“金并”正利用合法手段竞选纽约市长。这场街头级别最高规格的猫鼠游戏将极其残酷。" },
+            { time: "2027", title: "《雷霆特工队》", enTitle: "Thunderbolts*", yt: "-sAOWhvheK8", type: "🎬", year: "2025", phase: "第五阶段", studio: "Marvel Studios", chars: "叶莲娜, 冬兵, 哨兵", impact: "虚无核心“哨兵”登场，灰色势力大洗牌。", desc: "一群有道德污点的前反派/反英雄被政府强行集结，执行一项必死的秘密任务，却意外唤醒了神级战力哨兵。" },
+            { time: "平行", title: "《神奇四侠：第一步》", enTitle: "The Fantastic Four: First Steps", yt: "18QQWa5MEcs", type: "🎬", year: "2025", phase: "第六阶段", studio: "Marvel Studios", chars: "神奇四侠, 行星吞噬者", impact: "平行宇宙面临吞噬，最终将汇入复仇者联盟5。", desc: "在1960年代复古未来平行宇宙中，第一家庭获得了超能力。他们将直面能吞噬整个星球的骇人宇宙神明。" }
+        ];
+    
+        // 🎬 智能模糊匹配系统
+        // ⚠️ 请用您核对好的 localVideoFiles 数组完美替换掉下方这段，以免丢失心血！
+        const localVideoFiles = [
+            "BLADE (1998) Classic 35mm Trailer [4K ULTRA HD] Wesley Snipes_1080p.mp4",
+            "Blade II Trailer HD_1080p.mp4",
+            "Hulk (2003) Official Trailer #1 - Erica Bana Movie HD_720p.mp4",
+            "Blade Trinity (2004) Official Trailer - Wesley Snipes, Ryan Reynolds Movie HD_720p.mp4",
+            "Elektra (2005) Movie trailer_1080p.mp4",
+            "GHOST RIDER [2007] – Official Trailer (HD)_1080p.mp4",
+            "Fantastic Four Rise of the Silver Surfer (2007) Original Trailer [FHD]_1080p.mp4",
+            "Ghost Rider Spirit of Vengeance (2012) Trailer - HD movie_1080p.mp4",
+            "marvel's agents of s.h.i.e.l.d. season 1 trailer.mp4",
+            "Marvel's Agents of S.H.I.E.L.D. - Season 2 Preview_1080p.mp4",
+            "marvel's agents of s.h.i.e.l.d. season 3 trailer.mp4",
+            "Marvel's Guardians of the Galaxy - Trailer 1 (OFFICIAL)_1080p.mp4",
+            "Marvel's Agents of SHIELD Season 4 Vengeance Extended Promo (HD) Ghost Rider_1080p.mp4",
+            "Legion Official Trailer #1 [HD] An Original Series From FX and Marvel_1080p.mp4",
+            "Marvel's Agents of S.H.I.E.L.D. Season 5 Trailer_1080p.mp4",
+            "Legion Season 2 - Official Trailer_1080p.mp4",
+            "Marvel's Inhumans - Official Trailer 1_1080p.mp4",
+            "The Gifted (FOX) - Official SDCC 2017 Trailer_1080p.mp4",
+            "The Gifted Season 2 The Mutant Underground vs. The Inner Circle Trailer_1080p.mp4",
+            "Legion Season 3 Official Trailer_1080p.mp4",
+            "Marvel's Agents of S.H.I.E.L.D. Season 6 Trailer_1080p.mp4",
+            "Marvel's Agents of S.H.I.E.L.D. Season 7 Trailer_1080p.mp4",
+            "SPIDER-MAN INTO THE SPIDER-VERSE - Official Trailer #2 (HD)_1080p.mp4",
+            "Dark Phoenix Official Trailer [HD] 20th Century FOX_1080p.mp4",
+            "SPIDER-MAN ACROSS THE SPIDER-VERSE - Official Trailer #2 (HD)_1080p.mp4",
+            "Marvel Studios' Echo Official Trailer Disney+ and Hulu_1080p.mp4",
+            "Official Trailer She-Hulk Attorney at Law Disney+_1080p.mp4",
+            "Marvel Studios’ Ms. Marvel Official Trailer Disney+_1080p.mp4",
+            "Marvel Studios’ Special Presentation Werewolf By Night Official Trailer Disney+_1080p.mp4",
+            "Marvel Studios’ Special Presentation The Guardians of the Galaxy Holiday Special Official Trailer_1080p.mp4",
+            "Marvel Studios' Thor Love and Thunder Official Teaser_1080p.mp4",
+            "Marvel Studios’ Loki Season 2 Official Trailer Disney+_1080p.mp4",
+            "Marvel Studios’ What If… Season 2 Official Trailer Disney+_1080p.mp4",
+            "MADAME WEB – Official Trailer (HD)_1080p.mp4",
+            "Marvel Studios’ Guardians of the Galaxy Vol. 3 Official Trailer_1080p.mp4",
+            "Marvel Studios’ Ant-Man and The Wasp Quantumania Official Trailer_1080p.mp4",
+            "Marvel Studios’ Secret Invasion Official Trailer Disney+_1080p.mp4",
+            "Marvel Studios’ The Marvels Teaser Trailer_1080p.mp4",
+            "Kraven the Hunter Official Trailer_1080p.mp4",
+            "VENOM THE LAST DANCE – Final Trailer (HD)_1080p.mp4",
+            "Deadpool Wolverine Official Trailer 1080p.mp4",
+            "Marvel Television’s Agatha All Along Official Trailer Disney+_1080p.mp4",
+            "Captain America Brave New World Official Trailer_1080p.mp4",
+            "Marvel Television's Daredevil Born Again Official Trailer Disney+_1080p.mp4",
+            "Marvel Studios’ Thunderbolts Final Trailer In Theaters May 2_1080p.mp4",
+            "The Fantastic Four First Steps Final Trailer Only in Theaters July 25_1080p.mp4",
+            "SPIDER-MAN FAR FROM HOME - Official Trailer_1080p.mp4",
+            "Marvel Studios’ Eternals Final Trailer_1080p.mp4",
+            "SPIDER-MAN NO WAY HOME - Official Trailer (HD)_1080p.mp4",
+            "MORBIUS - Official Trailer (HD)_1080p.mp4",
+            "Marvel Studios’ Hawkeye Official Trailer Disney+_1080p.mp4",
+            "Marvel Studios’ Moon Knight Official Trailer Disney+_1080p.mp4",
+            "Marvel Studios’ Black Panther Wakanda Forever Official Trailer_1080p.mp4",
+            "Marvel Studios' Doctor Strange in the Multiverse of Madness Official Trailer_1080p.mp4",
+            "WandaVision Official Trailer Disney+_1080p.mp4",
+            "Marvel Studios' What If... Official Trailer Disney+_1080p.mp4",
+            "Marvel Studios' Loki Official Trailer Disney+_1080p.mp4",
+            "The New Mutants Official Trailer 20th Century FOX_1080p.mp4",
+            "VENOM LET THERE BE CARNAGE - Official Trailer 2 (HD)_1080p.mp4",
+            "Official Trailer The Falcon and the Winter Soldier Disney+_1080p.mp4",
+            "Marvel Studios’ Shang-Chi and the Legend of the Ten Rings Official Trailer_1080p.mp4",
+            "Marvel Studios' Avengers Endgame - Official Trailer_1080p.mp4",
+            "Marvel Studios' Avengers Infinity War - Official Trailer_1080p.mp4",
+            "Marvel's Doctor Strange Teaser Trailer_1080p.mp4",
+            "Logan Official Trailer [HD] 20th Century FOX_1080p.mp4",
+            "Marvel’s Jessica Jones - Season 2 Trailer UK – Official Marvel HD_1080p.mp4",
+            "MARVEL'S LUKE CAGE Season 2 New Trailer (2018) Netflix_1080p.mp4",
+            "Marvel’s Iron Fist Season 2 Official Trailer [HD] Netflix_1080p.mp4",
+            "Marvel’s Daredevil Season 3 Official Trailer [HD] Netflix_1080p.mp4",
+            "Thor Ragnarok Teaser Trailer [HD]_1080p.mp4",
+            "Marvel’s The Punisher Season 2 Official Trailer [HD] Netflix_1080p.mp4",
+            "Marvel’s Jessica Jones Season 3 Trailer Netflix_1080p.mp4",
+            "Deadpool 2 The Trailer_1080p.mp4",
+            "VENOM - Official Trailer (HD)_1080p.mp4",
+            "Marvel Studios’ Ant-Man and The Wasp Quantumania New Trailer_1080p.mp4",
+            "Marvel Studios’ Black Widow New Trailer_1080p.mp4",
+            "Marvel Studios' Black Panther - Official Trailer_1080p.mp4",
+            "Spider-Man Homecoming - Trailer 3_1080p.mp4",
+            "Marvel's The Punisher Season 1 Trailer  (2017) 1080p.mp4",
+            "Captain America Civil War IMAX® Trailer_1080p.mp4",
+            "Marvel’s The Defenders Official Trailer Netflix [HD]_1080p.mp4",
+            "Marvel's Iron Fist Official Trailer [HD] Netflix_1080p.mp4",
+            "Deadpool Trailer [HD] 20th Century FOX_1080p.mp4",
+            "X-Men Apocalypse Final Trailer [HD] 20th Century FOX_1080p.mp4",
+            "Marvel's Luke Cage - Official trailer HD_1080p.mp4",
+            "X-Men (2000) Official Trailer_1080p.mp4",
+            "SPIDER-MAN 3 [2007] - Official Trailer (HD)_1080p.mp4",
+            "X-Men 2 (2003) Official Trailer_1080p.mp4",
+            "SPIDER-MAN [2002] – Official Trailer (HD)_1080p.mp4",
+            "Spider-man 2 (2004) - Trailer_1080p.mp4",
+            "X-Men The Last Stand (2006) Original Trailer [FHD]_1080p.mp4",
+            "X-Men Origins Wolverine (2009) Trailer.mp4",
+            "X-Men First Class - Official Trailer_1080p.mp4",
+            "THE AMAZING SPIDER-MAN - Official Trailer_1080p.mp4",
+            "The Wolverine International Trailer #2 HD 2013_1080p.mp4",
+            "X-MEN DAYS OF FUTURE PAST - Official Trailer (2014)_1080p.mp4",
+            "I Am Groot Official Trailer Disney+_1080p.mp4",
+            "The AMAZING SPIDER-MAN 2 - Official Trailer #2 (HD)_1080p.mp4",
+            "Marvel's Daredevil Official Trailer [HD] Netflix_1080p.mp4",
+            "Marvel's Jessica Jones Official Trailer [HD] Netflix_1080p.mp4",
+            "Marvel's Avengers Age of Ultron Trailer 2_1080p.mp4",
+            "Marvel Television’s Daredevil Born Again Season 2 Official Trailer_1080p.mp4",
+            "Marvel's Ant-Man - Trailer 1_1080p.mp4",
+            "15 Guardians of the Galaxy Vol. 2 - Trailer 3 (Official)_1080p.mp4",
+            "I Am Groot Season 2 Official Trailer Disney+_1080p.mp4",
+            "13 Marvel's Guardians of the Galaxy - Trailer 2 (OFFICIAL)_1080p.mp4",
+            "12 Marvel's Captain America The Winter Soldier - Trailer 1 (OFFICIAL)_1080p.mp4",
+            "12 Marvel's Captain America The Win...ier - Trailer 1 (OFFICIAL)_1080p.mp4",
+            "11 Thor The Dark World Official Trailer HD_1080p.mp4",
+            "10 Iron Man 3 -- Official Trailer UK Marvel HD_1080p.mp4",
+            "09 Exclusive Clip Loki (2021) Disney+_1080p.mp4",
+            "08 Marvel's The Avengers- Trailer (OFFICIAL)_1080p.mp4",
+            "08 The Avengers (2012) Movie Clip.mp4",
+            "07 Thor - Trailer (OFFICIAL)_1080p.mp4",
+            "06 THE INCREDIBLE HULK (2008) Official Trailer 1080p.mp4",
+            "05 Iron Man 2 (2010) Movie CLIP HD_1080p.mp4",
+            "04 Iron man (2008) movie trailer #1[ Marvel movies ]_1080p.mp4",
+            "03 Marvel Studios' Captain Marvel - Official Trailer_1080p.mp4",
+            "02 Agent Carter Season 1 - TRAILER ENGLISH TV SHOW 2015_1080p.mp4",
+            "01 Captain America The First Avenger 2011 Destroying Hydra's Bases.mp4"
+        ];
+
+        // =========================================================================
+        // 下方是系统底层渲染与交互核心代码，请勿修改
+        // =========================================================================
+
+        let audioCtx = null;
+        function initAudioContext() {
+            if(!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            } else if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+        
+        const SoundEngine = {
+            playTone: (freq, type, duration, vol) => {
+                if(!audioCtx) return;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            },
+            hover: () => SoundEngine.playTone(800, 'sine', 0.1, 0.02),
+            hoverBtn: (pitch) => SoundEngine.playTone(400 * pitch, 'sine', 0.1, 0.02), 
+            click: () => SoundEngine.playTone(400, 'square', 0.15, 0.05),
+            slider: () => SoundEngine.playTone(100, 'triangle', 0.05, 0.015), 
+            jump: () => SoundEngine.playTone(100, 'sine', 0.3, 0.03), 
+            cardClick: () => {
+                SoundEngine.playTone(300, 'square', 0.1, 0.03); 
+                setTimeout(() => SoundEngine.playTone(450, 'sine', 0.15, 0.02), 50);
+            },
+            glitch: () => {
+                SoundEngine.playTone(1200, 'sawtooth', 0.1, 0.05);
+                setTimeout(() => SoundEngine.playTone(600, 'square', 0.2, 0.05), 100);
+            },
+            snap: () => {
+                if(!audioCtx) return;
+                const duration = 6.0;
+                const bufferSize = audioCtx.sampleRate * duration; 
+                const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                const data = buffer.getChannelData(0);
+                let lastOut = 0;
+                for (let i = 0; i < bufferSize; i++) {
+                    let white = Math.random() * 2 - 1;
+                    data[i] = (lastOut + (0.02 * white)) / 1.02; 
+                    lastOut = data[i];
+                    data[i] *= 3.5; 
+                }
+                const noise = audioCtx.createBufferSource();
+                noise.buffer = buffer;
+                
+                const filter = audioCtx.createBiquadFilter();
+                filter.type = 'lowpass';
+                filter.frequency.setValueAtTime(100, audioCtx.currentTime); 
+                filter.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 2); 
+                filter.frequency.exponentialRampToValueAtTime(30, audioCtx.currentTime + duration);
+                
+                const gain = audioCtx.createGain();
+                gain.gain.setValueAtTime(0, audioCtx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.4, audioCtx.currentTime + 1);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+                
+                noise.connect(filter); filter.connect(gain); gain.connect(audioCtx.destination);
+                noise.start();
+            },
+            restore: (duration = 2.2) => {
+                if(!audioCtx) return;
+                // 目标：持续“风声底噪”，无爆破/无 click
+                const now = audioCtx.currentTime;
+                
+                const bufferSize = Math.floor(audioCtx.sampleRate * duration); 
+                const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                const data = buffer.getChannelData(0);
+                let lastOut = 0;
+                for (let i = 0; i < bufferSize; i++) {
+                    let white = Math.random() * 2 - 1;
+                    data[i] = (lastOut + (0.02 * white)) / 1.02; 
+                    lastOut = data[i];
+                    data[i] *= 3.5; 
+                }
+                const noise = audioCtx.createBufferSource();
+                noise.buffer = buffer;
+                
+                const filter = audioCtx.createBiquadFilter();
+                filter.type = 'lowpass';
+                filter.frequency.setValueAtTime(180, now);
+                filter.frequency.exponentialRampToValueAtTime(520, now + duration * 0.55);
+                filter.frequency.exponentialRampToValueAtTime(220, now + duration);
+
+                // 额外高通，切掉尾部低频冲击
+                const hp = audioCtx.createBiquadFilter();
+                hp.type = 'highpass';
+                hp.frequency.setValueAtTime(140, now);
+                
+                const gain = audioCtx.createGain();
+                gain.gain.setValueAtTime(0.0001, now);
+                // 先淡入成“风声”，再淡出到几乎无声；用 linear 避免 exponential 末尾 click
+                gain.gain.linearRampToValueAtTime(0.22, now + Math.min(0.25, duration * 0.18));
+                gain.gain.linearRampToValueAtTime(0.18, now + duration * 0.65);
+                gain.gain.linearRampToValueAtTime(0.0001, now + duration);
+                
+                noise.connect(filter); filter.connect(hp); hp.connect(gain); gain.connect(audioCtx.destination);
+                noise.start();
+                noise.stop(now + duration + 0.06);
+                
+                // 去掉低频正弦“轰鸣”，只保留更像风声的噪声层（避免末尾爆破）
+            },
+            systemBeep: () => {
+                // 轻量全局提示音：不抢占主线程
+                SoundEngine.playTone(880, 'triangle', 0.08, 0.06);
+                setTimeout(() => SoundEngine.playTone(1320, 'sine', 0.06, 0.04), 60);
+            },
+            typeTick: (() => {
+                // 打字 tick：更像“终端/电报码”，比方波更细腻
+                let lastAt = 0;
+                return () => {
+                    if(!audioCtx) return;
+                    const now = audioCtx.currentTime;
+                    if (now - lastAt < 0.012) return; // 轻微节流，避免过密
+                    lastAt = now;
+
+                    const dur = 0.012 + Math.random() * 0.01;
+                    const osc = audioCtx.createOscillator();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(1600 + Math.random() * 700, now);
+                    osc.frequency.exponentialRampToValueAtTime(900 + Math.random() * 250, now + dur);
+
+                    const hp = audioCtx.createBiquadFilter();
+                    hp.type = 'highpass';
+                    hp.frequency.setValueAtTime(700, now);
+
+                    const gain = audioCtx.createGain();
+                    gain.gain.setValueAtTime(0.0001, now);
+                    gain.gain.exponentialRampToValueAtTime(0.018, now + dur * 0.25);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, now + dur);
+
+                    osc.connect(hp); hp.connect(gain); gain.connect(audioCtx.destination);
+                    osc.start();
+                    osc.stop(now + dur);
+                };
+            })(),
+            glitchZap: (() => {
+                // 轻微电流声，且做节流避免“音频风暴”
+                let lastAt = 0;
+                return (ms) => {
+                    if(!audioCtx) return;
+                    const now = audioCtx.currentTime;
+                    if (now - lastAt < 0.035) return; // ~28Hz 上限
+                    lastAt = now;
+
+                    // Sci‑fi “确认/复现”提示音：柔和、不惊悚、音量更低；时长与卡片复现同步
+                    const targetMs = (typeof ms === 'number' && Number.isFinite(ms)) ? ms : 120;
+                    const dur = Math.max(0.06, Math.min(2.2, targetMs / 1000));
+                    const bufferSize = Math.floor(audioCtx.sampleRate * dur);
+                    const a = Math.min(0.03, dur * 0.18);
+                    const r = Math.min(0.06, dur * 0.22);
+
+                    // 低频“呲呲”电流底噪：更靠下、更持续一点，但音量很轻
+                    const sizzleBuf = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                    const sizzleData = sizzleBuf.getChannelData(0);
+                    let sLP = 0;
+                    for (let i = 0; i < bufferSize; i++) {
+                        const t = i / bufferSize;
+                        const white = (Math.random() * 2 - 1);
+                        // 更温和的低通，让“呲呲”不刺耳；再叠一个缓慢淡出
+                        sLP = sLP * 0.965 + white * 0.035;
+                        const env = Math.exp(-t * 1.35);
+                        sizzleData[i] = sLP * 0.22 * env;
+                    }
+                    const sizzleSrc = audioCtx.createBufferSource();
+                    sizzleSrc.buffer = sizzleBuf;
+                    const sizzleLP = audioCtx.createBiquadFilter();
+                    sizzleLP.type = 'lowpass';
+                    sizzleLP.frequency.setValueAtTime(520, now);
+                    sizzleLP.frequency.exponentialRampToValueAtTime(700, now + dur * 0.75);
+                    const sizzleGain = audioCtx.createGain();
+                    sizzleGain.gain.setValueAtTime(0.0001, now);
+                    sizzleGain.gain.exponentialRampToValueAtTime(0.003, now + a);
+                    sizzleGain.gain.setValueAtTime(0.0015, now + Math.max(a, dur - r));
+                    sizzleGain.gain.exponentialRampToValueAtTime(0.0001, now + dur);
+
+                    // “胜利/成功”感：柔和的上行和弦（无失真、少噪声），更像科幻 UI 确认音
+                    const base = 460 + Math.random() * 70;
+                    const o1 = audioCtx.createOscillator();
+                    const o2 = audioCtx.createOscillator();
+                    const o3 = audioCtx.createOscillator();
+                    o1.type = 'sine';
+                    o2.type = 'sine';
+                    o3.type = 'sine';
+
+                    // 大三和弦：1, 5/4, 3/2
+                    o1.frequency.setValueAtTime(base, now);
+                    o2.frequency.setValueAtTime(base * 1.25, now);
+                    o3.frequency.setValueAtTime(base * 1.5, now);
+                    // 小幅上行（确认/胜利感），然后稳定到结束
+                    const up = Math.min(0.14, dur * 0.18);
+                    o1.frequency.exponentialRampToValueAtTime(base * 1.08, now + up);
+                    o2.frequency.exponentialRampToValueAtTime(base * 1.25 * 1.08, now + up);
+                    o3.frequency.exponentialRampToValueAtTime(base * 1.5 * 1.08, now + up);
+
+                    const lowpass = audioCtx.createBiquadFilter();
+                    lowpass.type = 'lowpass';
+                    lowpass.frequency.setValueAtTime(2000, now);
+
+                    const og = audioCtx.createGain();
+                    og.gain.setValueAtTime(0.0001, now);
+                    // 总音量整体再降一档
+                    og.gain.exponentialRampToValueAtTime(0.014, now + a);
+                    og.gain.setValueAtTime(0.008, now + Math.max(a, dur - r));
+                    og.gain.exponentialRampToValueAtTime(0.0001, now + dur);
+
+                    sizzleSrc.connect(sizzleLP); sizzleLP.connect(sizzleGain); sizzleGain.connect(audioCtx.destination);
+                    o1.connect(lowpass);
+                    o2.connect(lowpass);
+                    o3.connect(lowpass);
+                    lowpass.connect(og); og.connect(audioCtx.destination);
+                    sizzleSrc.start();
+                    sizzleSrc.stop(now + dur);
+                    o1.start(); o2.start(); o3.start();
+                    o1.stop(now + dur); o2.stop(now + dur); o3.stop(now + dur);
+                };
+            })()
+        };
+
+        function playHoverSound() { if(audioCtx) SoundEngine.hover(); }
+        function playHoverBtnSound(index) { if(audioCtx) SoundEngine.hoverBtn(1 + index * 0.1); }
+        function playClickSound() { if(audioCtx) SoundEngine.click(); }
+
+        // 🔥 打字特效函数
+        const typeText = async (elementId, lines, colorClass) => {
+            const el = document.getElementById(elementId);
+            el.innerHTML = '';
+            el.className = `text-[10px] md:text-xs font-mono pointer-events-none transition-opacity duration-1000 ${colorClass}`;
+            el.style.opacity = '1';
+            el.style.display = 'block';
+
+            for (let i = 0; i < lines.length; i++) {
+                const lineEl = document.createElement('p');
+                lineEl.className = `mb-1.5`;
+                el.appendChild(lineEl);
+                
+                for (let j = 0; j < lines[i].length; j++) {
+                    lineEl.innerHTML += lines[i][j];
+                    if(audioCtx && audioCtx.state === 'running') {
+                        SoundEngine.typeTick();
+                    }
+                    await new Promise(r => setTimeout(r, 20 + Math.random() * 30));
+                }
+                await new Promise(r => setTimeout(r, 300));
+            }
+
+            setTimeout(() => {
+                el.style.opacity = '0';
+                setTimeout(() => { el.style.display = 'none'; }, 1000);
+            }, 4000);
+        }
+
+        function getMatchedVideoSrc(title, enTitle, searchAlias) {
+            const pureStr = (s) => s ? s.toLowerCase().replace(/[^a-z0-9\u4e00-\u9fa5]/g, '') : '';
+            const pureTitle = pureStr(title.replace(/[《》]/g, '')); 
+            const pureEn = pureStr(enTitle);
+            const pureAlias = pureStr(searchAlias);
+            const pureEnBase = pureStr((enTitle || '').replace(/Season \d+/i, '').replace(/Vol\.? \d+/i, '')); 
+            
+            let bestMatch = '';
+            let bestScore = -10000;
+
+            localVideoFiles.forEach(file => {
+                const pureFile = pureStr(file);
+                let score = -10000;
+
+                if (pureTitle && pureFile.includes(pureTitle)) score = 1000; 
+                else if (pureAlias && pureFile.includes(pureAlias)) score = 900; 
+                else if (pureEn && pureFile.includes(pureEn)) score = 800;
+                else if (pureEnBase && pureFile.includes(pureEnBase)) score = 600;
+                else if (pureEnBase && pureEnBase.startsWith('the')) {
+                     const noThe = pureEnBase.substring(3);
+                     if (noThe && pureFile.includes(noThe)) score = 400;
+                }
+
+                if (score > 0) {
+                    score -= pureFile.length; 
+                    const checkStr = pureAlias || pureEn || pureEnBase;
+                    if (checkStr && pureFile.includes(checkStr)) {
+                        const idx = pureFile.indexOf(checkStr) + checkStr.length;
+                        const followStr = pureFile.substring(idx, idx + 4);
+                        const nextChar = pureFile.charAt(idx);
+                        if (nextChar >= '2' && nextChar <= '9') {
+                            if (!/\d$/.test(checkStr) && !/^(19|20)\d{2}/.test(followStr)) {
+                                score -= 2000; 
+                            }
+                        }
+                    }
+                    if (score > bestScore) {
+                        bestScore = score;
+                        bestMatch = file;
+                    }
+                }
+            });
+
+            return bestScore > -1000 ? encodeURI(`video/${bestMatch}`).replace(/#/g, '%23').replace(/\?/g, '%3F') : '';
+        }
+
+        function getPhaseColor(phase) {
+            if(phase.includes('第一阶段')) return '59,130,246';
+            if(phase.includes('第二阶段')) return '239,68,68';
+            if(phase.includes('第三阶段')) return '168,85,247';
+            if(phase.includes('第四阶段')) return '16,185,129';
+            if(phase.includes('第五阶段')) return '249,115,22';
+            if(phase.includes('第六阶段')) return '234,179,8';
+            if(phase.includes('福克斯')) return '234,88,12'; 
+            if(phase.includes('索尼')) return '14,165,233'; 
+            if(phase.includes('新线')) return '168,85,247'; 
+            if(phase.includes('电视') || phase.includes('街头')) return '168,162,158'; 
+            if(phase.includes('环球')) return '34,197,94'; 
+            return '148,163,184';
+        }
+
+        const spreadX = window.innerWidth < 768 ? 120 : 350;
+        const spreadY = window.innerWidth < 768 ? 80 : 180;
+
+        function getTrackPos(t) {
+            return {
+                x: Math.sin(t * 0.5) * spreadX * 2.2 + Math.cos(t * 0.2) * spreadX * 1.5,
+                y: Math.cos(t * 0.45) * spreadY * 1.8 + Math.sin(t * 0.25) * spreadY * 1.2 - 150
+            };
+        }
+
+        const camera = document.getElementById('camera');
+        const slider = document.getElementById('timeline-slider');
+        const viewport = document.getElementById('viewport');
+        
+        let targetZ = 0, currentZ = 0, spacingZ = 900; 
+        let currentData = [...mcuData], N = currentData.length, loopSize = N * spacingZ;
+        let cardElements = [];
+        let snappedIndexSet = new Set();
+
+        let cameraRotX = 0, cameraRotY = 0, currentRotX = 0, currentRotY = 0;
+        let cameraPanX = 0, cameraPanY = 0, currentPanX = 0, currentPanY = 0;
+        let isSliderDragging = false, parallaxX = 0, parallaxY = 0;
+        let isDraggingBg = false, isDraggingCard = false, isPanning = false; 
+        let startX = 0, startY = 0;
+        let lastZ = 0, lastRotX = 0, lastRotY = 0, lastPanX = 0, lastPanY = 0;
+
+        function buildTimeline(data) {
+            camera.innerHTML = '';
+            cardElements = [];
+            currentData = data;
+            N = currentData.length;
+            loopSize = N * spacingZ;
+            
+            if (N === 0) {
+                camera.innerHTML = '<div class="absolute inset-0 flex items-center justify-center text-blue-400 z-50 text-sm md:text-xl font-mono tracking-widest animate-pulse drop-shadow-[0_0_10px_rgba(96,165,250,0.8)]">T.V.A. ALERT: 暂无匹配的宇宙档案记录...</div>';
+                return;
+            }
+
+            currentData.forEach((item, i) => {
+                const rgb = getPhaseColor(item.phase);
+                const vidSrc = getMatchedVideoSrc(item.title, item.enTitle, item.searchAlias);
+                
+                const el = document.createElement('div');
+                el.className = 'card-hitbox group pointer-events-auto'; 
+                el.style.setProperty('--card-rgb', rgb);
+                el.dataset.index = String(i);
+                
+                const mediaContent = vidSrc 
+                    ? `<video class="local-video absolute inset-0 w-full h-full z-10 pointer-events-none opacity-0 transition-opacity duration-1000 bg-black object-cover" data-src="${vidSrc}" loop muted playsinline></video>`
+                    : `<iframe class="video-iframe absolute inset-0 w-full h-full z-10 pointer-events-none opacity-0 transition-opacity duration-1000 bg-black" data-vid="${item.yt}" frameborder="0" allow="autoplay; encrypted-media"></iframe>`;
+
+                const loaderContent = `<div class="loader w-4 h-4 border-2 mb-2 border-t-slate-400"></div><span class="text-[9px] tracking-widest font-mono text-slate-400/80 uppercase">INITIALIZING MEDIA...</span>`;
+
+                el.innerHTML = `
+                    <div class="connection-line"></div>
+                    <div class="glow-core"></div>
+                    <div class="timeline-card shadow-2xl flex flex-col p-5 gap-3">
+                        <div class="flex justify-between items-start shrink-0 z-10">
+                            <span class="text-xs font-mono font-bold tracking-widest text-white border-b border-white/20 pb-1 drop-shadow-md">T+ ${item.time}</span>
+                            <span class="text-[10px] text-[rgb(${rgb})] font-mono font-bold border border-[rgba(${rgb},0.5)] px-1.5 py-0.5 rounded bg-black/50 shadow-sm">${item.phase}</span>
+                        </div>
+                        <h3 class="text-xl font-black text-white leading-tight flex flex-col shrink-0 z-10 mt-1">
+                            <span class="text-[10px] text-slate-400 font-normal mb-1 uppercase tracking-wider flex items-center gap-1.5">Release: ${item.year} ${item.type}</span>
+                            <span class="drop-shadow-[0_0_8px_rgba(${rgb},0.8)]">${item.title}</span>
+                            <span class="self-start text-[13px] text-slate-200 font-mono mt-1.5 uppercase tracking-widest font-bold bg-white/10 px-2 py-0.5 rounded shadow-sm border border-white/10 flex items-center gap-2">
+                                ${item.enTitle}
+                                <span class="text-[8px] bg-black/50 text-[rgb(${rgb})] px-1.5 py-0.5 rounded border border-[rgba(${rgb},0.3)] whitespace-nowrap">${item.studio}</span>
+                            </span>
+                        </h3>
+                        <div class="flex-1 overflow-y-auto desc-scroll pr-2 flex flex-col gap-2 z-10 mask-image: linear-gradient(to bottom, black 80%, transparent 100%);">
+                            <p class="text-[12px] text-slate-200 leading-relaxed font-medium mb-1 mt-1">${item.desc}</p>
+                            <div class="bg-black/40 rounded p-2 border border-white/5">
+                                <span class="text-[10px] text-[rgb(${rgb})] block mb-0.5 font-bold">👥 核心观测目标</span>
+                                <span class="text-[11px] text-slate-300 font-mono">${item.chars}</span>
+                            </div>
+                            <div class="bg-black/40 rounded p-2 border border-white/5">
+                                <span class="text-[10px] text-orange-400 block mb-0.5 font-bold">💥 宇宙级影响</span>
+                                <span class="text-[11px] text-slate-300 font-mono">${item.impact}</span>
+                            </div>
+                        </div>
+                        <div class="w-full h-[150px] rounded-lg border border-white/10 bg-black/80 overflow-hidden relative shrink-0 shadow-inner group/vid mb-2 z-10">
+                            <div class="absolute inset-0 flex flex-col items-center justify-center text-slate-500/50">${loaderContent}</div>
+                            ${mediaContent}
+                            <a href="https://www.youtube.com/watch?v=${item.yt}&t=8s" target="_blank" onmousedown="event.stopPropagation()" title="Watch HQ Trailer on YouTube" class="absolute bottom-2 right-2 z-20 bg-red-600/90 hover:bg-red-500 rounded flex items-center justify-center shadow-[0_0_15px_rgba(220,38,38,0.6)] transition-all hover:scale-110 px-2 py-1.5 pointer-events-auto opacity-0 group-hover/vid:opacity-100">
+                                <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+                            </a>
+                        </div>
+                        <button onmousedown="event.stopPropagation()" onclick="window.openWhatIfModal('${item.title}')" onmouseenter="playHoverSound()" class="shrink-0 relative z-10 w-full py-2 bg-[rgba(${rgb},0.2)] hover:bg-[rgba(${rgb},0.5)] text-white text-[12px] rounded transition-all flex items-center justify-center font-bold border border-[rgba(${rgb},0.6)] tracking-widest group/btn overflow-hidden pointer-events-auto shadow-lg">
+                            <div class="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover/btn:translate-x-[100%] transition-transform duration-700 ease-in-out"></div>
+                            <span class="relative z-10 drop-shadow-md">WHAT IF...?</span>
+                        </button>
+                    </div>
+                `;
+                camera.appendChild(el);
+                cardElements.push(el);
+
+                // 如果当前处于“毁灭协议”状态，则按数据索引初始化消失态（保证后续出现的卡片也保持减半）
+                const cardEl = el.querySelector('.timeline-card');
+                if (cardEl) {
+                    if (typeof isSnapped !== 'undefined' && isSnapped && snappedIndexSet.has(i)) {
+                        cardEl.classList.add('dust-away');
+                        cardEl.style.visibility = 'hidden';
+                    } else {
+                        cardEl.style.visibility = 'visible';
+                    }
+                }
+            });
+        }
+
+        // 🛡️ 启动屏逻辑
+        const startupScreen = document.getElementById('startup-screen');
+        if(startupScreen) {
+            startupScreen.addEventListener('click', () => {
+                initAudioContext();
+                SoundEngine.playTone(600, 'sine', 0.1, 0.05);
+                setTimeout(() => SoundEngine.playTone(800, 'sine', 0.2, 0.05), 100);
+                
+                startupScreen.style.opacity = '0';
+                setTimeout(() => {
+                    startupScreen.style.display = 'none';
+                    const btn = document.getElementById('auto-play-btn');
+                    if(btn && typeof isAutoAdvance !== 'undefined' && !isAutoAdvance) btn.click();
+                }, 1000);
+            });
+        }
+
+        setTimeout(() => {
+            if (mcuData && mcuData.length > 0) {
+                buildTimeline(currentData);
+                let startIndex = currentData.findIndex(item => item.title.includes("钢铁侠") && item.year === "2008" && item.type === "🎬");
+                if (startIndex !== -1) {
+                    targetZ = startIndex * spacingZ;
+                    currentZ = targetZ; 
+                    if (loopSize > 0) slider.value = ((currentZ % loopSize) / loopSize) * 100;
+                }
+            }
+        }, 50);
+
+        // 🫧 卡片灰飞烟灭粒子特效（Canvas 版：丝滑、不卡顿）
+        const DustEngine = (() => {
+            let canvas, ctx, dpr = 1;
+            let rafId = 0;
+            let lastT = 0;
+            const particles = [];
+            const MAX_PARTICLES = 5500;
+
+            const ensure = () => {
+                if (canvas && ctx) return;
+                canvas = document.getElementById('dust-canvas');
+                if (!canvas) {
+                    canvas = document.createElement('canvas');
+                    canvas.id = 'dust-canvas';
+                    document.body.appendChild(canvas);
+                }
+                ctx = canvas.getContext('2d', { alpha: true, desynchronized: true });
+                resize();
+                window.addEventListener('resize', resize, { passive: true });
+            };
+
+            const resize = () => {
+                if (!canvas) return;
+                dpr = Math.min(2, window.devicePixelRatio || 1);
+                canvas.width = Math.floor(window.innerWidth * dpr);
+                canvas.height = Math.floor(window.innerHeight * dpr);
+                canvas.style.width = '100%';
+                canvas.style.height = '100%';
+                if (ctx) ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            };
+
+            const rgbStr = (cardEl) => {
+                const s = getComputedStyle(cardEl);
+                const rgb = s.getPropertyValue('--card-rgb')?.trim();
+                return rgb && rgb.includes(',') ? rgb : '203,213,225';
+            };
+
+            const clamp01 = (x) => Math.max(0, Math.min(1, x));
+            const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+            const easeInOutCubic = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+
+            const tick = (t) => {
+                rafId = requestAnimationFrame(tick);
+                if (!lastT) lastT = t;
+                const dt = Math.min(0.033, (t - lastT) / 1000);
+                lastT = t;
+
+                // 透明清屏：避免 Canvas 盖住页面造成“黑屏”
+                ctx.globalCompositeOperation = 'source-over';
+                ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+                ctx.globalCompositeOperation = 'lighter';
+
+                for (let i = particles.length - 1; i >= 0; i--) {
+                    const p = particles[i];
+                    p.age += dt;
+                    const k = clamp01(p.age / p.ttl);
+                    const e = p.mode === 'out' ? easeOutCubic(k) : easeInOutCubic(k);
+
+                    const x = p.x0 + (p.x1 - p.x0) * e;
+                    const y = p.y0 + (p.y1 - p.y0) * e;
+                    const z = p.z0 + (p.z1 - p.z0) * e;
+                    const scale = 1 + z * 0.0012;
+
+                    // in 模式：让回流从一开始就“看得见”，更像粒子聚合成卡片
+                    const alpha = p.mode === 'out' ? (1 - k) : Math.min(1, k * 1.6);
+                    if (alpha <= 0.001) { particles.splice(i, 1); continue; }
+
+                    ctx.fillStyle = `rgba(${p.rgb}, ${alpha * p.a})`;
+                    const r = p.r * scale;
+                    ctx.beginPath();
+                    ctx.arc(x, y, r, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                if (particles.length === 0) stop();
+            };
+
+            const start = () => {
+                ensure();
+                if (!rafId) {
+                    lastT = 0;
+                    // 首帧先清一下，避免残影
+                    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+                    ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+                    rafId = requestAnimationFrame(tick);
+                }
+            };
+
+            const stop = () => {
+                if (rafId) cancelAnimationFrame(rafId);
+                rafId = 0;
+                lastT = 0;
+                if (ctx) {
+                    ctx.globalCompositeOperation = 'source-over';
+                    ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+                }
+            };
+
+            const spawnForRect = (rect, rgb, mode) => {
+                ensure();
+                // 无效/不可见 rect 会导致粒子跑到 (0,0)（左上角异常特效的根因）
+                if (!rect || rect.width < 40 || rect.height < 40) return;
+                const cx = rect.left + rect.width / 2;
+                const cy = rect.top + rect.height / 2;
+                if (!Number.isFinite(cx) || !Number.isFinite(cy)) return;
+                const pad = 120;
+                if (cx < -pad || cx > window.innerWidth + pad || cy < -pad || cy > window.innerHeight + pad) return;
+
+                start();
+
+                // 控制总粒子量，避免“瞬间爆表”
+                const budget = Math.max(0, MAX_PARTICLES - particles.length);
+                if (budget <= 0) return;
+
+                const area = rect.width * rect.height;
+                const desired = Math.max(70, Math.min(160, Math.floor(area / 1700)));
+                const count = Math.min(desired, budget);
+
+                const spreadX = rect.width * 0.55;
+                const spreadY = rect.height * 0.55;
+
+                for (let i = 0; i < count; i++) {
+                    const rx = (Math.random() * 2 - 1) * spreadX;
+                    const ry = (Math.random() * 2 - 1) * spreadY;
+                    const x0 = cx + rx;
+                    const y0 = cy + ry;
+
+                    const dx = (Math.random() * 2 - 1) * (180 + Math.random() * 360);
+                    const dy = (Math.random() * 2 - 1) * (120 + Math.random() * 300);
+                    const dz = (140 + Math.random() * 900) * (Math.random() < 0.62 ? 1 : -0.35);
+
+                    const x1 = mode === 'out' ? x0 + dx : x0;
+                    const y1 = mode === 'out' ? y0 + dy : y0;
+
+                    // 回流：从散开位置回到目标点
+                    const sx = cx + dx;
+                    const sy = cy + dy;
+
+                    particles.push({
+                        mode,
+                        rgb,
+                        a: 0.28 + Math.random() * 0.55,
+                        r: 1.6 + Math.random() * 2.8,
+                        age: 0,
+                        ttl: (mode === 'out' ? 1.6 : 1.4) + Math.random() * 0.9,
+                        x0: mode === 'out' ? x0 : sx,
+                        y0: mode === 'out' ? y0 : sy,
+                        z0: mode === 'out' ? 0 : dz,
+                        x1: mode === 'out' ? x1 : x0,
+                        y1: mode === 'out' ? y1 : y0,
+                        z1: mode === 'out' ? dz : 0
+                    });
+                }
+            };
+
+            return {
+                spawnForCard(cardEl, mode) {
+                    const rect = cardEl.getBoundingClientRect();
+                    const rgb = rgbStr(cardEl);
+                    spawnForRect(rect, rgb, mode);
+                }
+            };
+        })();
+
+        const disintegrateCard = (cardEl) => {
+            // 只负责“画粒子 + 隐藏卡片本体”，不卡 UI
+            DustEngine.spawnForCard(cardEl, 'out');
+            cardEl.classList.remove('dust-back');
+            cardEl.classList.add('dust-away');
+            // 快速隐藏，减少后续绘制与命中开销
+            setTimeout(() => { cardEl.style.visibility = 'hidden'; }, 220);
+        };
+
+        const reintegrateCard = (cardEl) => {
+            cardEl.style.visibility = 'visible';
+            cardEl.classList.remove('dust-away');
+            cardEl.classList.add('dust-back');
+            // 采用 glitch 闪现恢复：更清晰、更丝滑
+            const durMs = 500 + Math.floor(Math.random() * 1500); // 500–2000ms
+            if (audioCtx && audioCtx.state === 'running') SoundEngine.glitchZap(durMs);
+            cardEl.style.setProperty('--restore-dur', `${durMs}ms`);
+            cardEl.classList.add('restore-glitch');
+            setTimeout(() => { cardEl.classList.remove('restore-glitch'); }, durMs + 40);
+            setTimeout(() => { cardEl.classList.remove('dust-back'); }, durMs + 80);
+        };
+
+        // 🔥 毁灭与复苏协议 (已加入打字特效，无冗余代码)
+        let snapCount = 0;
+        let restoreCount = 0;
+        let isSnapped = false;
+
+        const shuffleInPlace = (arr) => {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        };
+
+        const createSnappedIndexSet = (len, takeCount, maxRun = 3) => {
+            // 目标：仍然“随机减半”，但避免出现太长的连续消失/不消失段（视觉上更均匀）
+            if (len <= 0 || takeCount <= 0) return new Set();
+            takeCount = Math.min(takeCount, len);
+
+            // 初始随机：洗牌取前 takeCount
+            const idx = Array.from({ length: len }, (_, i) => i);
+            shuffleInPlace(idx);
+            const mask = new Array(len).fill(false);
+            for (let i = 0; i < takeCount; i++) mask[idx[i]] = true;
+
+            const runInfoAt = (start) => {
+                const val = mask[start];
+                let i = start;
+                while (i > 0 && mask[i - 1] === val) i--;
+                let j = start;
+                while (j < len - 1 && mask[j + 1] === val) j++;
+                return { val, from: i, to: j, size: j - i + 1 };
+            };
+
+            // 通过有限次 swap 打散长段（环形时间轴：同时考虑首尾）
+            const tryImprove = (passes = 8, triesPerPass = 1200) => {
+                for (let pass = 0; pass < passes; pass++) {
+                    let improved = false;
+                    for (let t = 0; t < triesPerPass; t++) {
+                        const a = Math.floor(Math.random() * len);
+                        const ra = runInfoAt(a);
+                        if (ra.size <= maxRun) continue;
+
+                        // 选择一个尽量处在“短段”里的相反值位置交换
+                        let b = Math.floor(Math.random() * len);
+                        if (mask[b] === mask[a]) continue;
+                        const rb = runInfoAt(b);
+                        if (rb.size >= maxRun) continue;
+
+                        // 执行交换并检查是否至少削弱了长段
+                        const oldA = ra.size;
+                        const oldB = rb.size;
+                        mask[a] = !mask[a];
+                        mask[b] = !mask[b];
+                        const newA = runInfoAt(a).size;
+                        const newB = runInfoAt(b).size;
+                        if (newA <= oldA && newB <= oldB) {
+                            improved = true;
+                            continue;
+                        }
+                        // 回滚
+                        mask[a] = !mask[a];
+                        mask[b] = !mask[b];
+                    }
+                    if (!improved) break;
+                }
+
+                // 处理首尾环形长段：如果首尾同值且总长度过长，强行翻转一些边界点
+                if (len > 1 && mask[0] === mask[len - 1]) {
+                    let head = 0;
+                    while (head < len && mask[head] === mask[0]) head++;
+                    let tail = len - 1;
+                    while (tail >= 0 && mask[tail] === mask[0]) tail--;
+                    const ringRun = head + (len - 1 - tail);
+                    if (ringRun > maxRun) {
+                        // 翻转靠近头/尾的点（再补偿一次保持 takeCount）
+                        const flipCount = Math.min(2, Math.floor((ringRun - maxRun + 1) / 2));
+                        for (let k = 0; k < flipCount; k++) {
+                            const pos = k % 2 === 0 ? k : (len - 1 - k);
+                            mask[pos] = !mask[pos];
+                        }
+                        // 纠正数量
+                        let cur = 0;
+                        for (let i = 0; i < len; i++) if (mask[i]) cur++;
+                        while (cur > takeCount) {
+                            const p = Math.floor(Math.random() * len);
+                            if (mask[p]) { mask[p] = false; cur--; }
+                        }
+                        while (cur < takeCount) {
+                            const p = Math.floor(Math.random() * len);
+                            if (!mask[p]) { mask[p] = true; cur++; }
+                        }
+                    }
+                }
+            };
+
+            tryImprove();
+
+            const set = new Set();
+            for (let i = 0; i < len; i++) if (mask[i]) set.add(i);
+            return set;
+        };
+
+        const getVisibleIndexWindow = () => {
+            // 只对镜头附近播粒子，远处只做状态切换（保证丝滑）
+            if (N <= 0 || loopSize <= 0) return { from: 0, to: -1 };
+            const normalizedZ = ((currentZ % loopSize) + loopSize) % loopSize;
+            const center = Math.round(normalizedZ / spacingZ);
+            const radius = 7; // 可见范围半径（越大特效越“全场”，但更吃性能）
+            return { center, radius };
+        };
+
+        const ringDistance = (a, b) => {
+            if (N <= 0) return Infinity;
+            let d = Math.abs(a - b);
+            return Math.min(d, N - d);
+        };
+
+        const isIndexInWindow = (idx, center, radius) => {
+            if (N <= 0) return false;
+            // 环形距离
+            return ringDistance(idx, center) <= radius;
+        };
+
+        const getFrontmostVisibleCardIndex = () => {
+            // 目标：保证镜头前“第一张卡”必然参与毁灭/复现，避免效果发生在视野之外
+            const { center, radius } = getVisibleIndexWindow();
+            if (!Number.isFinite(center) || !Number.isFinite(radius)) return null;
+
+            let bestIdx = null;
+            let bestD = Infinity;
+            for (const hitbox of cardElements) {
+                const idx = Number(hitbox.dataset.index);
+                if (Number.isNaN(idx)) continue;
+                const cardEl = hitbox.querySelector('.timeline-card');
+                if (!cardEl) continue;
+                const d = ringDistance(idx, center);
+                if (d <= radius && d < bestD) {
+                    bestD = d;
+                    bestIdx = idx;
+                    if (d === 0) break;
+                }
+            }
+            return bestIdx;
+        };
+
+        const ensureIndexInSetWithSameSize = (set, requiredIdx, preferCenter = requiredIdx) => {
+            if (!(set instanceof Set) || requiredIdx == null) return set;
+            if (set.has(requiredIdx)) return set;
+            // 保持数量不变：加入 requiredIdx，同时移除一个“最不影响观感”的 idx（尽量远离镜头中心）
+            let drop = null;
+            let bestScore = -Infinity;
+            for (const idx of set) {
+                if (idx === requiredIdx) continue;
+                const score = ringDistance(idx, preferCenter); // 越远越适合被移除
+                if (score > bestScore) {
+                    bestScore = score;
+                    drop = idx;
+                }
+            }
+            if (drop != null) set.delete(drop);
+            set.add(requiredIdx);
+            return set;
+        };
+
+        const applySnapStateToAllCards = (animate) => {
+            const { center, radius } = getVisibleIndexWindow();
+            // 分帧处理：避免一次性同步循环导致卡顿
+            const batch = 10;
+            let i = 0;
+
+            const step = () => {
+                const end = Math.min(cardElements.length, i + batch);
+                for (; i < end; i++) {
+                    const hitbox = cardElements[i];
+                    const idx = Number(hitbox.dataset.index);
+                    const cardEl = hitbox.querySelector('.timeline-card');
+                    if (!cardEl || Number.isNaN(idx)) continue;
+
+                    const shouldDust = snappedIndexSet.has(idx);
+
+                    if (shouldDust) {
+                        if (animate && isIndexInWindow(idx, center, radius)) {
+                            disintegrateCard(cardEl);
+                        } else {
+                            cardEl.classList.add('dust-away');
+                            cardEl.style.visibility = 'hidden';
+                        }
+                    } else {
+                        cardEl.classList.remove('dust-away');
+                        cardEl.style.visibility = 'visible';
+                    }
+                }
+
+                if (i < cardElements.length) requestAnimationFrame(step);
+            };
+
+            step();
+        };
+        
+        document.getElementById('avengers-logo')?.addEventListener('click', () => {
+            if(isSnapped) return; 
+            initAudioContext();
+            snapCount++;
+            if(snapCount >= 3) {
+                snapCount = 0;
+                SoundEngine.snap(); 
+                document.getElementById('infinity-stones').classList.replace('opacity-0', 'opacity-100');
+
+                // 数据层随机减半：保证后续逐渐呈现的卡片也会保持“已消失”
+                snappedIndexSet = createSnappedIndexSet(N, Math.floor(N / 2), 3);
+                // 强制保证镜头前第一张卡参与毁灭/复现（提升观感与可感知度）
+                const frontIdx = getFrontmostVisibleCardIndex();
+                if (frontIdx != null) ensureIndexInSetWithSameSize(snappedIndexSet, frontIdx, frontIdx);
+                isSnapped = true;
+                applySnapStateToAllCards(true);
+
+                // 启动极客打字特效
+                typeText('avengers-text', [
+                    "> 建立与TVA总局加密通讯...",
+                    "> 警告：检测到宇宙级能量异常",
+                    "> 毁灭协议已执行，50%档案被清除..."
+                ], "text-red-400 text-left drop-shadow-[0_0_8px_rgba(248,113,113,0.8)]");
+            }
+        });
+
+        document.getElementById('shield-logo')?.addEventListener('click', () => {
+            if(!isSnapped) return; 
+            initAudioContext();
+            restoreCount++;
+            if(restoreCount >= 3) {
+                restoreCount = 0;
+                document.getElementById('infinity-stones').classList.replace('opacity-100', 'opacity-0');
+
+                // 全局 beep + 恢复底噪：立刻开始，确保与恢复过程同步
+                SoundEngine.systemBeep();
+                // 恢复底噪要覆盖“最后一张开始复现 + 其 glitch 时长”，否则会出现声音停了但卡片还在复现
+                const totalMs = 500 + Math.floor(Math.random() * 1500); // 0.5–2s
+                const tailMs = 2200; // reintegrateCard 的 --restore-dur 最多 2000ms，再留一点缓冲
+                SoundEngine.restore(Math.max(1.0, (totalMs + tailMs) / 1000));
+
+                // 全量复苏：顺序、每张时长、触发时刻都随机；整体控制在 1–3 秒
+                const restoreSet = new Set(snappedIndexSet);
+                const { center, radius } = getVisibleIndexWindow();
+                const plan = [];
+                for (const hitbox of cardElements) {
+                    const idx = Number(hitbox.dataset.index);
+                    const cardEl = hitbox.querySelector('.timeline-card');
+                    if (!cardEl || Number.isNaN(idx)) continue;
+                    if (!restoreSet.has(idx)) continue;
+                    plan.push({ idx, cardEl, visible: isIndexInWindow(idx, center, radius) });
+                }
+
+                shuffleInPlace(plan);
+                const m = plan.length;
+                const slot = m > 0 ? totalMs / m : totalMs;
+
+                // 同一条随机时间轴：可见窗口播 glitch；不可见窗口只做“解除隐藏”（省性能但节奏一致）
+                for (let i = 0; i < m; i++) {
+                    const base = i * slot;
+                    const jitter = (Math.random() - 0.5) * slot * 0.8;
+                    const delay = Math.max(0, Math.min(totalMs, Math.floor(base + jitter)));
+                    const { cardEl, visible } = plan[i];
+
+                    setTimeout(() => {
+                        if (visible) {
+                            reintegrateCard(cardEl);
+                        } else {
+                            cardEl.classList.remove('dust-away');
+                            cardEl.style.visibility = 'visible';
+                        }
+                    }, delay);
+                }
+
+                // 在恢复过程结束后收尾状态（留 buffer 给最后的 glitch 动画）
+                setTimeout(() => {
+                    snappedIndexSet = new Set();
+                    isSnapped = false;
+                }, totalMs + 1800);
+
+                // 启动极客打字特效
+                typeText('shield-text', [
+                    "> 重新连接TVA总局...",
+                    "> 侦测到强关联时间线重组",
+                    "> 复苏协议完成，英雄已归来。"
+                ], "text-blue-400 text-right drop-shadow-[0_0_8px_rgba(96,165,250,0.8)]");
+            }
+        });
+
+        window.filterTimeline = function(category, btnElement) {
+            playClickSound();
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                if (btn.dataset.cat === category) {
+                    btn.classList.remove('bg-black/50', 'text-slate-300', 'border-white/20');
+                    btn.classList.add('bg-blue-600/60', 'text-white', 'border-blue-400');
+                } else {
+                    btn.classList.remove('bg-blue-600/60', 'text-white', 'border-blue-400');
+                    btn.classList.add('bg-black/50', 'text-slate-300', 'border-white/20');
+                }
+            });
+            document.querySelectorAll('.filter-btn-mob').forEach(btn => {
+                if (btn.dataset.cat === category) {
+                    btn.classList.remove('text-slate-300', 'hover:bg-white/10');
+                    btn.classList.add('bg-blue-600/60', 'text-white');
+                } else {
+                    btn.classList.remove('bg-blue-600/60', 'text-white');
+                    btn.classList.add('text-slate-300', 'hover:bg-white/10');
+                }
+            });
+            const mobMenu = document.getElementById('mobile-filter-menu');
+            if(mobMenu) mobMenu.classList.add('hidden');
+
+            let newData = [];
+            if (category === 'ALL') newData = [...mcuData];
+            else if (category === 'MCU_MAIN') newData = mcuData.filter(d => d.phase.includes('阶段'));
+            else if (category === 'MCU_MOVIES') newData = mcuData.filter(d => d.type === '🎬' && d.phase.includes('阶段'));
+            else if (category === 'MCU_SHOWS') newData = mcuData.filter(d => (d.type === '📺' || d.type === '🌟') && d.phase.includes('阶段'));
+            else if (category === 'MARVEL_TV') newData = mcuData.filter(d => d.phase.includes('电视') || d.phase.includes('街头'));
+            else if (category === 'MULTIVERSE') newData = mcuData.filter(d => d.phase.includes('多元'));
+
+            targetZ = 0; currentZ = 0;
+            buildTimeline(newData);
+            let filterStartIndex = newData.findIndex(item => item.title.includes("钢铁侠") && item.year === "2008" && item.type === "🎬");
+            if (filterStartIndex !== -1) {
+                targetZ = filterStartIndex * spacingZ;
+                currentZ = targetZ;
+            }
+            if (isAutoAdvance) playBtn.click(); 
+            if (loopSize > 0) slider.value = ((currentZ % loopSize) / loopSize) * 100;
+        }
+
+        // 🌌 宇宙图例面板（右上角按钮）
+        window.toggleLegend = function(forceOpen) {
+            const legend = document.getElementById('phase-legend');
+            const icon = document.getElementById('legend-icon');
+            if (!legend) return;
+
+            const isOpen = !legend.classList.contains('pointer-events-none');
+            const nextOpen = typeof forceOpen === 'boolean' ? forceOpen : !isOpen;
+
+            legend.classList.toggle('scale-0', !nextOpen);
+            legend.classList.toggle('opacity-0', !nextOpen);
+            legend.classList.toggle('pointer-events-none', !nextOpen);
+            if (icon) icon.style.transform = nextOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+        };
+
+        if (!window.__legendCloseHandlersBound) {
+            window.__legendCloseHandlersBound = true;
+
+            document.addEventListener('click', (e) => {
+                const legend = document.getElementById('phase-legend');
+                if (!legend || legend.classList.contains('pointer-events-none')) return;
+
+                const target = e.target;
+                if (!(target instanceof Element)) return;
+                if (target.closest('#phase-legend')) return;
+                if (target.closest('button[onclick*="toggleLegend"]')) return;
+
+                window.toggleLegend(false);
+            }, true);
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key !== 'Escape') return;
+                const legend = document.getElementById('phase-legend');
+                if (!legend || legend.classList.contains('pointer-events-none')) return;
+                window.toggleLegend(false);
+            });
+        }
+
+        const searchInput = document.getElementById('search-input');
+        const searchDropdown = document.getElementById('search-dropdown');
+
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase().trim();
+            if (!query) { searchDropdown.classList.add('hidden'); return; }
+            
+            const heroDictionary = {
+                '黑豹': ['复仇者联盟3', '复仇者联盟4', '美国队长3', '特查拉', '瓦坎达'],
+                'black panther': ['复仇者联盟3', '复仇者联盟4', '美国队长3', '特查拉', '瓦坎达', '黑豹'],
+                '蜘蛛侠': ['复仇者联盟3', '复仇者联盟4', '美国队长3', '彼得', '迈尔斯', '格温'],
+                'spider': ['复仇者联盟3', '复仇者联盟4', '美国队长3', '彼得', '迈尔斯', '格温', '蜘蛛侠'],
+                '黑寡妇': ['复仇者联盟1', '复仇者联盟2', '复仇者联盟3', '复仇者联盟4', '美国队长2', '美国队长3', '娜塔莎', '叶莲娜'], 
+                'black widow': ['复仇者联盟1', '复仇者联盟2', '复仇者联盟3', '复仇者联盟4', '美国队长2', '美国队长3', '娜塔莎', '叶莲娜', '黑寡妇'], 
+                '鹰眼': ['复仇者联盟1', '复仇者联盟2', '复仇者联盟3', '复仇者联盟4', '美国队长3', '雷神1', '克林特', '凯特'],
+                'hawkeye': ['复仇者联盟1', '复仇者联盟2', '复仇者联盟3', '复仇者联盟4', '美国队长3', '雷神1', '克林特', '凯特', '鹰眼'],
+                '钢铁侠': ['复仇者联盟1', '复仇者联盟2', '复仇者联盟3', '复仇者联盟4', '美国队长3', '蜘蛛侠：英雄归来', '托尼', '斯塔克'],
+                'iron man': ['复仇者联盟1', '复仇者联盟2', '复仇者联盟3', '复仇者联盟4', '美国队长3', '蜘蛛侠：英雄归来', '托尼', '斯塔克', '钢铁侠'],
+                '美国队长': ['复仇者联盟1', '复仇者联盟2', '复仇者联盟3', '复仇者联盟4', '史蒂夫', '山姆'],
+                'captain america': ['复仇者联盟1', '复仇者联盟2', '复仇者联盟3', '复仇者联盟4', '史蒂夫', '山姆', '美国队长'],
+                '美队': ['复仇者联盟1', '复仇者联盟2', '复仇者联盟3', '复仇者联盟4', '美国队长', '史蒂夫', 'captain america'],
+                '雷神': ['复仇者联盟1', '复仇者联盟2', '复仇者联盟3', '复仇者联盟4', '索尔'],
+                'thor': ['复仇者联盟1', '复仇者联盟2', '复仇者联盟3', '复仇者联盟4', '索尔', '雷神'],
+                '浩克': ['复仇者联盟1', '复仇者联盟2', '复仇者联盟3', '复仇者联盟4', '雷神3', '班纳'],
+                '绿巨人': ['复仇者联盟1', '雷神3', '浩克', '班纳'],
+                'hulk': ['复仇者联盟1', '复仇者联盟2', '复仇者联盟3', '复仇者联盟4', '雷神3', '班纳', '浩克', '绿巨人'],
+                '奇异博士': ['复仇者联盟3', '复仇者联盟4', '蜘蛛侠：英雄无归', '雷神3', '斯特兰奇'],
+                'doctor strange': ['复仇者联盟3', '复仇者联盟4', '蜘蛛侠：英雄无归', '雷神3', '斯特兰奇', '奇异博士'],
+                '冬兵': ['美国队长', '复仇者联盟3', '复仇者联盟4', '黑豹', '巴基', '白狼'],
+                'winter soldier': ['美国队长', '复仇者联盟3', '复仇者联盟4', '黑豹', '巴基', '白狼', '冬兵'],
+                '绯红女巫': ['复仇者联盟2', '复仇者联盟3', '复仇者联盟4', '美国队长3', '奇异博士2', '旺达'],
+                'scarlet witch': ['复仇者联盟2', '复仇者联盟3', '复仇者联盟4', '美国队长3', '奇异博士2', '旺达', '绯红女巫'],
+                '旺达': ['复仇者联盟2', '复仇者联盟3', '复仇者联盟4', '美国队长3', '奇异博士2', '绯红女巫'],
+                'wanda': ['复仇者联盟2', '复仇者联盟3', '复仇者联盟4', '美国队长3', '奇异博士2', '绯红女巫', '旺达'],
+                '幻视': ['复仇者联盟2', '复仇者联盟3', '美国队长3'],
+                'vision': ['复仇者联盟2', '复仇者联盟3', '美国队长3', '幻视'],
+                '星爵': ['复仇者联盟3', '复仇者联盟4', '雷神4', '银河护卫队', '奎尔'],
+                'star-lord': ['复仇者联盟3', '复仇者联盟4', '雷神4', '银河护卫队', '奎尔', '星爵'],
+                'starlord': ['复仇者联盟3', '复仇者联盟4', '雷神4', '银河护卫队', '奎尔', '星爵'],
+                '死侍': ['韦德', 'x战警'],
+                'deadpool': ['韦德', 'x战警', '死侍'],
+                '金刚狼': ['罗根', 'x战警'],
+                'wolverine': ['罗根', 'x战警', '金刚狼'],
+                '夜魔侠': ['捍卫者联盟', '蜘蛛侠：英雄无归', '女浩克', '回声', '马特'],
+                'daredevil': ['捍卫者联盟', '蜘蛛侠：英雄无归', '女浩克', '回声', '马特', '夜魔侠'],
+                '惩罚者': ['夜魔侠', '弗兰克'],
+                'punisher': ['夜魔侠', '弗兰克', '惩罚者']
+            };
+
+            let expandedQueries = [query];
+            for (const [key, relatedTerms] of Object.entries(heroDictionary)) {
+                if (query.includes(key) || (key.includes(query) && query.length >= 3)) expandedQueries.push(...relatedTerms);
+            }
+
+            const matches = currentData.map((item, index) => ({ item, index }))
+                .filter(({item}) => {
+                    let searchStr = (item.title + item.enTitle + item.chars + item.desc + item.impact).toLowerCase();
+                    searchStr = searchStr.replace('《复仇者联盟》', '复仇者联盟1');
+                    return expandedQueries.some(q => searchStr.includes(q.toLowerCase()));
+                });
+
+            if (matches.length > 0) {
+                searchDropdown.innerHTML = matches.map(m => {
+                    const rgb = getPhaseColor(m.item.phase);
+                    return `
+                    <div class="px-4 py-3 hover:bg-blue-900/40 cursor-pointer border-b border-blue-500/20 last:border-0 transition-colors flex justify-between items-center" onmousedown="jumpToCard(${m.index})">
+                        <div class="flex flex-col gap-0.5">
+                            <span class="text-sm font-bold text-white drop-shadow">${m.item.title}</span>
+                            <span class="text-[10px] text-slate-400 font-mono">${m.item.enTitle}</span>
+                        </div>
+                        <span class="text-[9px] px-2 py-0.5 rounded border whitespace-nowrap" style="color:rgb(${rgb}); border-color:rgba(${rgb},0.5); background:rgba(${rgb},0.1)">${m.item.phase}</span>
+                    </div>
+                `}).join('');
+            } else {
+                searchDropdown.innerHTML = `<div class="px-4 py-4 text-xs text-slate-400 text-center font-mono">未检索到目标档案...</div>`;
+            }
+            searchDropdown.classList.remove('hidden');
+        });
+
+        searchInput.addEventListener('blur', () => { setTimeout(() => searchDropdown.classList.add('hidden'), 200); });
+        searchInput.addEventListener('focus', () => { if(searchInput.value.trim() !== '') searchDropdown.classList.remove('hidden'); });
+
+        window.jumpToCard = function(index) {
+            if(audioCtx) SoundEngine.jump();
+            if (loopSize === 0) return;
+            const currentLap = Math.round(currentZ / loopSize);
+            const rawTarget = currentLap * loopSize + index * spacingZ;
+            let diff = rawTarget - currentZ;
+            if (diff > loopSize / 2) diff -= loopSize;
+            if (diff < -loopSize / 2) diff += loopSize;
+            if (Math.abs(diff) > spacingZ * 5) {
+                SoundEngine.glitch();
+                document.body.classList.add('tva-glitch');
+                setTimeout(() => document.body.classList.remove('tva-glitch'), 500);
+            }
+            targetZ = currentZ + diff;
+            if(isAutoAdvance) playBtn.click();
+            searchDropdown.classList.add('hidden');
+            searchInput.value = '';
+        }
+
+        let isAutoAdvance = false, baseAdvanceSpeed = 2.0, speedMultiplier = 1.0;
+        const playBtn = document.getElementById('auto-play-btn');
+        const playIconContainer = document.getElementById('play-icon-container');
+        const speedDownBtn = document.getElementById('speed-down-btn');
+        const speedUpBtn = document.getElementById('speed-up-btn');
+        const speedBadge = document.getElementById('speed-badge');
+
+        function updateSpeedUI() {
+            speedBadge.textContent = speedMultiplier.toFixed(1) + 'x';
+            if (isAutoAdvance || speedMultiplier !== 1.0) speedBadge.classList.remove('hidden');
+            else speedBadge.classList.add('hidden');
+        }
+
+        speedDownBtn.addEventListener('click', () => {
+            speedMultiplier = Math.max(0.5, speedMultiplier - 0.5); updateSpeedUI();
+        });
+
+        speedUpBtn.addEventListener('click', () => {
+            speedMultiplier = Math.min(5.0, speedMultiplier + 0.5); updateSpeedUI();
+        });
+
+        playBtn.addEventListener('click', (e) => {
+            isAutoAdvance = !isAutoAdvance;
+            if(isAutoAdvance) {
+                playIconContainer.innerHTML = '<svg class="w-6 h-6 md:w-5 md:h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M5 4h3v12H5V4zm7 0h3v12h-3V4z"></path></svg>';
+                playBtn.classList.add('bg-pink-600', 'shadow-[0_0_20px_#ec4899]');
+                playBtn.classList.remove('bg-purple-600/80');
+            } else {
+                playIconContainer.innerHTML = '<svg class="w-6 h-6 md:w-5 md:h-5 ml-1" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4l12 6-12 6z"></path></svg>';
+                playBtn.classList.remove('bg-pink-600', 'shadow-[0_0_20px_#ec4899]');
+                playBtn.classList.add('bg-purple-600/80');
+            }
+            updateSpeedUI();
+        });
+
+        document.getElementById('prev-card-btn').addEventListener('click', () => {
+            if(isAutoAdvance) playBtn.click(); 
+            let currentIndex = Math.round(targetZ / spacingZ);
+            targetZ = (currentIndex - 1) * spacingZ;
+        });
+
+        document.getElementById('next-card-btn').addEventListener('click', () => {
+            if(isAutoAdvance) playBtn.click(); 
+            let currentIndex = Math.round(targetZ / spacingZ);
+            targetZ = (currentIndex + 1) * spacingZ;
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if(isDraggingBg || isDraggingCard || isPanning) return;
+            parallaxX = ((e.clientX / window.innerWidth) - 0.5) * 10;
+            parallaxY = -((e.clientY / window.innerHeight) - 0.5) * 10;
+        });
+
+        window.addEventListener('wheel', (e) => {
+            if (e.target.closest('.desc-scroll') || e.target.closest('#search-dropdown')) return;
+            e.preventDefault(); targetZ += e.deltaY * 3; 
+            if(isAutoAdvance) playBtn.click();
+        }, { passive: false });
+
+        function startDrag(e) {
+            if(e.button === 1) e.preventDefault();
+            const isCard = e.target.closest('.card-hitbox');
+            if (isCard) { if(audioCtx) SoundEngine.cardClick(); }
+            if (isCard && (e.target.closest('button') || e.target.closest('a'))) return;
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            
+            startX = clientX; startY = clientY;
+            lastZ = targetZ; lastRotX = cameraRotX; lastRotY = cameraRotY;
+            lastPanX = cameraPanX; lastPanY = cameraPanY;
+
+            if (e.button === 1 || (e.button === 0 && e.shiftKey)) {
+                isPanning = true; viewport.style.cursor = 'move'; return;
+            }
+            if (isCard) {
+                isDraggingCard = true; viewport.style.cursor = 'grabbing';
+            } else {
+                isDraggingBg = true; viewport.style.cursor = 'ns-resize';
+                if(isAutoAdvance) playBtn.click();
+            }
+        }
+        
+        function doDrag(e) {
+            if(!isDraggingBg && !isDraggingCard && !isPanning) return;
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            const deltaX = clientX - startX, deltaY = clientY - startY;
+            if (isPanning) {
+                cameraPanX = lastPanX + deltaX; cameraPanY = lastPanY + deltaY;
+            } else if (isDraggingBg) {
+                targetZ = lastZ - deltaY * 10; 
+            } else if (isDraggingCard) {
+                cameraRotY = lastRotY + deltaX * 0.2; cameraRotX = lastRotX - deltaY * 0.2;
+                cameraRotX = Math.max(-25, Math.min(25, cameraRotX));
+                cameraRotY = Math.max(-45, Math.min(45, cameraRotY));
+            }
+        }
+        
+        function endDrag() { 
+            isDraggingBg = false; isDraggingCard = false; isPanning = false;
+            viewport.style.cursor = 'grab';
+            cameraRotX = 0; cameraRotY = 0; cameraPanX = 0; cameraPanY = 0;
+        }
+
+        viewport.addEventListener('mousedown', startDrag);
+        window.addEventListener('mousemove', doDrag);
+        window.addEventListener('mouseup', endDrag);
+        viewport.addEventListener('touchstart', startDrag, {passive: true});
+        window.addEventListener('touchmove', doDrag, {passive: true});
+        window.addEventListener('touchmove', function(e) {
+            if(isDraggingBg || isPanning || isDraggingCard) e.preventDefault();
+        }, {passive: false});
+        window.addEventListener('touchend', endDrag);
+
+        slider.addEventListener('input', (e) => {
+            isSliderDragging = true; 
+            if(audioCtx && Math.random() > 0.5) SoundEngine.slider();
+            if (loopSize === 0) return;
+            let targetVal = (e.target.value / 100) * loopSize;
+            let currentMod = ((targetZ % loopSize) + loopSize) % loopSize;
+            let diff = targetVal - currentMod;
+            if (diff > loopSize / 2) diff -= loopSize;
+            if (diff < -loopSize / 2) diff += loopSize;
+            targetZ += diff;
+            if(isAutoAdvance) playBtn.click();
+        });
+        slider.addEventListener('change', () => { isSliderDragging = false; });
+
+        function renderLoop() {
+            if (isAutoAdvance && !isDraggingBg && !isDraggingCard && !isPanning && !isSliderDragging) {
+                targetZ += baseAdvanceSpeed * speedMultiplier; 
+            }
+            currentZ += (targetZ - currentZ) * 0.08;
+            currentRotX += (cameraRotX - currentRotX) * 0.08;
+            currentRotY += (cameraRotY - currentRotY) * 0.08;
+            currentPanX += (cameraPanX - currentPanX) * 0.08;
+            currentPanY += (cameraPanY - currentPanY) * 0.08;
+            
+            if (loopSize > 0) {
+                let normalizedZ = ((currentZ % loopSize) + loopSize) % loopSize;
+                if(!isSliderDragging) slider.value = (normalizedZ / loopSize) * 100;
+            } else {
+                slider.value = 0;
+            }
+
+            const currentT = loopSize > 0 ? currentZ / spacingZ : 0;
+            const camPos = getTrackPos(currentT);
+            const lookAheadT = currentT + 0.5;
+            const lookAheadPos = getTrackPos(lookAheadT);
+            const deltaX = lookAheadPos.x - camPos.x;
+            const deltaY = lookAheadPos.y - camPos.y;
+            const basePanX = -camPos.x;
+            const basePanY = -camPos.y;
+            const baseRotY = -Math.atan2(deltaX, spacingZ * 0.5) * (180 / Math.PI) * 0.7;
+            const baseRotX = Math.atan2(deltaY, spacingZ * 0.5) * (180 / Math.PI) * 0.5;
+            const finalRotX = baseRotX + parallaxX + currentRotX;
+            const finalRotY = baseRotY + parallaxY + currentRotY;
+            const finalPanX = basePanX + currentPanX;
+            const finalPanY = basePanY + currentPanY;
+
+            camera.style.transform = `translate3d(${finalPanX}px, ${finalPanY}px, 0px) rotateY(${finalRotY}deg) rotateX(${finalRotX}deg)`;
+
+            if (N > 0) {
+                cardElements.forEach((el, i) => {
+                    let offset_i = ((i - currentT) % N + N) % N;
+                    if (offset_i > N / 2) offset_i -= N;
+                    const t = currentT + offset_i;
+                    const zPos = offset_i * spacingZ; 
+                    
+                    if (zPos > 800 || zPos < -4000) {
+                        el.style.display = 'none';
+                        if (el.dataset.playing) {
+                            const video = el.querySelector('.local-video');
+                            const iframe = el.querySelector('.video-iframe');
+                            if (video) { video.pause(); video.style.opacity = "0"; }
+                            if (iframe) { iframe.src = ""; iframe.style.opacity = "0"; }
+                            el.dataset.playing = "";
+                        }
+                        return;
+                    }
+                    el.style.display = 'block';
+                    const cardPos = getTrackPos(t);
+                    let opacity = 1, scale = 1;
+                    if (zPos > 150) opacity = 1 - (zPos - 150) / 400; 
+                    else if (zPos < -2000) opacity = 1 - Math.abs(zPos + 2000) / 2000; 
+
+                    el.style.zIndex = Math.round(10000 + zPos);
+                    el.style.pointerEvents = opacity < 0.1 ? 'none' : 'auto';
+                    el.style.transform = `translate3d(${cardPos.x}px, ${cardPos.y}px, ${zPos}px) scale(${scale})`;
+                    el.style.opacity = Math.max(0, opacity);
+                    
+                    const blurAmount = zPos < -1500 ? Math.abs(zPos + 1500)/300 : (zPos > 300 ? zPos/100 : 0);
+                    el.style.filter = `blur(${Math.min(blurAmount, 8)}px)`;
+
+                    const video = el.querySelector('.local-video');
+                    const iframe = el.querySelector('.video-iframe');
+                    const isPreloadRange = Math.abs(zPos) < 2500;
+                    if (isPreloadRange && video && !video.getAttribute('src')) {
+                        video.src = video.dataset.src; video.preload = "auto"; video.load(); 
+                    }
+
+                    const isFocus = Math.abs(zPos) < 800 && zPos <= 450; 
+                    if (isFocus && !el.dataset.playing) {
+                        if (video) { video.currentTime = 8; video.play().catch(()=>{}); video.style.opacity = "1"; }
+                        if (iframe) {
+                            if (!iframe.getAttribute('src')) iframe.src = `https://www.youtube-nocookie.com/embed/${iframe.dataset.vid}?start=8&autoplay=1&mute=1&controls=0&playsinline=1&modestbranding=1&rel=0`;
+                            iframe.style.opacity = "1";
+                        }
+                        el.dataset.playing = "true";
+                    } else if (!isFocus && el.dataset.playing) {
+                        if (video) { video.pause(); video.style.opacity = "0"; }
+                        if (iframe) { iframe.src = ""; iframe.style.opacity = "0"; }
+                        el.dataset.playing = "";
+                    }
+                });
+            }
+            requestAnimationFrame(renderLoop);
+        }
+        renderLoop();
+
+        // ==========================================
+        // 🌌 宇宙增强引擎 (已剔除大量重复)
+        // ==========================================
+        const canvas = document.getElementById('universe-bg');
+        const ctx = canvas.getContext('2d');
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+        
+        class Star {
+            constructor() { this.reset(); }
+            reset() {
+                this.x = (Math.random() - 0.5) * width * 3; this.y = (Math.random() - 0.5) * height * 3;
+                this.z = Math.random() * 2000 + 100; this.pz = this.z;
+                const colors = ['#ffffff', '#a855f7', '#60a5fa', '#f472b6'];
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+            }
+            update(speed) {
+                this.pz = this.z; this.z += speed * 0.5 + 1.5; 
+                if (this.z > 2500 || this.z < 1) { 
+                    this.z = ((this.z % 2500) + 2500) % 2500 || 1;
+                    this.pz = this.z; this.x = (Math.random() - 0.5) * width * 3; this.y = (Math.random() - 0.5) * height * 3;
+                }
+            }
+            draw() {
+                const cx = width / 2, cy = height / 2;
+                const sx = cx + (this.x / this.z) * 1000, sy = cy + (this.y / this.z) * 1000;
+                const px = cx + (this.x / this.pz) * 1000, py = cy + (this.y / this.pz) * 1000;
+                ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(sx, sy);
+                ctx.lineWidth = Math.max(0.2, (1000 / this.z) * 1.5);
+                ctx.strokeStyle = this.color; ctx.stroke();
+            }
+        }
+
+        class PlanetOrbit {
+            constructor() {
+                this.z = Math.random() * 4000; this.radiusX = 300 + Math.random() * 800;
+                this.radiusY = this.radiusX * (0.3 + Math.random() * 0.4);
+                this.rotation = Math.random() * Math.PI * 2; this.spinSpeed = (Math.random() - 0.5) * 0.005;
+                const colors = ['168, 85, 247', '59, 130, 246', '236, 72, 153'];
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+            }
+            update(speed) {
+                this.z += speed * 0.2 + 0.5; this.rotation += this.spinSpeed;
+                if (this.z > 4000 || this.z < 1) { 
+                    this.z = ((this.z % 4000) + 4000) % 4000 || 1;
+                    this.radiusX = 300 + Math.random() * 800; this.radiusY = this.radiusX * (0.3 + Math.random() * 0.4); 
+                }
+            }
+            draw() {
+                const scale = 1000 / this.z; if (scale < 0.1 || scale > 20) return;
+                ctx.save(); ctx.translate(width / 2, height / 2); ctx.rotate(this.rotation);
+                ctx.beginPath(); ctx.ellipse(0, 0, this.radiusX * scale, this.radiusY * scale, 0, 0, Math.PI * 2);
+                ctx.strokeStyle = `rgba(${this.color}, ${Math.min(0.15, scale * 0.05)})`;
+                ctx.lineWidth = 2 * scale; ctx.stroke();
+                const px = Math.cos(this.rotation * 10) * this.radiusX * scale;
+                const py = Math.sin(this.rotation * 10) * this.radiusY * scale;
+                ctx.beginPath(); ctx.arc(px, py, 4 * scale, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(${this.color}, ${Math.min(0.6, scale * 0.2)})`;
+                ctx.shadowBlur = 10 * scale; ctx.shadowColor = `rgb(${this.color})`; ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        class CosmicRay {
+            constructor() { this.reset(); }
+            reset() {
+                this.x = (Math.random() - 0.5) * width * 2; this.y = (Math.random() - 0.5) * height * 2;
+                this.z = 100 + Math.random() * 500; this.length = 50 + Math.random() * 150;
+                this.color = Math.random() > 0.5 ? 'rgba(59, 130, 246, 0.8)' : 'rgba(168, 85, 247, 0.8)';
+            }
+            update(speed) { this.z += (speed * 1.5) + 20; if (this.z > 3000 || this.z < 1) this.reset(); }
+            draw() {
+                if(this.z < 0) return;
+                const cx = width / 2, cy = height / 2;
+                const sx = cx + (this.x / this.z) * 1000, sy = cy + (this.y / this.z) * 1000;
+                const tailZ = this.z - this.length; if(tailZ < 1) return;
+                const px = cx + (this.x / tailZ) * 1000, py = cy + (this.y / tailZ) * 1000;
+                ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(sx, sy);
+                ctx.lineWidth = Math.min(1500 / this.z, 50); ctx.strokeStyle = this.color; ctx.lineCap = 'round'; ctx.stroke();
+            }
+        }
+
+        let stars = [], orbits = [], rays = [];
+        for (let i = 0; i < 200; i++) stars.push(new Star());
+        for (let i = 0; i < 15; i++) orbits.push(new PlanetOrbit());
+        for (let i = 0; i < 8; i++) rays.push(new CosmicRay());
+
+        let lastCanvasZ = currentZ;
+        function animateCanvas() {
+            ctx.fillStyle = 'rgba(2, 6, 23, 0.3)'; ctx.fillRect(0, 0, width, height);
+            let speed = currentZ - lastCanvasZ; lastCanvasZ = currentZ;
+            if (Math.abs(speed) > 1000) speed = 0;
+
+            stars.forEach(star => { star.update(speed); star.draw(); });
+            orbits.forEach(orbit => { orbit.update(speed); orbit.draw(); });
+            if(Math.abs(speed) > 5) rays.forEach(ray => { ray.update(speed); ray.draw(); });
+            requestAnimationFrame(animateCanvas);
+        }
+        animateCanvas();
+        window.addEventListener('resize', () => { width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight; });
+
+        // ==========================================
+        // DeepSeek API & 弹窗逻辑
+        // ==========================================
+        async function fetchWithRetry(url, options, maxRetries = 1) { 
+            for (let i = 0; i < maxRetries; i++) {
+                try {
+                    const response = await fetch(url, options);
+                    if (!response.ok) throw new Error(await response.text());
+                    return await response.json();
+                } catch (e) {
+                    if (i === maxRetries - 1) throw e;
+                    await new Promise(r => setTimeout(r, 1000));
+                }
+            }
+        }
+
+        async function callAIAPI(prompt, systemInstruction = "") {
+            const payload = { prompt: prompt, systemInstruction: systemInstruction };
+            const data = await fetchWithRetry(`/api/chat`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+            if (data.error) throw new Error(data.error);
+            return data.text; 
+        }
+
+        function parseSimpleMarkdown(text) { return text.replace(/\*\*(.*?)\*\*/g, '<b class="text-pink-400 font-bold">$1</b>'); }
+
+        const modal = document.getElementById('whatif-modal');
+        const modalContent = document.getElementById('whatif-content-box');
+        const modalBody = document.getElementById('whatif-body');
+
+        window.openWhatIfModal = async function(title) {
+            initAudioContext();
+            SoundEngine.whatif();
+            modal.classList.remove('hidden', 'pointer-events-none');
+            setTimeout(() => { modal.classList.remove('opacity-0'); modalContent.classList.replace('scale-95', 'scale-100'); }, 10);
+            document.getElementById('whatif-movie-title').innerText = `Target: [ ${title} ]`;
+            modalBody.innerHTML = `<div class="flex flex-col items-center gap-4 text-purple-500"><div class="loader"></div><span class="text-xs font-mono animate-pulse tracking-widest">干涉时间线中...</span></div>`;
+
+            try {
+                const response = await callAIAPI(`你是一个漫威编剧和观察者。针对漫威作品 ${title} 构思一个“假如...？”脑洞剧情。字数100-150字，第一人称，史诗感，无废话。`);
+                modalBody.innerHTML = `<p class="text-slate-200 text-sm leading-loose font-mono border-l-2 border-purple-500 pl-4 bg-purple-900/20 py-3 pr-3 shadow-inner">"${parseSimpleMarkdown(response)}"</p>`;
+            } catch (error) {
+                modalBody.innerHTML = `<p class="text-red-400 font-mono">⚠️ 错误：多元宇宙屏障过于坚固。(${error.message})</p>`;
+            }
+        };
+
+        window.closeWhatIfModal = function() {
+            playClickSound();
+            modal.classList.add('opacity-0'); modalContent.classList.replace('scale-100', 'scale-95');
+            setTimeout(() => { modal.classList.add('hidden', 'pointer-events-none'); }, 300);
+        };
+
+        // ==========================================
+        // 聊天助手与 Web Speech 语音引擎 (已净化，默认静音)
+        // ==========================================
+        const chatWindow = document.getElementById('chat-window');
+        const chatMessages = document.getElementById('chat-messages');
+        const chatInput = document.getElementById('chat-input');
+        const chatSubmitBtn = document.getElementById('chat-submit-btn');
+        let chatOpen = false;
+        let voiceEnabled = false; 
+
+        window.toggleVoice = function() {
+            voiceEnabled = !voiceEnabled;
+            const btn = document.getElementById('voice-toggle-btn');
+            if(voiceEnabled) {
+                btn.classList.replace('text-slate-500', 'text-blue-400');
+                speakJarvis("语音模块已激活，TVA总局。");
+            } else {
+                btn.classList.replace('text-blue-400', 'text-slate-500');
+                if(window.speechSynthesis) window.speechSynthesis.cancel();
+            }
+        };
+
+        function speakJarvis(text) {
+            if (!voiceEnabled || !window.speechSynthesis) return;
+            window.speechSynthesis.cancel(); 
+            const msg = new SpeechSynthesisUtterance(text.replace(/<[^>]*>?/gm, '').replace(/[*#]/g, ''));
+            msg.lang = 'zh-CN'; msg.pitch = 0.7; msg.rate = 1.1; 
+            const voices = window.speechSynthesis.getVoices();
+            msg.voice = voices.find(v => v.lang.includes('zh') && (v.name.includes('Xiaoxiao') || v.name.includes('Ting'))) || voices.find(v => v.lang.includes('zh'));
+            const radar = document.getElementById('jarvis-radar');
+            msg.onstart = () => radar.classList.replace('text-blue-300', 'text-green-400');
+            msg.onend = () => radar.classList.replace('text-green-400', 'text-blue-300');
+            window.speechSynthesis.speak(msg);
+        }
+
+        window.toggleChat = function() {
+            playClickSound();
+            chatOpen = !chatOpen;
+            chatWindow.classList.toggle('hidden', !chatOpen);
+            if(chatOpen) setTimeout(() => speakJarvis("Jarvis 为您效劳！"), 200);
+            else if(window.speechSynthesis) window.speechSynthesis.cancel();
+        };
+
+        async function handleChatSubmit(e) {
+            e.preventDefault();
+            const userText = chatInput.value.trim();
+            if (!userText) return;
+
+            initAudioContext(); SoundEngine.click();
+            
+            const appendMessage = (text, sender) => {
+                const div = document.createElement('div');
+                div.className = 'flex flex-col ' + (sender === 'user' ? 'items-end' : 'items-start');
+                let bubbleClass = sender === 'user' ? 'bg-blue-700 text-white rounded-tr-none' : 'bg-blue-900/30 border border-blue-500/30 text-blue-100 rounded-tl-none';
+                div.innerHTML = `<div class=\"px-4 py-3 rounded-2xl max-w-[90%] ${bubbleClass} text-[11px] font-mono leading-relaxed shadow-lg\">${parseSimpleMarkdown(text)}</div>`;
+                chatMessages.appendChild(div); chatMessages.scrollTop = chatMessages.scrollHeight;
+            };
+
+            appendMessage(userText, 'user');
+            chatInput.value = ''; chatSubmitBtn.disabled = true;
+
+            const loadingId = 'loading-' + Date.now();
+            const div = document.createElement('div'); div.id = loadingId; div.className = 'flex flex-col items-start';
+            div.innerHTML = `<div class="bg-blue-900/30 border border-blue-500/30 px-4 py-3 rounded-2xl rounded-tl-none flex gap-2"><div class="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce"></div><div class="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce" style="animation-delay:0.1s"></div><div class="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce" style="animation-delay:0.2s"></div></div>`;
+            chatMessages.appendChild(div); chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            try {
+                const responseText = await callAIAPI(userText, `你是 J.A.R.V.I.S. 回答用户关于漫威MCU时间线、观影顺序的问题。用机智且带有一点斯塔克式幽默的中文回答。保持精炼。`);
+                document.getElementById(loadingId).remove();
+                appendMessage(responseText, 'ai');
+                speakJarvis(responseText); 
+            } catch (error) {
+                document.getElementById(loadingId).remove();
+                appendMessage(`⚠️ 警告：系统链路中断。`, 'ai');
+            } finally {
+                chatSubmitBtn.disabled = false; chatInput.focus();
+            }
+        }
+        
+        if (window.speechSynthesis) window.speechSynthesis.getVoices(); 
+    </script>
+</body>
+</html>
