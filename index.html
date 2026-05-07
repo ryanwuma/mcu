@@ -416,7 +416,8 @@
     </div>
 
     <script>
-        const mcuData = [
+        // Data sources (Scheme A): loadable JSON, with built-in fallback
+        let mcuData = [
             { time: "平行", title: "《刀锋战士》", enTitle: "Blade", yt: "T5irwIozazw", type: "🎬", year: "1998", phase: "多元宇宙 (新线)", studio: "New Line Cinema", chars: "刀锋战士, 狄肯·费斯", impact: "漫威电影暗黑宇宙先驱。", desc: "半人半吸血鬼的日行者刀锋战士，为了保护人类，在地下世界与吸血鬼帝国展开血腥的猎杀。" },
             { time: "平行", title: "《X战警》", enTitle: "X-Men", yt: "nb1EAxMNkLg", type: "🎬", year: "2000", phase: "多元宇宙 (福克斯)", studio: "20th Century Fox", chars: "金刚狼, X教授, 万磁王", impact: "变种人概念建立，超级英雄电影复兴之初。", desc: "变种人与人类矛盾升级，X教授的X战警与万磁王的变种人兄弟会展开首场大战。" },
             { time: "平行", title: "《刀锋战士2》", enTitle: "Blade II", yt: "EYWdztJwRLg", type: "🎬", year: "2002", phase: "多元宇宙 (新线)", studio: "New Line Cinema", chars: "刀锋战士, 诺玛", impact: "吸血鬼变种危机爆发。", desc: "为了对抗更加致命的新型吸血鬼变种，刀锋战士不得不与吸血鬼领主结成脆弱的联盟。" },
@@ -573,8 +574,8 @@
         }
     
         // 🎬 智能模糊匹配系统
-        // ⚠️ 请用您核对好的 localVideoFiles 数组完美替换掉下方这段，以免丢失心血！
-        const localVideoFiles = [
+        // (Scheme A) will be replaced by `localVideoFiles.json` at runtime.
+        let localVideoFiles = [
             "BLADE (1998) Classic 35mm Trailer [4K ULTRA HD] Wesley Snipes_1080p.mp4",
             "Blade II Trailer HD_1080p.mp4",
             "Hulk (2003) Official Trailer #1 - Erica Bana Movie HD_720p.mp4",
@@ -696,6 +697,25 @@
             "02 Agent Carter Season 1 - TRAILER ENGLISH TV SHOW 2015_1080p.mp4",
             "01 Captain America The First Avenger 2011 Destroying Hydra's Bases.mp4"
         ];
+
+        async function loadJsonIfExists(url, fallback) {
+            try {
+                const res = await fetch(url, { cache: 'no-cache' });
+                if (!res.ok) return fallback;
+                return await res.json();
+            } catch {
+                return fallback;
+            }
+        }
+
+        async function loadExternalDataPacks() {
+            // For future updates: edit JSON files only; no code changes needed.
+            const loadedMcu = await loadJsonIfExists('mcuData.json', null);
+            if (Array.isArray(loadedMcu) && loadedMcu.length > 0) mcuData = loadedMcu;
+
+            const loadedVideos = await loadJsonIfExists('localVideoFiles.json', null);
+            if (Array.isArray(loadedVideos) && loadedVideos.length > 0) localVideoFiles = loadedVideos;
+        }
 
         // =========================================================================
         // 下方是系统底层渲染与交互核心代码，请勿修改
@@ -1353,6 +1373,7 @@
         }, 0);
 
         setTimeout(async () => {
+            await loadExternalDataPacks();
             if (mcuData && mcuData.length > 0) {
                 if (getLang() === 'en') await loadPrebuiltEnglishPack();
                 buildTimeline(currentData);
