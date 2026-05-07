@@ -100,14 +100,52 @@
 - **新增文件**：
   - `mcuData.json`：时间轴卡片数据（每一条作品一条 JSON）
   - `localVideoFiles.json`：本地视频文件名列表（用于模糊匹配）
+  - `heroDictionary.json`：搜索同义词词典（“英雄/别名 → 关联关键词”扩展检索）
   - `mcuData.en.json`：英文文案包（国际站直出英文，避免 10–15 秒逐条翻译等待）
 - **更新流程（零代码）**：
   - 新作上线：只需在 `mcuData.json` 里追加一条记录；如需本地预告片，补一条视频文件名到 `localVideoFiles.json`
+  - 搜索词扩展：在 `heroDictionary.json` 里追加/编辑关键词映射（如：`"iron man": ["tony", "stark", "钢铁侠"]`）
   - 提交到 GitHub 后，GitHub Pages 自动发布，站点内容自动更新
 - **兜底策略**：若 JSON 加载失败（网络/缓存），页面回退到内置数据（保证站点不会白屏）。
 
 **方案 B（后续升级，像 CMS 一样更新）— 表单/后台编辑**
 - 做一个带登录的管理页（新增/编辑/排序/发布），后台生成 `mcuData.json` 并发布；适合多人维护与高频更新。
+
+### `mcuData.json` 新增一条新作：字段模板（复制粘贴即可）
+
+**最少必填（建议）**
+- `title`：中文片名（如 `《钢铁侠》`）
+- `enTitle`：英文片名（如 `Iron Man`）
+- `yt`：YouTube 视频 ID（如 `8ugaeA-nPMc`，不含完整 URL）
+- `year`：发行年份（字符串，如 `"2008"`）
+- `type`：类型图标（如 `"🎬"` 电影 / `"📺"` 剧集 / `"🌟"` 动画短片）
+- `phase`：阶段或归类（如 `"第一阶段"` / `"多元宇宙 (索尼)"`）
+- `studio`：厂牌（如 `"Marvel Studios"`）
+- `time`：时间点（如 `"2010"` 或 `"平行"`）
+- `desc`：中文简介（1–2 句）
+- `chars`：中文核心角色（逗号分隔）
+- `impact`：中文宇宙影响（1 句）
+
+**可选字段**
+- `searchAlias`：额外别名（用于匹配本地视频或搜索；如 `"X-Men 2"`）
+- `descEn / charsEn / impactEn`：英文文案（可不填；国际站会优先用 `mcuData.en.json`）
+
+**示例（模板）**
+```json
+{
+  "time": "2026",
+  "title": "《示例作品》",
+  "enTitle": "Example Title",
+  "yt": "XXXXXXXXXXX",
+  "type": "🎬",
+  "year": "2026",
+  "phase": "第六阶段",
+  "studio": "Marvel Studios",
+  "chars": "主角A, 主角B",
+  "impact": "一句话说明宇宙级影响。",
+  "desc": "一句话简介。"
+}
+```
 
 * **动态情报监听模块 (J.A.R.V.I.S. Intel)**：
     * **机制**：利用轻量级云函数 (如 Cloudflare Workers) 定时轮询抓取外网权威漫威源 (IGN、官方推特等) 的 RSS。
