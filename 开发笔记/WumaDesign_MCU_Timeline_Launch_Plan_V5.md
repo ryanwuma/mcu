@@ -34,6 +34,12 @@
 ## 2. 第一阶段：技术净化与准备 (Release -3 Days)
 - [x] **代码脱敏**：检查并隐藏私有 API Key，确保开源代码库的安全。
 - [ ] **Nginx 配置实装**：登录 VPS，执行 `apt install nginx`，部署监听 80 端口的极简静态服务器。
+  - [x] **Cloudflare 接入域名**：`wumatv.net` 已 Active
+  - [x] **DNS 指向 VPS（视频子域名）**：`mcu-video.wumatv.net` → `154.197.57.126`（Proxied）
+  - [x] **Cloudflare SSL 模式**：Flexible
+  - [x] **SSH 可登录**：已稳定使用 `ssh -p 2222 root@154.197.57.126`
+  - [x] **安装并配置 Nginx**：仅监听 80，为视频目录提供静态服务（`https://mcu-video.wumatv.net/health.txt` 返回 200）
+  - [x] **批量上传视频到源站目录**：将 `video/` 同步到 `/var/www/mcu-video/video/`
 - [x] **启动屏加固**：保留“神盾局启动屏”，引导用户点击以一键解锁 Web Audio 声卡，规避各大浏览器自动播放限制。
 
 ### GitHub Pages（国际前端）准备清单

@@ -921,6 +921,14 @@
             }, 4000);
         }
 
+        function getVideoBaseUrl() {
+            // 国内官网：依旧走相对路径（同域部署）
+            // 国际 GitHub Pages：走 Cloudflare + VPS 视频源站
+            const host = (location.hostname || '').toLowerCase();
+            if (host.endsWith('wumatv.cn')) return '';
+            return 'https://mcu-video.wumatv.net/';
+        }
+
         function getMatchedVideoSrc(title, enTitle, searchAlias) {
             const pureStr = (s) => s ? s.toLowerCase().replace(/[^a-z0-9\u4e00-\u9fa5]/g, '') : '';
             const pureTitle = pureStr(title.replace(/[《》]/g, '')); 
@@ -964,7 +972,10 @@
                 }
             });
 
-            return bestScore > -1000 ? encodeURI(`video/${bestMatch}`).replace(/#/g, '%23').replace(/\?/g, '%3F') : '';
+            if (bestScore <= -1000) return '';
+            const base = getVideoBaseUrl();
+            const prefix = base ? `${base}video/` : 'video/';
+            return encodeURI(`${prefix}${bestMatch}`).replace(/#/g, '%23').replace(/\?/g, '%3F');
         }
 
         function getPhaseColor(phase) {
