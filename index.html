@@ -829,6 +829,13 @@
             if (p.includes('多元宇宙')) return 'Multiverse';
             return p;
         }
+
+        function translateTimeLabel(time) {
+            const s = String(time ?? '').trim();
+            if (getLang() !== 'en') return s;
+            if (s === '平行') return 'Parallel';
+            return s;
+        }
         function applyI18n() {
             const lang = getLang();
             document.documentElement.lang = lang === 'en' ? 'en' : 'zh-CN';
@@ -1230,6 +1237,7 @@
                 const loaderContent = `<div class="loader w-4 h-4 border-2 mb-2 border-t-slate-400"></div><span class="text-[9px] tracking-widest font-mono text-slate-400/80 uppercase">${t('media_init')}</span>`;
 
                 const lang = getLang();
+                const timeLabel = translateTimeLabel(item.time);
                 const mainTitle = (lang === 'en' ? (item.enTitle || item.title) : item.title);
                 const subTitle = (lang === 'en' ? item.title : (item.enTitle || ''));
                 const phaseLabel = translatePhaseLabel(item.phase);
@@ -1253,7 +1261,7 @@
                     <div class="glow-core"></div>
                     <div class="timeline-card shadow-2xl flex flex-col p-5 gap-3">
                         <div class="flex justify-between items-start shrink-0 z-10">
-                            <span class="text-xs font-mono font-bold tracking-widest text-white border-b border-white/20 pb-1 drop-shadow-md">T+ ${item.time}</span>
+                            <span class="text-xs font-mono font-bold tracking-widest text-white border-b border-white/20 pb-1 drop-shadow-md">T+ ${timeLabel}</span>
                             <span class="text-[10px] text-[rgb(${rgb})] font-mono font-bold border border-[rgba(${rgb},0.5)] px-1.5 py-0.5 rounded bg-black/50 shadow-sm">${phaseLabel}</span>
                         </div>
                         <h3 class="text-xl font-black text-white leading-tight flex flex-col shrink-0 z-10 mt-1">
