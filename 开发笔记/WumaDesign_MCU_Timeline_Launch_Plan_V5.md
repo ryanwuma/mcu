@@ -33,6 +33,10 @@
   - [x] `wumatv.net` / `www.wumatv.net` 重定向到 `mcu.wumatv.net`
   - **验收**：`https://wumatv.net` 可自动跳转并正常访问国际站
 
+### 官网国际镜像（wumatv.cn ↔ wumatv.net）
+- [x] `wumatv.net` 首页与 `wumatv.cn` 保持一致（同一份静态内容在 VPS 上托管 + Cloudflare 代理）
+- [x] `https://wumatv.net/wuma-engine/` 可访问（Wuma-Engine dist 已部署）
+
 ---
 
 ## 2. 第一阶段：技术净化与准备 (Release -3 Days)
