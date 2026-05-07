@@ -28,6 +28,10 @@
     * **网络代理**：前端挂载 **Cloudflare CDN**（小橙云开启）。
     * **⚠️ 端口防冲突（关键）**：该 VPS 也是 VLESS-Reality 科学上网节点（已占用 443 端口）。为避免冲突，Nginx **仅监听 80 端口**。Cloudflare 端配置 SSL 为“灵活 (Flexible)”模式，实现外网 HTTPS 到源站 HTTP 的无缝转换。
     * **黄金缓存优势**：由于视频平均仅 32MB，完美触发 Cloudflare 免费版（512MB以下文件）的全球边缘节点自动缓存。海外用户访问将实现“秒开”，且 VPS 源站负载几乎为零。
+* **国际官网域名（wumatv.net）**：
+  - [x] `mcu.wumatv.net` 绑定到国际前端（与 `https://ryanwuma.github.io/mcu/` 内容一致）
+  - [x] `wumatv.net` / `www.wumatv.net` 重定向到 `mcu.wumatv.net`
+  - **验收**：`https://wumatv.net` 可自动跳转并正常访问国际站
 
 ---
 
