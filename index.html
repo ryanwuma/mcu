@@ -2014,13 +2014,14 @@
             if (matches.length > 0) {
                 searchDropdown.innerHTML = matches.map(m => {
                     const rgb = getPhaseColor(m.item.phase);
+                    const phaseText = translatePhaseLabel(m.item.phase);
                     return `
                     <div class="px-4 py-3 hover:bg-blue-900/40 cursor-pointer border-b border-blue-500/20 last:border-0 transition-colors flex justify-between items-center" onmousedown="jumpToCard(${m.index})">
                         <div class="flex flex-col gap-0.5">
                             <span class="text-sm font-bold text-white drop-shadow">${m.item.title}</span>
                             <span class="text-[10px] text-slate-400 font-mono">${m.item.enTitle}</span>
                         </div>
-                        <span class="text-[9px] px-2 py-0.5 rounded border whitespace-nowrap" style="color:rgb(${rgb}); border-color:rgba(${rgb},0.5); background:rgba(${rgb},0.1)">${m.item.phase}</span>
+                        <span class="text-[9px] px-2 py-0.5 rounded border whitespace-nowrap" style="color:rgb(${rgb}); border-color:rgba(${rgb},0.5); background:rgba(${rgb},0.1)">${phaseText}</span>
                     </div>
                 `}).join('');
             } else {
