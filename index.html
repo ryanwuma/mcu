@@ -398,11 +398,11 @@
                 </button>
             </div>
             <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4 hide-scrollbar">
-                <div class="flex flex-col items-start"><div class="bg-blue-900/20 border border-blue-500/30 text-blue-100 px-4 py-3 rounded-2xl rounded-tl-sm max-w-[90%] font-mono text-xs leading-relaxed shadow-[0_0_10px_rgba(59,130,246,0.1)]">系统已上线。莫比乌斯引擎运行稳定。您正在浏览漫威宇宙最高机密档案。</div></div>
+                <div class="flex flex-col items-start"><div class="bg-blue-900/20 border border-blue-500/30 text-blue-100 px-4 py-3 rounded-2xl rounded-tl-sm max-w-[90%] font-mono text-xs leading-relaxed shadow-[0_0_10px_rgba(59,130,246,0.1)]"><span data-i18n="chat_welcome">系统已上线。莫比乌斯引擎运行稳定。您正在浏览漫威宇宙最高机密档案。</span></div></div>
             </div>
             <div class="p-3 bg-slate-900/90 border-t border-blue-500/30">
                 <form id="chat-form" class="flex gap-2" onsubmit="handleChatSubmit(event)">
-                    <input type="text" id="chat-input" placeholder="输入查询指令..." class="flex-1 bg-black/60 border border-blue-900/50 rounded-lg px-3 py-2 text-xs text-blue-100 focus:outline-none focus:border-blue-400 font-mono shadow-inner" autocomplete="off" required>
+                    <input type="text" id="chat-input" data-i18n-placeholder="chat_ph" placeholder="输入查询指令..." class="flex-1 bg-black/60 border border-blue-900/50 rounded-lg px-3 py-2 text-xs text-blue-100 focus:outline-none focus:border-blue-400 font-mono shadow-inner" autocomplete="off" required>
                     <button type="submit" class="bg-blue-600/80 hover:bg-blue-500 text-white p-2 rounded-lg disabled:opacity-50 shadow-[0_0_10px_rgba(37,99,235,0.5)]" id="chat-submit-btn"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg></button>
                 </form>
             </div>
@@ -691,7 +691,14 @@
                 media_init: "INITIALIZING MEDIA...",
                 label_targets: "👥 核心观测目标",
                 label_impact: "💥 宇宙级影响",
-                yt_hq: "Watch HQ Trailer on YouTube"
+                yt_hq: "Watch HQ Trailer on YouTube",
+                chat_welcome: "系统已上线。莫比乌斯引擎运行稳定。您正在浏览漫威宇宙最高机密档案。",
+                chat_ph: "输入查询指令...",
+                chat_link_down: "⚠️ 警告：系统链路中断。",
+                chat_voice_on: "语音模块已激活，TVA总局。",
+                chat_voice_off: "语音模块已关闭。",
+                chat_open_hint: "Jarvis 为您效劳！",
+                tva_no_match: "T.V.A. ALERT: 暂无匹配的宇宙档案记录..."
             },
             en: {
                 title: "MARVEL MCU TIMELINE",
@@ -704,7 +711,14 @@
                 media_init: "INITIALIZING MEDIA...",
                 label_targets: "👥 Key characters",
                 label_impact: "💥 Universe impact",
-                yt_hq: "Watch HQ trailer on YouTube"
+                yt_hq: "Watch HQ trailer on YouTube",
+                chat_welcome: "System online. Mobius Engine is stable. You are browsing classified MCU archives.",
+                chat_ph: "Type a query...",
+                chat_link_down: "⚠️ Warning: system link interrupted.",
+                chat_voice_on: "Voice module online.",
+                chat_voice_off: "Voice module offline.",
+                chat_open_hint: "J.A.R.V.I.S. online. How can I help?",
+                tva_no_match: "T.V.A. ALERT: No matching archive records found..."
             }
         };
 
@@ -747,6 +761,21 @@
                 }
             };
             return (map[lang] && map[lang][cat]) || cat;
+        }
+
+        function translatePhaseLabel(phase) {
+            // Data uses CN phase labels; provide EN display when in EN mode
+            const p = String(phase || '');
+            if (getLang() !== 'en') return p;
+            if (p.includes('第一阶段')) return 'Phase 1';
+            if (p.includes('第二阶段')) return 'Phase 2';
+            if (p.includes('第三阶段')) return 'Phase 3';
+            if (p.includes('第四阶段')) return 'Phase 4';
+            if (p.includes('第五阶段')) return 'Phase 5';
+            if (p.includes('第六阶段')) return 'Phase 6';
+            if (p.includes('漫威电视') || p.includes('街头')) return 'Marvel TV / Street';
+            if (p.includes('多元宇宙')) return 'Multiverse';
+            return p;
         }
         function applyI18n() {
             const lang = getLang();
@@ -1127,7 +1156,7 @@
             loopSize = N * spacingZ;
             
             if (N === 0) {
-                camera.innerHTML = '<div class="absolute inset-0 flex items-center justify-center text-blue-400 z-50 text-sm md:text-xl font-mono tracking-widest animate-pulse drop-shadow-[0_0_10px_rgba(96,165,250,0.8)]">T.V.A. ALERT: 暂无匹配的宇宙档案记录...</div>';
+                camera.innerHTML = `<div class="absolute inset-0 flex items-center justify-center text-blue-400 z-50 text-sm md:text-xl font-mono tracking-widest animate-pulse drop-shadow-[0_0_10px_rgba(96,165,250,0.8)]">${t('tva_no_match')}</div>`;
                 return;
             }
 
@@ -1149,7 +1178,26 @@
                 const lang = getLang();
                 const mainTitle = (lang === 'en' ? (item.enTitle || item.title) : item.title);
                 const subTitle = (lang === 'en' ? item.title : (item.enTitle || ''));
-                const phaseLabel = item.phase;
+                const phaseLabel = translatePhaseLabel(item.phase);
+                const descText = (lang === 'en' ? (item.descEn || '') : (item.desc || ''));
+                const charsText = (lang === 'en' ? (item.charsEn || '') : (item.chars || ''));
+                const impactText = (lang === 'en' ? (item.impactEn || '') : (item.impact || ''));
+                const showMeta = (s) => String(s || '').trim().length > 0;
+                const charsBlock = showMeta(charsText)
+                    ? `<div class="bg-black/40 rounded p-2 border border-white/5">
+                            <span class="text-[10px] text-[rgb(${rgb})] block mb-0.5 font-bold">${t('label_targets')}</span>
+                            <span class="text-[11px] text-slate-300 font-mono">${charsText}</span>
+                       </div>`
+                    : '';
+                const impactBlock = showMeta(impactText)
+                    ? `<div class="bg-black/40 rounded p-2 border border-white/5">
+                            <span class="text-[10px] text-orange-400 block mb-0.5 font-bold">${t('label_impact')}</span>
+                            <span class="text-[11px] text-slate-300 font-mono">${impactText}</span>
+                       </div>`
+                    : '';
+                const descBlock = showMeta(descText)
+                    ? `<p class="text-[12px] text-slate-200 leading-relaxed font-medium mb-1 mt-1">${descText}</p>`
+                    : '';
 
                 el.innerHTML = `
                     <div class="connection-line"></div>
@@ -1168,15 +1216,9 @@
                             </span>
                         </h3>
                         <div class="flex-1 overflow-y-auto desc-scroll pr-2 flex flex-col gap-2 z-10 mask-image: linear-gradient(to bottom, black 80%, transparent 100%);">
-                            <p class="text-[12px] text-slate-200 leading-relaxed font-medium mb-1 mt-1">${item.desc}</p>
-                            <div class="bg-black/40 rounded p-2 border border-white/5">
-                                <span class="text-[10px] text-[rgb(${rgb})] block mb-0.5 font-bold">${t('label_targets')}</span>
-                                <span class="text-[11px] text-slate-300 font-mono">${item.chars}</span>
-                            </div>
-                            <div class="bg-black/40 rounded p-2 border border-white/5">
-                                <span class="text-[10px] text-orange-400 block mb-0.5 font-bold">${t('label_impact')}</span>
-                                <span class="text-[11px] text-slate-300 font-mono">${item.impact}</span>
-                            </div>
+                            ${descBlock}
+                            ${charsBlock}
+                            ${impactBlock}
                         </div>
                         <div class="w-full h-[150px] rounded-lg border border-white/10 bg-black/80 overflow-hidden relative shrink-0 shadow-inner group/vid mb-2 z-10">
                             <div class="absolute inset-0 flex flex-col items-center justify-center text-slate-500/50">${loaderContent}</div>
@@ -2243,9 +2285,17 @@
             }
         }
 
+        function getChatApiUrl() {
+            // 国内同域：/api/chat
+            // 国际（mcu.wumatv.net / GitHub Pages）：走国内 API（需后端支持 CORS）
+            const host = (location.hostname || '').toLowerCase();
+            if (host.endsWith('wumatv.cn')) return '/api/chat';
+            return 'https://wumatv.cn/api/chat';
+        }
+
         async function callAIAPI(prompt, systemInstruction = "") {
             const payload = { prompt: prompt, systemInstruction: systemInstruction };
-            const data = await fetchWithRetry(`/api/chat`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+            const data = await fetchWithRetry(getChatApiUrl(), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
             if (data.error) throw new Error(data.error);
             return data.text; 
         }
@@ -2293,7 +2343,7 @@
             const btn = document.getElementById('voice-toggle-btn');
             if(voiceEnabled) {
                 btn.classList.replace('text-slate-500', 'text-blue-400');
-                speakJarvis("语音模块已激活，TVA总局。");
+                speakJarvis(t('chat_voice_on'));
             } else {
                 btn.classList.replace('text-blue-400', 'text-slate-500');
                 if(window.speechSynthesis) window.speechSynthesis.cancel();
@@ -2304,9 +2354,13 @@
             if (!voiceEnabled || !window.speechSynthesis) return;
             window.speechSynthesis.cancel(); 
             const msg = new SpeechSynthesisUtterance(text.replace(/<[^>]*>?/gm, '').replace(/[*#]/g, ''));
-            msg.lang = 'zh-CN'; msg.pitch = 0.7; msg.rate = 1.1; 
+            const lang = getLang();
+            msg.lang = (lang === 'en' ? 'en-US' : 'zh-CN');
+            msg.pitch = 0.7; msg.rate = 1.1; 
             const voices = window.speechSynthesis.getVoices();
-            msg.voice = voices.find(v => v.lang.includes('zh') && (v.name.includes('Xiaoxiao') || v.name.includes('Ting'))) || voices.find(v => v.lang.includes('zh'));
+            msg.voice = (lang === 'en')
+                ? (voices.find(v => v.lang.toLowerCase().startsWith('en')) || null)
+                : (voices.find(v => v.lang.includes('zh') && (v.name.includes('Xiaoxiao') || v.name.includes('Ting'))) || voices.find(v => v.lang.includes('zh')) || null);
             const radar = document.getElementById('jarvis-radar');
             msg.onstart = () => radar.classList.replace('text-blue-300', 'text-green-400');
             msg.onend = () => radar.classList.replace('text-green-400', 'text-blue-300');
@@ -2317,7 +2371,7 @@
             playClickSound();
             chatOpen = !chatOpen;
             chatWindow.classList.toggle('hidden', !chatOpen);
-            if(chatOpen) setTimeout(() => speakJarvis("Jarvis 为您效劳！"), 200);
+            if(chatOpen) setTimeout(() => speakJarvis(t('chat_open_hint')), 200);
             else if(window.speechSynthesis) window.speechSynthesis.cancel();
         };
 
@@ -2345,13 +2399,16 @@
             chatMessages.appendChild(div); chatMessages.scrollTop = chatMessages.scrollHeight;
 
             try {
-                const responseText = await callAIAPI(userText, `你是 J.A.R.V.I.S. 回答用户关于漫威MCU时间线、观影顺序的问题。用机智且带有一点斯塔克式幽默的中文回答。保持精炼。`);
+                const sys = (getLang() === 'en')
+                    ? `You are J.A.R.V.I.S. Answer questions about the MCU timeline and watch order. Reply in clear, witty English with a subtle Tony Stark vibe. Keep it concise.`
+                    : `你是 J.A.R.V.I.S. 回答用户关于漫威MCU时间线、观影顺序的问题。用机智且带有一点斯塔克式幽默的中文回答。保持精炼。`;
+                const responseText = await callAIAPI(userText, sys);
                 document.getElementById(loadingId).remove();
                 appendMessage(responseText, 'ai');
                 speakJarvis(responseText); 
             } catch (error) {
                 document.getElementById(loadingId).remove();
-                appendMessage(`⚠️ 警告：系统链路中断。`, 'ai');
+                appendMessage(t('chat_link_down'), 'ai');
             } finally {
                 chatSubmitBtn.disabled = false; chatInput.focus();
             }

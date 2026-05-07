@@ -30,6 +30,7 @@
     * **黄金缓存优势**：由于视频平均仅 32MB，完美触发 Cloudflare 免费版（512MB以下文件）的全球边缘节点自动缓存。海外用户访问将实现“秒开”，且 VPS 源站负载几乎为零。
 * **国际官网域名（wumatv.net）**：
   - [x] `mcu.wumatv.net` 绑定到国际前端（与 `https://ryanwuma.github.io/mcu/` 内容一致）
+  - [x] 国际站默认英文 + EN/CN 开关（卡片/聊天机器人文案英文；聊天 API 适配跨域）
   - [x] `wumatv.net` / `www.wumatv.net` 重定向到 `mcu.wumatv.net`
   - **验收**：`https://wumatv.net` 可自动跳转并正常访问国际站
 
