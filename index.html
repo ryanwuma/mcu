@@ -539,6 +539,38 @@
             { time: "2027", title: "《雷霆特工队》", enTitle: "Thunderbolts*", yt: "-sAOWhvheK8", type: "🎬", year: "2025", phase: "第五阶段", studio: "Marvel Studios", chars: "叶莲娜, 冬兵, 哨兵", impact: "虚无核心“哨兵”登场，灰色势力大洗牌。", desc: "一群有道德污点的前反派/反英雄被政府强行集结，执行一项必死的秘密任务，却意外唤醒了神级战力哨兵。" },
             { time: "平行", title: "《神奇四侠：第一步》", enTitle: "The Fantastic Four: First Steps", yt: "18QQWa5MEcs", type: "🎬", year: "2025", phase: "第六阶段", studio: "Marvel Studios", chars: "神奇四侠, 行星吞噬者", impact: "平行宇宙面临吞噬，最终将汇入复仇者联盟5。", desc: "在1960年代复古未来平行宇宙中，第一家庭获得了超能力。他们将直面能吞噬整个星球的骇人宇宙神明。" }
         ];
+
+        async function loadPrebuiltEnglishPack() {
+            if (getLang() !== 'en') return false;
+            try {
+                const res = await fetch('mcuData.en.json', { cache: 'force-cache' });
+                if (!res.ok) return false;
+                const pack = await res.json();
+                if (!pack || typeof pack !== 'object') return false;
+                let applied = 0;
+                mcuData.forEach(it => {
+                    const k = String(it?.enTitle || it?.title || it?.yt || '').trim();
+                    const v = (k && pack[k]) ? pack[k] : null;
+                    if (!v) return;
+                    if (v.descEn && !it.descEn) it.descEn = v.descEn;
+                    if (v.charsEn && !it.charsEn) it.charsEn = v.charsEn;
+                    if (v.impactEn && !it.impactEn) it.impactEn = v.impactEn;
+                    applied++;
+                });
+                if (applied > 0) {
+                    // seed runtime cache for instant subsequent loads
+                    try {
+                        const merged = (() => {
+                            try { return JSON.parse(localStorage.getItem(EN_CACHE_KEY) || '{}') || {}; } catch { return {}; }
+                        })();
+                        Object.keys(pack).forEach(k => { merged[k] = pack[k]; });
+                        localStorage.setItem(EN_CACHE_KEY, JSON.stringify(merged));
+                    } catch {}
+                    return true;
+                }
+            } catch {}
+            return false;
+        }
     
         // 🎬 智能模糊匹配系统
         // ⚠️ 请用您核对好的 localVideoFiles 数组完美替换掉下方这段，以免丢失心血！
@@ -1300,17 +1332,21 @@
                 applyI18n();
                 const toggle = document.getElementById('lang-toggle');
                 if (toggle) {
-                    toggle.addEventListener('click', (e) => {
+                    toggle.addEventListener('click', async (e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                        setLang(getLang() === 'en' ? 'cn' : 'en');
+                        const nextLang = (getLang() === 'en' ? 'cn' : 'en');
+                        setLang(nextLang);
+                        if (nextLang === 'en') await loadPrebuiltEnglishPack();
+                        if (typeof buildTimeline === 'function' && currentData) buildTimeline(currentData);
                     });
                 }
             } catch (_) {}
         }, 0);
 
-        setTimeout(() => {
+        setTimeout(async () => {
             if (mcuData && mcuData.length > 0) {
+                if (getLang() === 'en') await loadPrebuiltEnglishPack();
                 buildTimeline(currentData);
                 let startIndex = currentData.findIndex(item => item.title.includes("钢铁侠") && item.year === "2008" && item.type === "🎬");
                 if (startIndex !== -1) {

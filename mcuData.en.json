@@ -1,0 +1,716 @@
+{
+  "Blade": {
+    "descEn": "The half-vampire Daywalker Blade hunts vampires in the underworld to protect humanity, engaging in a bloody war against the vampire empire.",
+    "charsEn": "Blade, Deacon Frost",
+    "impactEn": "Pioneer of the dark universe in Marvel films.",
+    "_ts": 1778174016986
+  },
+  "X-Men": {
+    "descEn": "As tensions rise between mutants and humans, Professor X's X-Men face off against Magneto's Brotherhood of Mutants in their first major battle.",
+    "charsEn": "Wolverine, Professor X, Magneto",
+    "impactEn": "Established the mutant concept and sparked the superhero film revival.",
+    "_ts": 1778174016986
+  },
+  "Blade II": {
+    "descEn": "To combat a deadlier new breed of vampire mutants, Blade must form a fragile alliance with the vampire lord.",
+    "charsEn": "Blade, Nyssaa",
+    "impactEn": "The outbreak of a vampire mutant crisis.",
+    "_ts": 1778174016986
+  },
+  "Spider-Man": {
+    "descEn": "After being bitten by a mutated spider, Peter Parker gains powers and must balance his personal life while fighting the evil Green Goblin.",
+    "charsEn": "Peter Parker (Tobey), Green Goblin",
+    "impactEn": "With great power comes great responsibility.",
+    "_ts": 1778174016986
+  },
+  "Daredevil": {
+    "descEn": "Blind lawyer Matt Murdock becomes the fearless Daredevil at night, battling criminals and the Kingpin on the streets of New York.",
+    "charsEn": "Daredevil, Elektra, Bullseye",
+    "impactEn": "Early attempt at a street-level hero film.",
+    "_ts": 1778174016986
+  },
+  "Hulk": {
+    "descEn": "Bruce Banner, exposed to lethal gamma rays, transforms into a powerful green monster when angry.",
+    "charsEn": "Hulk, General Ross",
+    "impactEn": "Early exploration into Marvel heroes.",
+    "_ts": 1778174016986
+  },
+  "X2: X-Men United": {
+    "descEn": "Colonel Stryker plans to use Professor X to eliminate all mutants, forcing the X-Men to ally with Magneto.",
+    "charsEn": "Wolverine, William Stryker",
+    "impactEn": "Mutants face extinction by the human military.",
+    "_ts": 1778174016986
+  },
+  "Blade: Trinity": {
+    "descEn": "Vampire progenitor Dracula awakens, and Blade teams up with human Nightstalkers for the final battle to decide the fate of their species.",
+    "charsEn": "Blade, Dracula",
+    "impactEn": "The Daywalker's ultimate battle.",
+    "_ts": 1778174016986
+  },
+  "Spider-Man 2": {
+    "descEn": "Peter struggles with his dual identity as hero and ordinary man while facing the deadly threat of his mentor-turned-foe, Doctor Octopus.",
+    "charsEn": "Peter Parker, Doctor Octopus",
+    "impactEn": "One of the best superhero films in history.",
+    "_ts": 1778174016986
+  },
+  "Elektra": {
+    "descEn": "Resurrected from the dead, Elektra becomes a cold-blooded assassin, but a job to protect a father and daughter leads her to betray her employer.",
+    "charsEn": "Elektra, The Hand",
+    "impactEn": "The female assassin's rebirth and redemption.",
+    "_ts": 1778174016986
+  },
+  "Fantastic Four": {
+    "descEn": "Four young people are transported to a dangerous parallel universe, where their bodies undergo incredible mutations. They must learn to harness their new powers to save Earth.",
+    "charsEn": "Fantastic Four, Doctor Doom",
+    "impactEn": "A parallel universe's alternate origin.",
+    "_ts": 1778174064122
+  },
+  "X-Men: The Last Stand": {
+    "descEn": "A mutant cure is developed, while Jean Grey becomes Dark Phoenix, leading to the most brutal war among mutants.",
+    "charsEn": "Jean Grey, Wolverine",
+    "impactEn": "Phoenix Force awakens, causing a major split in mutant society.",
+    "_ts": 1778174028435
+  },
+  "Ghost Rider": {
+    "descEn": "Stunt motorcyclist Johnny Blaze sells his soul to a demon to save his father, transforming into a fiery Ghost Rider who punishes evil at night.",
+    "charsEn": "Johnny Blaze, Mephisto",
+    "impactEn": "Supernatural anti-hero emerges.",
+    "_ts": 1778174028435
+  },
+  "Fantastic Four: Rise of the Silver Surfer": {
+    "descEn": "The mysterious Silver Surfer arrives on Earth, heralding the coming of Galactus. The Fantastic Four must uncover his secret to save the planet.",
+    "charsEn": "Fantastic Four, Silver Surfer",
+    "impactEn": "Introduces the concept of a cosmic devourer.",
+    "_ts": 1778174028435
+  },
+  "Spider-Man 3": {
+    "descEn": "An alien symbiote amplifies Peter's dark side. He must overcome his inner demons and face the combined threat of Sandman and Venom.",
+    "charsEn": "Peter Parker, Venom, Sandman",
+    "impactEn": "First appearance of the symbiote.",
+    "_ts": 1778174028435
+  },
+  "Ghost Rider: Spirit of Vengeance": {
+    "descEn": "Johnny Blaze, hiding in Eastern Europe, must protect a boy from the devil to break his curse.",
+    "charsEn": "Johnny Blaze",
+    "impactEn": "Spirit of Vengeance battles in Europe.",
+    "_ts": 1778174028435
+  },
+  "Captain America: The First Avenger": {
+    "descEn": "Brooklyn youth Steve Rogers receives a super-soldier serum and becomes Captain America. He thwarts Hydra's plot and crashes into the ice to save civilians, remaining frozen for 70 years.",
+    "charsEn": "Captain America, Peggy Carter, Red Skull",
+    "impactEn": "Space Stone appears; S.H.I.E.L.D. takes its early form.",
+    "_ts": 1778174028435
+  },
+  "Agent Carter Season 1": {
+    "descEn": "After Steve's sacrifice, Peggy secretly helps Howard Stark clear his name and deals with dangerous tech, showing the courage of a human hero.",
+    "charsEn": "Peggy Carter, Howard Stark",
+    "impactEn": "SSR reorganizes, laying foundation for modern S.H.I.E.L.D.",
+    "_ts": 1778174028435
+  },
+  "Agent Carter Season 2": {
+    "descEn": "Peggy heads to Los Angeles to solve a case involving Zero Matter, facing Hollywood's dark side and a deadly new enemy.",
+    "charsEn": "Peggy Carter, Zero Matter",
+    "impactEn": "Zero Matter (Dark Force) first introduced on Earth.",
+    "_ts": 1778174028435
+  },
+  "X-Men Origins: Wolverine": {
+    "descEn": "Logan and his brother Victor fight through centuries of war, finally caught in the Weapon X program where he receives adamantium and loses his memories.",
+    "charsEn": "Wolverine, Sabretooth, Deadpool (original)",
+    "impactEn": "Reveals Wolverine's claws and amnesiac origins.",
+    "_ts": 1778174028435
+  },
+  "X-Men: First Class": {
+    "descEn": "Amid the Cold War nuclear threat, young Charles and Erik meet to found the X-Men, but eventually part ways due to differing ideologies.",
+    "charsEn": "Charles, Erik",
+    "impactEn": "Origin of the two mutant factions.",
+    "_ts": 1778174039564
+  },
+  "Captain Marvel": {
+    "descEn": "Amnesiac Starforce member Carol crash-lands on Earth, regains her memory and awakens Binary form, single-handedly repelling the Kree fleet.",
+    "charsEn": "Captain Marvel, Nick Fury, Talos",
+    "impactEn": "Inspires Fury to draft the Avengers Initiative.",
+    "_ts": 1778174039564
+  },
+  "Iron Man": {
+    "descEn": "After being kidnapped, Tony builds the Mark I armor to escape in a cave, returns to shut down his weapons division, and publicly declares 'I am Iron Man.'",
+    "charsEn": "Iron Man, Pepper Potts",
+    "impactEn": "MCU's seminal film; starting point of the armor tech tree.",
+    "_ts": 1778174039564
+  },
+  "Iron Man 2": {
+    "descEn": "Facing government pressure and palladium poisoning, Tony synthesizes a new element with Fury's help and teams up with Colonel Rhodes to defeat Whiplash.",
+    "charsEn": "Iron Man, Black Widow, War Machine",
+    "impactEn": "Black Widow formally introduced; new element resolves palladium poisoning.",
+    "_ts": 1778174039564
+  },
+  "The Incredible Hulk": {
+    "descEn": "Banner transforms into Hulk due to gamma ray experiments, flees globally seeking a cure, and finally battles the mutated 'Abomination' in New York.",
+    "charsEn": "Hulk, General Ross, Abomination",
+    "impactEn": "Showcases Hulk's power; starting point for military superpower control.",
+    "_ts": 1778174039564
+  },
+  "Thor": {
+    "descEn": "Thor is stripped of his power and exiled to Earth. With Jane's help, he learns humility, reclaims Mjolnir, and foils Loki's usurpation plot.",
+    "charsEn": "Thor, Loki, Jane Foster",
+    "impactEn": "Expands MCU to the Nine Realms; Hawkeye's debut.",
+    "_ts": 1778174039564
+  },
+  "The Avengers": {
+    "descEn": "Loki steals the Tesseract to conquer Earth. Fury urgently activates the Initiative; six heroes synchronize in the Battle of New York to repel the Chitauri army.",
+    "charsEn": "Original Avengers, Loki, Thanos",
+    "impactEn": "First assembly of the six; Thanos smiles behind the scenes.",
+    "_ts": 1778174039564
+  },
+  "The Amazing Spider-Man": {
+    "descEn": "Peter gains superpowers while investigating his parents' disappearance and engages in a deadly fight with the mutated Lizard professor.",
+    "charsEn": "Peter Parker (Garfield version), Lizard",
+    "impactEn": "Opens the Oscorp subplot.",
+    "_ts": 1778174039564
+  },
+  "Iron Man 3": {
+    "descEn": "Post-New York, Tony suffers PTSD. Facing the Extremis crisis, he destroys all his armors, proving he is still Iron Man.",
+    "charsEn": "Iron Man, Mandarin, Extremis",
+    "impactEn": "Tony completes his mental transformation; sets up Ultron.",
+    "_ts": 1778174039564
+  },
+  "The Wolverine": {
+    "descEn": "Logan retreats to Japan but gets entangled in a plot to steal his healing factor; he fights the Silver Samurai while losing his regenerative abilities.",
+    "charsEn": "Wolverine, Mariko, Silver Samurai",
+    "impactEn": "Logan faces the brink of losing his healing factor.",
+    "_ts": 1778174039564
+  },
+  "Thor: The Dark World": {
+    "descEn": "Dark Elves awaken, aiming to use the Aether to destroy the universe. Thor defies his father and teams up with Loki for a tragic rescue mission across the Nine Realms.",
+    "charsEn": "Thor, Loki, Malekith",
+    "impactEn": "The Reality Stone (Aether) appears.",
+    "_ts": 1778174051251
+  },
+  "Agents of S.H.I.E.L.D. S1": {
+    "descEn": "A resurrected Agent Coulson assembles an elite team to handle supernatural events worldwide, while facing a full-scale Hydra infiltration.",
+    "charsEn": "Coulson, Daisy Johnson",
+    "impactEn": "Expands the S.H.I.E.L.D. perspective post-Battle of New York.",
+    "_ts": 1778174051251
+  },
+  "Captain America: The Winter Soldier": {
+    "descEn": "Steve discovers S.H.I.E.L.D. is deeply infiltrated by Hydra. With Falcon's help, he confronts his brainwashed former best friend, the Winter Soldier.",
+    "charsEn": "Captain America, Black Widow, Falcon, Winter Soldier",
+    "impactEn": "S.H.I.E.L.D. collapses; Hydra's sleeper network is exposed.",
+    "_ts": 1778174051251
+  },
+  "Agents of S.H.I.E.L.D. S2": {
+    "descEn": "S.H.I.E.L.D. goes fully underground. Coulson rebuilds as Skye awakens superpowers, revealing the long-hidden Inhumans on Earth.",
+    "charsEn": "Coulson, Skye, Inhumans",
+    "impactEn": "Formally introduces the Inhuman concept.",
+    "_ts": 1778174051251
+  },
+  "X-Men: Days of Future Past": {
+    "descEn": "To stop a mutant genocide by Sentinels, Wolverine travels back to 1973 to alter history.",
+    "charsEn": "Wolverine, Sentinels",
+    "impactEn": "Resets the old X-Men timeline.",
+    "_ts": 1778174051251
+  },
+  "The Amazing Spider-Man 2": {
+    "descEn": "Peter battles Electro and Green Goblin, but suffers his greatest loss—failing to save Gwen.",
+    "charsEn": "Peter Parker, Gwen, Electro",
+    "impactEn": "Eternal regret and multiverse obsession.",
+    "_ts": 1778174051251
+  },
+  "Guardians of the Galaxy": {
+    "descEn": "Star-Lord steals an orb and reluctantly allies with four outlaws, who ultimately band together to save Xandar.",
+    "charsEn": "Star-Lord, Gamora, Rocket, Groot",
+    "impactEn": "The Power Stone appears; Thanos's cosmic threat emerges.",
+    "_ts": 1778174051251
+  },
+  "I Am Groot Season 1": {
+    "descEn": "Animated shorts follow Baby Groot's cute, mischievous adventures among the Guardians across the galaxy.",
+    "charsEn": "Baby Groot",
+    "impactEn": "Local event.",
+    "_ts": 1778174051251
+  },
+  "I Am Groot Season 2": {
+    "descEn": "Baby Groot's new interstellar trouble-making journey, even accidentally finding the Guardians' childhood keepsakes.",
+    "charsEn": "Baby Groot",
+    "impactEn": "Local event.",
+    "_ts": 1778174051251
+  },
+  "Guardians of the Galaxy Vol. 2": {
+    "descEn": "Star-Lord meets his celestial father Ego, who plans to consume the universe. Yondu's sacrifice teaches him true fatherhood.",
+    "charsEn": "Star-Lord, Yondu, Ego, Mantis",
+    "impactEn": "Introduces Celestials; solidifies found family bonds.",
+    "_ts": 1778174051251
+  },
+  "Daredevil Season 1": {
+    "descEn": "Blind lawyer by day, devil by night, Matt Murdock begins a brutal confrontation with the Kingpin, the crime lord controlling Hell's Kitchen.",
+    "charsEn": "Daredevil, Kingpin",
+    "impactEn": "Establishes the dark order of Hell's Kitchen.",
+    "_ts": 1778174064122
+  },
+  "Jessica Jones Season 1": {
+    "descEn": "A super-powered private investigator with PTSD, Jessica is forced to face the nightmare who once used mind control to destroy her life: the Purple Man.",
+    "charsEn": "Jessica Jones, Purple Man",
+    "impactEn": "Delivers a desperate experience of psychological thriller and mind control.",
+    "_ts": 1778174064122
+  },
+  "Avengers: Age of Ultron": {
+    "descEn": "Tony's activation of a defense project causes Ultron to go rogue. The Avengers pay a heavy price to stop the apocalyptic threat of Sokovia rising and falling.",
+    "charsEn": "Avengers (all), Ultron, Vision, Wanda",
+    "impactEn": "The Mind Stone creates Vision; Sokovia is destroyed.",
+    "_ts": 1778174064122
+  },
+  "Ant-Man": {
+    "descEn": "Ex-con Scott puts on a suit that shrinks his body, pulling off a heist to stop Pym particles from falling into the greedy Yellowjacket's hands.",
+    "charsEn": "Scott Lang, Hank Pym",
+    "impactEn": "Introduces Pym particles and the Quantum Realm.",
+    "_ts": 1778174064122
+  },
+  "Agents of S.H.I.E.L.D. S3": {
+    "descEn": "A Terrigen crystal leak awakens Inhumans worldwide. S.H.I.E.L.D. must contend with ATCU oversight and HYDRA controlled by the ancient Inhuman Hive.",
+    "charsEn": "Coulson, Hive",
+    "impactEn": "Inhuman outbreak and mysterious alien origins.",
+    "_ts": 1778174064122
+  },
+  "Daredevil Season 2": {
+    "descEn": "With Kingpin in prison, the extreme Punisher goes on a killing spree. Meanwhile, ex-girlfriend Elektra's return drags Matt into the Hand's conspiracy.",
+    "charsEn": "Daredevil, Punisher, Elektra",
+    "impactEn": "The Hand's plot emerges; the bloody vigilante arrives.",
+    "_ts": 1778174064122
+  },
+  "Luke Cage Season 1": {
+    "descEn": "With an unbreakable body, Luke Cage tries to lie low in Harlem but is forced to stand against local gangsters.",
+    "charsEn": "Luke Cage, Cottonmouth",
+    "impactEn": "Rise of a super-powered hero in Harlem's black community.",
+    "_ts": 1778174064122
+  },
+  "Agents of S.H.I.E.L.D. S4": {
+    "descEn": "The team encounters the Ghost Rider and faces the crisis of the Darkhold and the Framework, a virtual world created by android Aida.",
+    "charsEn": "Coulson, Ghost Rider, Aida",
+    "impactEn": "Intertwined Darkhold magic and AI threats.",
+    "_ts": 1778174064122
+  },
+  "Deadpool": {
+    "descEn": "Mercenary Wade Wilson undergoes an illegal experiment for cancer, gaining immortality at the cost of his face. He breaks the fourth wall and becomes Deadpool on a path of revenge.",
+    "charsEn": "Deadpool, Colossus",
+    "impactEn": "Breaking the fourth wall, a groundbreaking R-rated hero.",
+    "_ts": 1778174064122
+  },
+  "X-Men: Apocalypse": {
+    "descEn": "The first mutant Apocalypse awakens after millennia, aiming to destroy humanity and rebuild order. The young X-Men must unite against this god-like villain.",
+    "charsEn": "Apocalypse, X-Men",
+    "impactEn": "The world's first mutant awakens.",
+    "_ts": 1778174076755
+  },
+  "Iron Fist Season 1": {
+    "descEn": "Missing for 15 years, the billionaire's son returns to New York with the mystical martial art 'Iron Fist' from K'un-Lun, seeking to reclaim his family's company and eliminate dark forces.",
+    "charsEn": "Danny Rand, Colleen",
+    "impactEn": "Full-scale war between K'un-Lun martial arts and the Hand.",
+    "_ts": 1778174076755
+  },
+  "The Defenders": {
+    "descEn": "Four solitary New York street heroes are forced to ally against the Hand's ultimate plot to destroy the city underground in Manhattan.",
+    "charsEn": "Daredevil, Jessica Jones, Luke Cage, Iron Fist",
+    "impactEn": "The street's four powerhouses unite.",
+    "_ts": 1778174076755
+  },
+  "Captain America: Civil War": {
+    "descEn": "The Sokovia Accords ignite a civil war among the Avengers. Zemo uses the truth of Bucky's murder of Tony's parents to fuel internal conflict.",
+    "charsEn": "Captain America, Iron Man, Black Panther, Spider-Man",
+    "impactEn": "The Avengers split over ideology; Black Panther and Spider-Man debut.",
+    "_ts": 1778174076755
+  },
+  "Black Widow": {
+    "descEn": "On the run after the war, Natasha confronts her dark past, reunites with her 'fake family,' and destroys the Red Room controlling agents.",
+    "charsEn": "Black Widow, Yelena Belova, Red Guardian",
+    "impactEn": "The Red Room falls; Yelena Belova as the second Black Widow appears.",
+    "_ts": 1778174076755
+  },
+  "Black Panther": {
+    "descEn": "T'Challa inherits the throne but faces his cousin Killmonger for the crown. He must awaken the Black Panther's power and decide Wakanda's future of isolation.",
+    "charsEn": "Black Panther, Killmonger, Shuri",
+    "impactEn": "Wakanda reveals its vibranium technology to the world.",
+    "_ts": 1778174076755
+  },
+  "Spider-Man: Homecoming": {
+    "descEn": "Post-war, Peter tries to prove himself but uncovers the Vulture trafficking alien weapons. He learns he's a hero even without the suit.",
+    "charsEn": "Spider-Man, Iron Man, Vulture",
+    "impactEn": "The common people's revenge against Stark's tech monopoly.",
+    "_ts": 1778174076755
+  },
+  "The Punisher Season 1": {
+    "descEn": "Frank thinks his revenge is over, but behind his family's tragedy lies a deeper military and CIA conspiracy.",
+    "charsEn": "The Punisher, Jigsaw",
+    "impactEn": "Uncovering the military's dark conspiracy.",
+    "_ts": 1778174076755
+  },
+  "Doctor Strange": {
+    "descEn": "After crippling his hands, Strange studies magic at Kamar-Taj. He uses a time loop to force Dormammu's retreat, becoming Earth's magical guardian.",
+    "charsEn": "Doctor Strange, Ancient One, Dormammu",
+    "impactEn": "The Time Stone is revealed; magical multiverse opens.",
+    "_ts": 1778174076755
+  },
+  "Logan": {
+    "descEn": "In 2029, mutants are nearly extinct. An aging Logan with fading healing powers fights his last battle to protect a young mutant girl.",
+    "charsEn": "Wolverine, X-23, Professor X",
+    "impactEn": "The ultimate tragic elegy of a hero's twilight.",
+    "_ts": 1778174076755
+  },
+  "Legion Season 1": {
+    "descEn": "Professor X's son David is diagnosed with schizophrenia, until he discovers the voices and visions are actually his incredibly powerful mutant abilities.",
+    "charsEn": "David, Shadow King",
+    "impactEn": "A stunning psychological masterpiece in the X-Men universe.",
+    "_ts": 1778174088333
+  },
+  "Inhumans": {
+    "descEn": "After a military coup, the Inhuman royal family must flee their home Attilan on the moon and seek refuge on Earth in Hawaii.",
+    "charsEn": "Black Bolt, Medusa",
+    "impactEn": "Lunar Inhuman royalty's exile on Earth.",
+    "_ts": 1778174088333
+  },
+  "The Gifted Season 1": {
+    "descEn": "An ordinary couple discovers their children have mutant abilities and are forced to flee government capture, joining an underground mutant network.",
+    "charsEn": "Polaris, Blink, Eclipse",
+    "impactEn": "Mutant underground resistance after the X-Men's disappearance.",
+    "_ts": 1778174088333
+  },
+  "Agents of S.H.I.E.L.D. S5": {
+    "descEn": "Agents are mysteriously transported to a future broken Earth space station, struggling to return to the present and break the time loop curse caused by Quake.",
+    "charsEn": "Coulson, Quake",
+    "impactEn": "Breaking the time loop, warning of Thanos' arrival.",
+    "_ts": 1778174088333
+  },
+  "Jessica Jones Season 2": {
+    "descEn": "Jessica tries to return to normal life but is forced to investigate the mysterious experimental organization that gave her powers, uncovering painful family wounds.",
+    "charsEn": "Jessica, Patricia",
+    "impactEn": "A deep dive into the painful origin of superpowers.",
+    "_ts": 1778174088333
+  },
+  "Luke Cage Season 2": {
+    "descEn": "Now a Harlem celebrity, Luke encounters a new weapon that can pierce his skin, forcing him to choose between law and dark methods.",
+    "charsEn": "Luke Cage, Bushmaster",
+    "impactEn": "Power shift for the kingpin of Harlem's underworld.",
+    "_ts": 1778174088333
+  },
+  "Iron Fist Season 2": {
+    "descEn": "Danny protects New York, but his former brother Davos seeks to take the Iron Fist power and enforce extreme justice on the city.",
+    "charsEn": "Danny, Davos",
+    "impactEn": "Stripping and passing on the power of the dragon.",
+    "_ts": 1778174088333
+  },
+  "Daredevil Season 3": {
+    "descEn": "After escaping death, Matt's faith is shattered. Kingpin manipulates his release, controls the FBI, and creates a fake Daredevil to wreak havoc.",
+    "charsEn": "Daredevil, Kingpin, Bullseye",
+    "impactEn": "Kingpin reclaims power, a perfect finale.",
+    "_ts": 1778174088333
+  },
+  "Thor: Ragnarok": {
+    "descEn": "Hela shatters Mjolnir. Thor reunites with Hulk on Sakaar, realizing Asgard is its people, and lets his home be destroyed to defeat Hela.",
+    "charsEn": "Thor, Hulk, Hela, Loki",
+    "impactEn": "Asgard's destruction directly leads to Thanos' arrival.",
+    "_ts": 1778174088333
+  },
+  "The Punisher Season 2": {
+    "descEn": "Frank tries to lay low but is drawn into a conspiracy while protecting a teenager; his disfigured nemesis Jigsaw returns with endless rage.",
+    "charsEn": "Punisher, Jigsaw",
+    "impactEn": "Final settlement of personal grudges.",
+    "_ts": 1778174088333
+  },
+  "Jessica Jones Season 3": {
+    "descEn": "Facing a highly intelligent serial killer, Jessica must track him down while dealing with a complete break with her best friend Trish over their conflicting views on justice.",
+    "charsEn": "Jessica, Fool Killer",
+    "impactEn": "The final curtain of the Netflix street-level universe.",
+    "_ts": 1778174146135
+  },
+  "Legion Season 2": {
+    "descEn": "Returning after a year trapped in a mysterious orb, David finds his former allies have allied with the Shadow King, plunging him into deep confusion.",
+    "charsEn": "David, Shadow King",
+    "impactEn": "Further distortion of the psychic dreamscape.",
+    "_ts": 1778174146135
+  },
+  "The Gifted Season 2": {
+    "descEn": "The underground mutant organization splits over ideological differences. Radicals led by Polaris join the extreme group called the Inner Circle, aiming to establish a mutant nation.",
+    "charsEn": "Polaris, Inner Circle",
+    "impactEn": "Increased conflict between two mutant factions.",
+    "_ts": 1778174146135
+  },
+  "Deadpool 2": {
+    "descEn": "Deadpool encounters Cable, a cybernetic soldier from the future. To protect a chubby mutant kid, he assembles a highly unreliable X-Force.",
+    "charsEn": "Deadpool, Cable",
+    "impactEn": "Time travel concept used for gags.",
+    "_ts": 1778174146135
+  },
+  "Venom": {
+    "descEn": "Reporter Eddie unexpectedly bonds with the alien symbiote Venom. Despite mutual disdain, they gradually work together to fight the evil Life Foundation.",
+    "charsEn": "Eddie Brock, Venom",
+    "impactEn": "Foundational work for Sony's Spider-Man Universe (SSU).",
+    "_ts": 1778174146135
+  },
+  "Ant-Man and the Wasp": {
+    "descEn": "Scott and Hope venture into the Quantum Realm to rescue the original Wasp. In the post-credits scene, the Snap occurs, trapping Ant-Man in the quantum space.",
+    "charsEn": "Ant-Man, Wasp, Ghost",
+    "impactEn": "Deep exploration of the Quantum Realm, laying groundwork for the Endgame reversal.",
+    "_ts": 1778174146135
+  },
+  "Avengers: Infinity War": {
+    "descEn": "Thanos's army sweeps across the universe collecting Infinity Stones. The fractured heroes resist desperately but suffer defeat. The snap becomes the most desperate moment in film history.",
+    "charsEn": "Full MCU cast, Thanos, Black Order",
+    "impactEn": "Thanos snaps, wiping out half of all life in the universe.",
+    "_ts": 1778174146135
+  },
+  "Spider-Man: Into the Spider-Verse": {
+    "descEn": "Brooklyn teen Miles becomes the new Spider-Man and accidentally triggers a multiverse collision, teaming up with Spider-People from other universes.",
+    "charsEn": "Miles, Peter, Gwen",
+    "impactEn": "The ceiling of multiverse animation.",
+    "_ts": 1778174146135
+  },
+  "Legion Season 3": {
+    "descEn": "David, now a destroyer, builds his own cult. To fix everything, he seeks help from a mutant who can time travel, intending to rewrite history.",
+    "charsEn": "David, Professor X, Time Girl",
+    "impactEn": "Traveling through time to change his own dark fate.",
+    "_ts": 1778174146135
+  },
+  "Agents of S.H.I.E.L.D. S6": {
+    "descEn": "After Coulson's death, the team splinters. Some head into deep space to find the missing Fitz, while others on Earth fight Sarge, an alien predator with Coulson's face.",
+    "charsEn": "Mack, Quake, Sarge",
+    "impactEn": "Facing alien invasion and cosmic exploration.",
+    "_ts": 1778174146135
+  },
+  "Agents of S.H.I.E.L.D. S7": {
+    "descEn": "To prevent the Chronicoms from erasing S.H.I.E.L.D.'s history, the team travels back to the 1930s and journeys through various eras of Marvel history, culminating in an epic and emotional finale.",
+    "charsEn": "Coulson, Quake",
+    "impactEn": "A perfect conclusion, the timeline finally closed its loop.",
+    "_ts": 1778174158473
+  },
+  "Avengers: Endgame": {
+    "descEn": "Five years after the Snap, the heroes time-travel to steal the Infinity Stones. After devastating sacrifices, they reverse the Snap and bring light back to the universe.",
+    "charsEn": "Original Avengers, Captain Marvel, Ant-Man, Thanos",
+    "impactEn": "Iron Man's sacrifice, Captain America's retirement, half of all life returns.",
+    "_ts": 1778174158473
+  },
+  "Loki Season 1": {
+    "descEn": "A variant Loki who escaped with the Tesseract is arrested by the TVA and ultimately witnesses the collapse of the timeline and the uncontrollable birth of infinite parallel universes.",
+    "charsEn": "Loki, Mobius, He Who Remains",
+    "impactEn": "The Sacred Timeline breaks, the multiverse explodes.",
+    "_ts": 1778174158473
+  },
+  "What If...? Season 1": {
+    "descEn": "From the perspective of the Watcher outside time, the series explores wild parallel worlds born from minor deviations in key events.",
+    "charsEn": "The Watcher, Captain Carter, Doctor Strange Supreme",
+    "impactEn": "Shows the infinite possibilities after the multiverse's explosion.",
+    "_ts": 1778174158473
+  },
+  "WandaVision": {
+    "descEn": "Devastated by grief, Wanda uses magic to create a fake sitcom reality in Westview, eventually unleashing the ultimate power of chaos magic in despair.",
+    "charsEn": "Wanda, Vision, Agatha",
+    "impactEn": "Wanda awakens as the Scarlet Witch, powerful enough to destroy the universe.",
+    "_ts": 1778174158473
+  },
+  "Dark Phoenix": {
+    "descEn": "During a space rescue, Jean is struck by a mysterious cosmic force that makes her the most powerful mutant but also causes her to lose control.",
+    "charsEn": "Jean Grey, Professor X",
+    "impactEn": "The final chapter of Fox's X-Men main universe.",
+    "_ts": 1778174158473
+  },
+  "The New Mutants": {
+    "descEn": "Five young mutants are held captive in a secret asylum, forced to confront their past sins and awakening terrifying powers.",
+    "charsEn": "Magik, Wolfsbane",
+    "impactEn": "A horror-tinged mutant spin-off.",
+    "_ts": 1778174158473
+  },
+  "Venom: Let There Be Carnage": {
+    "descEn": "Eddie and Venom face the bloody hunt of the serial killer symbiote Carnage. In the post-credits scene, they briefly transported to the main universe.",
+    "charsEn": "Eddie Brock, Carnage",
+    "impactEn": "The post-credits scene briefly teleports them to the MCU main universe.",
+    "_ts": 1778174158473
+  },
+  "Shang-Chi and the Legend of the Ten Rings": {
+    "descEn": "The reclusive Shang-Chi is forced to confront his father Wenwu, who controls the Ten Rings, and ultimately resolves the crisis in Ta Lo, becoming a new generation Avenger.",
+    "charsEn": "Shang-Chi, Wenwu, Katy",
+    "impactEn": "The Ten Rings send a mysterious signal into deep space, expanding the mythological storyline.",
+    "_ts": 1778174158473
+  },
+  "The Falcon and the Winter Soldier": {
+    "descEn": "After the return from the Snap, Sam struggles with race and responsibility, finally taking up the Vibranium shield, while Bucky seeks redemption for his Winter Soldier past.",
+    "charsEn": "Falcon, Winter Soldier, Zemo",
+    "impactEn": "Sam officially becomes the new Captain America.",
+    "_ts": 1778174158473
+  },
+  "Spider-Man: Far From Home": {
+    "descEn": "After Endgame, Peter is deceived by Mysterio's illusions during a school trip to Europe. In the post-credits scene, Mysterio frames Peter and reveals his secret identity to the world.",
+    "charsEn": "Spider-Man, Mysterio, Nick Fury",
+    "impactEn": "Peter's identity is exposed, setting the stage for multiverse crises.",
+    "_ts": 1778174170661
+  },
+  "Eternals": {
+    "descEn": "Immortal aliens who have secretly lived on Earth for millennia defy their creator, the Celestial Arishem, to protect humanity from being sacrificed.",
+    "charsEn": "Sersi, Ikaris, Celestials",
+    "impactEn": "Reveals Earth's role as a Celestial egg, expands cosmic lore.",
+    "_ts": 1778174170661
+  },
+  "Spider-Man: No Way Home": {
+    "descEn": "Peter asks Doctor Strange to cast a spell that goes wrong, bringing villains from other universes. Guided by predecessors, he chooses to erase all memories of himself from the world.",
+    "charsEn": "Three Spider-Men, Doctor Strange, Green Goblin",
+    "impactEn": "Three generations unite; Peter Parker is forgotten by everyone.",
+    "_ts": 1778174170661
+  },
+  "Morbius": {
+    "descEn": "A biochemist with a rare blood disease becomes a vampire after trying a dangerous experimental treatment.",
+    "charsEn": "Morbius, Vulture",
+    "impactEn": "Further blurs the boundary between Sony's Universe and the MCU.",
+    "_ts": 1778174170661
+  },
+  "Doctor Strange in the Multiverse of Madness": {
+    "descEn": "Doctor Strange protects America Chavez from the corrupted Scarlet Witch across the multiverse, witnessing the Illuminati's fall and an incursion.",
+    "charsEn": "Doctor Strange, Wanda, America Chavez",
+    "impactEn": "Triggers an incursion, an extinction-level multiverse crisis.",
+    "_ts": 1778174170661
+  },
+  "Hawkeye": {
+    "descEn": "During Christmas, Clint Barton is haunted by his past while training Kate Bishop. They are targeted by the new Black Widow and Kingpin.",
+    "charsEn": "Hawkeye, Kate Bishop, Kingpin, Yelena Belova",
+    "impactEn": "Second-generation Hawkeye takes over; Kingpin returns as a crime lord.",
+    "_ts": 1778174170661
+  },
+  "Moon Knight": {
+    "descEn": "A museum gift shop employee with dissociative identity disorder discovers he is the avatar of the Egyptian moon god Khonshu and must balance his identities to stop a cult.",
+    "charsEn": "Marc/Steven, Khonshu",
+    "impactEn": "Introduces ancient Egyptian gods into the MCU.",
+    "_ts": 1778174170661
+  },
+  "Black Panther: Wakanda Forever": {
+    "descEn": "After T'Challa's death, Wakanda grieves. Faced with war from the vibranium-powered underwater kingdom Talokan, Shuri takes up the Black Panther mantle to protect her nation.",
+    "charsEn": "Shuri, Namor, Ironheart",
+    "impactEn": "Talokan emerges as a new power; a new Black Panther rises.",
+    "_ts": 1778174170661
+  },
+  "Echo": {
+    "descEn": "Maya Lopez returns to her roots to confront her past and her father figure Kingpin, ultimately breaking ties with him. Daredevil makes a cameo in a street fight.",
+    "charsEn": "Maya Lopez, Kingpin, Daredevil",
+    "impactEn": "Kingpin plots a run for mayor of New York.",
+    "_ts": 1778174170661
+  },
+  "She-Hulk: Attorney at Law": {
+    "descEn": "Bruce Banner's cousin gains superpowers and becomes a lawyer-hero. This courtroom comedy breaks the fourth wall and features a new-costume Daredevil.",
+    "charsEn": "She-Hulk, Hulk, Daredevil",
+    "impactEn": "Breaks the fourth wall; legal framework for superhumans is established.",
+    "_ts": 1778174170661
+  },
+  "Ms. Marvel": {
+    "descEn": "Muslim teen Kamala Khan gains superpowers from a heirloom quantum bangle, uncovering her mutant heritage.",
+    "charsEn": "Ms. Marvel, Captain Marvel",
+    "impactEn": "First explicit mention of 'mutant' gene in MCU.",
+    "_ts": 1778174183858
+  },
+  "Thor: Love and Thunder": {
+    "descEn": "Jane Foster, terminally ill, wields Mjolnir to become Mighty Thor. They journey to stop Gorr from wishing all gods dead at Eternity.",
+    "charsEn": "Thor, Jane Foster, Gorr",
+    "impactEn": "Eternity appears; cosmic pantheon revealed.",
+    "_ts": 1778174183858
+  },
+  "Werewolf by Night": {
+    "descEn": "Black-and-white horror homage: monster hunters compete for a relic, but a deadly werewolf lurks among them.",
+    "charsEn": "Jack, Man-Thing",
+    "impactEn": "Launches Marvel's supernatural monster universe (Midnight Sons).",
+    "_ts": 1778174183858
+  },
+  "The Guardians of the Galaxy Holiday Special": {
+    "descEn": "To give Star-Lord a memorable Christmas, Mantis and Drax kidnap his favorite Earth star Kevin Bacon.",
+    "charsEn": "Mantis, Drax",
+    "impactEn": "Knowhere becomes Guardians' new base.",
+    "_ts": 1778174183858
+  },
+  "Loki Season 2": {
+    "descEn": "Facing the time loom's overload, Loki learns ultimate sacrifice and endures the weight of all timelines as a mortal.",
+    "charsEn": "Loki, Mobius, Sylvie",
+    "impactEn": "Loki becomes the God of Stories, reshaping the World Tree.",
+    "_ts": 1778174183858
+  },
+  "What If...? Season 2": {
+    "descEn": "New variant heroes dive into altered fate nodes for unexpected adventures in a crazier multiverse.",
+    "charsEn": "The Watcher, Captain Carter",
+    "impactEn": "Continues exploration of altered multiverse.",
+    "_ts": 1778174183858
+  },
+  "Madame Web": {
+    "descEn": "Paramedic Cassandra awakens precognition after an accident; she must protect three spider-powered teens from deadly pursuers.",
+    "charsEn": "Cassandra, Spider-Woman",
+    "impactEn": "Expands Sony's Spider-Man Universe.",
+    "_ts": 1778174183858
+  },
+  "Spider-Man: Across the Spider-Verse": {
+    "descEn": "Miles travels the multiverse, meeting an elite team of Spider-People, but clashes over saving the world vs. his family.",
+    "charsEn": "Miles, Gwen, 2099",
+    "impactEn": "Reveals Spider-Society and canon events.",
+    "_ts": 1778174183858
+  },
+  "Ant-Man and the Wasp: Quantumania": {
+    "descEn": "The Ant-Family falls into the quantum realm and confronts the exiled tyrant Kang, master of time technology.",
+    "charsEn": "Ant-Man, Wasp, Kang",
+    "impactEn": "Kang Council issues multiversal war warning.",
+    "_ts": 1778174183858
+  },
+  "Guardians of the Galaxy Vol. 3": {
+    "descEn": "To save Rocket, his brutal past is uncovered. A tearful farewell marks the end of the original Guardians.",
+    "charsEn": "Star-Lord, Rocket Raccoon, High Evolutionary",
+    "impactEn": "Original Guardians disband perfectly.",
+    "_ts": 1778174183858
+  },
+  "Secret Invasion": {
+    "descEn": "Nick Fury returns to Earth to confront the deep infiltration of global political leadership by shape-shifting Skrull rebels, a spy war where no one can be trusted.",
+    "charsEn": "Nick Fury, Talos, Skrulls",
+    "impactEn": "Earth's leadership infiltrated by aliens, triggering a crisis of trust.",
+    "_ts": 1778174196852
+  },
+  "The Marvels": {
+    "descEn": "Three light-based heroes forced to team up due to entangled powers. Fixing a spacetime rift, Monica makes the sacrifice of being stranded in the X-Men alternate universe.",
+    "charsEn": "Captain Marvel, Ms. Marvel, Monica Rambeau",
+    "impactEn": "Spacetime rift opened, Monica stranded in the X-Men universe.",
+    "_ts": 1778174196852
+  },
+  "Venom: The Last Dance": {
+    "descEn": "Eddie and Venom pursued by the military and facing a full-scale invasion from symbiote hordes from their home planet; the duo's final curtain call.",
+    "charsEn": "Eddie Brock, Venom, Knull",
+    "impactEn": "Symbiote god Knull appears.",
+    "_ts": 1778174196852
+  },
+  "Kraven the Hunter": {
+    "descEn": "Russian aristocrat Sergei, attacked by a lion during a hunt, gains beast-like strength and instincts after his blood merges, becoming the ultimate hunter.",
+    "charsEn": "Kraven the Hunter, Rhino",
+    "impactEn": "Origin of a classic Spider-Man villain.",
+    "_ts": 1778174196852
+  },
+  "Deadpool & Wolverine": {
+    "descEn": "To save a dying timeline, Deadpool crosses into the Void and brings back a regret-filled Wolverine variant, staging a blood-soaked rescue mission.",
+    "charsEn": "Deadpool, Wolverine, Cassandra Nova",
+    "impactEn": "Fox X-Men universe legacy seamlessly merged into mainline.",
+    "_ts": 1778174196852
+  },
+  "Agatha All Along": {
+    "descEn": "Depowered Agatha forms a non-mainstream coven and walks the deadly Witches' Road, ultimately revealing the boy beside her as Wanda's reincarnated son.",
+    "charsEn": "Agatha Harkness, Billy (Wiccan)",
+    "impactEn": "Wanda's son Billy returns in a new body, magic narrative deepens.",
+    "_ts": 1778174196853
+  },
+  "Captain America: Brave New World": {
+    "descEn": "New Captain America Sam Wilson caught in an international crisis, facing President Ross intent on militarizing superheroes and the mutated Red Hulk.",
+    "charsEn": "Captain America (Sam Wilson), President Ross, Leader",
+    "impactEn": "Adamantium triggers global conflict, Red Hulk born.",
+    "_ts": 1778174196853
+  },
+  "Daredevil: Born Again": {
+    "descEn": "Blind lawyer Matt Murdock finds his arch-nemesis Kingpin using legal means to run for NYC mayor. The highest-stakes street-level cat-and-mouse game will be brutal.",
+    "charsEn": "Daredevil, Kingpin, Punisher",
+    "impactEn": "New York's dark political landscape completely reshaped.",
+    "_ts": 1778174196853
+  },
+  "Thunderbolts*": {
+    "descEn": "A group of morally compromised former villains/anti-heroes forced by the government into a suicide mission, accidentally awakening the god-tier power of the Sentry.",
+    "charsEn": "Yelena Belova, Winter Soldier, Sentry",
+    "impactEn": "Void core 'Sentry' appears, grey area power reshuffled.",
+    "_ts": 1778174196853
+  },
+  "The Fantastic Four: First Steps": {
+    "descEn": "In a retro-future 1960s parallel universe, the First Family gains powers and must confront a terrifying cosmic entity that consumes entire planets.",
+    "charsEn": "Fantastic Four, Galactus",
+    "impactEn": "Parallel universe faces consumption, eventually merging into Avengers 5.",
+    "_ts": 1778174196853
+  }
+}
