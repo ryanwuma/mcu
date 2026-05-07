@@ -211,7 +211,7 @@
         <img src="img/shield_logo.svg" class="w-16 h-16 md:w-20 md:h-20 mb-8 animate-[spin_10s_linear_infinite] opacity-60" onerror="this.style.display='none'" alt="SHIELD" />
         <h2 class="text-blue-400 font-mono tracking-[0.5em] text-sm md:text-base animate-pulse shadow-blue-500 drop-shadow-[0_0_10px_rgba(96,165,250,0.8)]">S.H.I.E.L.D. MAINFRAME</h2>
         <p class="text-slate-500 font-mono text-[10px] md:text-xs mt-6 tracking-[0.2em] border border-slate-700/50 px-5 py-2.5 rounded bg-slate-900/50 hover:bg-slate-800 transition-colors">
-            [ 点击屏幕任意位置启动系统引擎 ]
+            <span data-i18n="startup_hint">[ 点击屏幕任意位置启动系统引擎 ]</span>
         </p>
     </div>
 
@@ -261,34 +261,35 @@
         <div class="flex justify-between items-end w-full pointer-events-auto">
             <div class="flex flex-col gap-1 shrink-0">
                 <h1 class="text-lg md:text-2xl font-black tracking-widest bg-clip-text text-transparent bg-gradient-to-r from-slate-200 to-slate-400 drop-shadow-[0_0_10px_rgba(255,255,255,0.2)] leading-none">
-                    漫威宇宙(MARVEL)无限时间轴
+                    <span data-i18n="title">漫威宇宙(MARVEL)无限时间轴</span>
                 </h1>
                 <p class="text-slate-400 text-[9px] md:text-xs flex items-center gap-1.5 font-mono uppercase tracking-widest pl-1 mt-0.5 leading-none">
                     <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse shadow-[0_0_8px_#4ade80] shrink-0"></span>
-                    左键推拉/环视 | 松开回弹 | Shift+左键: 平移 
+                    <span data-i18n="controls_hint">左键推拉/环视 | 松开回弹 | Shift+左键: 平移</span>
                 </p>
             </div>
             
             <div class="relative shrink-0 flex justify-end z-[110]">
                 <div class="hidden md:flex gap-1.5">
-                    <button data-cat="ALL" onclick="filterTimeline('ALL')" onmouseenter="playHoverBtnSound(1)" class="filter-btn bg-blue-600/60 text-white border-blue-400 px-2.5 py-1.5 text-[10px] rounded border shadow-lg transition-all font-bold tracking-wider whitespace-nowrap">🌐 全宇宙</button>
-                    <button data-cat="MCU_MAIN" onclick="filterTimeline('MCU_MAIN')" onmouseenter="playHoverBtnSound(2)" class="filter-btn bg-black/50 text-slate-300 border-white/20 hover:bg-white/10 px-2.5 py-1.5 text-[10px] rounded border shadow-lg transition-all tracking-wider whitespace-nowrap">🚀 漫威主线</button>
-                    <button data-cat="MCU_MOVIES" onclick="filterTimeline('MCU_MOVIES')" onmouseenter="playHoverBtnSound(3)" class="filter-btn bg-black/50 text-slate-300 border-white/20 hover:bg-white/10 px-2.5 py-1.5 text-[10px] rounded border shadow-lg transition-all tracking-wider whitespace-nowrap">🎬 主线电影</button>
-                    <button data-cat="MCU_SHOWS" onclick="filterTimeline('MCU_SHOWS')" onmouseenter="playHoverBtnSound(4)" class="filter-btn bg-black/50 text-slate-300 border-white/20 hover:bg-white/10 px-2.5 py-1.5 text-[10px] rounded border shadow-lg transition-all tracking-wider whitespace-nowrap">📺 主线剧集</button>
-                    <button data-cat="MARVEL_TV" onclick="filterTimeline('MARVEL_TV')" onmouseenter="playHoverBtnSound(5)" class="filter-btn bg-black/50 text-slate-300 border-white/20 hover:bg-white/10 px-2.5 py-1.5 text-[10px] rounded border shadow-lg transition-all tracking-wider whitespace-nowrap">🦇 街头/特工</button>
-                    <button data-cat="MULTIVERSE" onclick="filterTimeline('MULTIVERSE')" onmouseenter="playHoverBtnSound(6)" class="filter-btn bg-black/50 text-slate-300 border-white/20 hover:bg-white/10 px-2.5 py-1.5 text-[10px] rounded border shadow-lg transition-all tracking-wider whitespace-nowrap">🌌 其他厂牌</button>
+                    <button data-cat="ALL" data-i18n-cat="ALL" onclick="filterTimeline('ALL')" onmouseenter="playHoverBtnSound(1)" class="filter-btn bg-blue-600/60 text-white border-blue-400 px-2.5 py-1.5 text-[10px] rounded border shadow-lg transition-all font-bold tracking-wider whitespace-nowrap">🌐 全宇宙</button>
+                    <button data-cat="MCU_MAIN" data-i18n-cat="MCU_MAIN" onclick="filterTimeline('MCU_MAIN')" onmouseenter="playHoverBtnSound(2)" class="filter-btn bg-black/50 text-slate-300 border-white/20 hover:bg-white/10 px-2.5 py-1.5 text-[10px] rounded border shadow-lg transition-all tracking-wider whitespace-nowrap">🚀 漫威主线</button>
+                    <button data-cat="MCU_MOVIES" data-i18n-cat="MCU_MOVIES" onclick="filterTimeline('MCU_MOVIES')" onmouseenter="playHoverBtnSound(3)" class="filter-btn bg-black/50 text-slate-300 border-white/20 hover:bg-white/10 px-2.5 py-1.5 text-[10px] rounded border shadow-lg transition-all tracking-wider whitespace-nowrap">🎬 主线电影</button>
+                    <button data-cat="MCU_SHOWS" data-i18n-cat="MCU_SHOWS" onclick="filterTimeline('MCU_SHOWS')" onmouseenter="playHoverBtnSound(4)" class="filter-btn bg-black/50 text-slate-300 border-white/20 hover:bg-white/10 px-2.5 py-1.5 text-[10px] rounded border shadow-lg transition-all tracking-wider whitespace-nowrap">📺 主线剧集</button>
+                    <button data-cat="MARVEL_TV" data-i18n-cat="MARVEL_TV" onclick="filterTimeline('MARVEL_TV')" onmouseenter="playHoverBtnSound(5)" class="filter-btn bg-black/50 text-slate-300 border-white/20 hover:bg-white/10 px-2.5 py-1.5 text-[10px] rounded border shadow-lg transition-all tracking-wider whitespace-nowrap">🦇 街头/特工</button>
+                    <button data-cat="MULTIVERSE" data-i18n-cat="MULTIVERSE" onclick="filterTimeline('MULTIVERSE')" onmouseenter="playHoverBtnSound(6)" class="filter-btn bg-black/50 text-slate-300 border-white/20 hover:bg-white/10 px-2.5 py-1.5 text-[10px] rounded border shadow-lg transition-all tracking-wider whitespace-nowrap">🌌 其他厂牌</button>
                 </div>
                 <div class="md:hidden relative h-full">
                     <button onclick="document.getElementById('mobile-filter-menu').classList.toggle('hidden')" class="bg-black/60 border border-blue-500/40 text-blue-200 px-3 py-1.5 rounded-lg text-[10px] flex items-center gap-1 shadow-inner backdrop-blur h-full min-h-[28px]">
-                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg> 分类
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                        <span data-i18n="category">分类</span>
                     </button>
                     <div id="mobile-filter-menu" class="absolute top-full right-0 mt-2 w-32 bg-slate-900/95 border border-blue-500/30 rounded-lg hidden shadow-xl backdrop-blur-xl flex flex-col overflow-hidden z-[101]">
-                        <button data-cat="ALL" onclick="filterTimeline('ALL')" class="filter-btn-mob bg-blue-600/60 text-white text-left px-4 py-2.5 text-[10px] border-b border-white/5">🌐 全宇宙</button>
-                        <button data-cat="MCU_MAIN" onclick="filterTimeline('MCU_MAIN')" class="filter-btn-mob text-slate-300 hover:bg-white/10 text-left px-4 py-2.5 text-[10px] border-b border-white/5">🚀 漫威主线</button>
-                        <button data-cat="MCU_MOVIES" onclick="filterTimeline('MCU_MOVIES')" class="filter-btn-mob text-slate-300 hover:bg-white/10 text-left px-4 py-2.5 text-[10px] border-b border-white/5">🎬 主线电影</button>
-                        <button data-cat="MCU_SHOWS" onclick="filterTimeline('MCU_SHOWS')" class="filter-btn-mob text-slate-300 hover:bg-white/10 text-left px-4 py-2.5 text-[10px] border-b border-white/5">📺 主线剧集</button>
-                        <button data-cat="MARVEL_TV" onclick="filterTimeline('MARVEL_TV')" class="filter-btn-mob text-slate-300 hover:bg-white/10 text-left px-4 py-2.5 text-[10px] border-b border-white/5">🦇 街头/特工</button>
-                        <button data-cat="MULTIVERSE" onclick="filterTimeline('MULTIVERSE')" class="filter-btn-mob text-slate-300 hover:bg-white/10 text-left px-4 py-2.5 text-[10px]">🌌 其他厂牌</button>
+                        <button data-cat="ALL" data-i18n-cat="ALL" onclick="filterTimeline('ALL')" class="filter-btn-mob bg-blue-600/60 text-white text-left px-4 py-2.5 text-[10px] border-b border-white/5">🌐 全宇宙</button>
+                        <button data-cat="MCU_MAIN" data-i18n-cat="MCU_MAIN" onclick="filterTimeline('MCU_MAIN')" class="filter-btn-mob text-slate-300 hover:bg-white/10 text-left px-4 py-2.5 text-[10px] border-b border-white/5">🚀 漫威主线</button>
+                        <button data-cat="MCU_MOVIES" data-i18n-cat="MCU_MOVIES" onclick="filterTimeline('MCU_MOVIES')" class="filter-btn-mob text-slate-300 hover:bg-white/10 text-left px-4 py-2.5 text-[10px] border-b border-white/5">🎬 主线电影</button>
+                        <button data-cat="MCU_SHOWS" data-i18n-cat="MCU_SHOWS" onclick="filterTimeline('MCU_SHOWS')" class="filter-btn-mob text-slate-300 hover:bg-white/10 text-left px-4 py-2.5 text-[10px] border-b border-white/5">📺 主线剧集</button>
+                        <button data-cat="MARVEL_TV" data-i18n-cat="MARVEL_TV" onclick="filterTimeline('MARVEL_TV')" class="filter-btn-mob text-slate-300 hover:bg-white/10 text-left px-4 py-2.5 text-[10px] border-b border-white/5">🦇 街头/特工</button>
+                        <button data-cat="MULTIVERSE" data-i18n-cat="MULTIVERSE" onclick="filterTimeline('MULTIVERSE')" class="filter-btn-mob text-slate-300 hover:bg-white/10 text-left px-4 py-2.5 text-[10px]">🌌 其他厂牌</button>
                     </div>
                 </div>
             </div>
@@ -296,15 +297,20 @@
 
         <div class="flex justify-between items-start w-full pointer-events-auto z-[100] gap-2 md:gap-3 mt-1 md:mt-0">
             <div class="relative flex-1 md:flex-none w-full md:w-80">
-                <input type="text" id="search-input" placeholder="🔍 检索档案 (如:神盾局/Iron Man)..." class="w-full bg-black/60 border border-blue-500/40 rounded-lg px-3 md:px-4 py-1.5 md:py-2 text-[10px] md:text-xs text-blue-100 focus:outline-none focus:border-blue-400 shadow-inner backdrop-blur transition-all" autocomplete="off">
+                <input type="text" id="search-input" data-i18n-placeholder="search_ph" placeholder="🔍 检索档案 (如:神盾局/Iron Man)..." class="w-full bg-black/60 border border-blue-500/40 rounded-lg px-3 md:px-4 py-1.5 md:py-2 text-[10px] md:text-xs text-blue-100 focus:outline-none focus:border-blue-400 shadow-inner backdrop-blur transition-all" autocomplete="off">
                 <div id="search-dropdown" class="absolute top-full left-0 mt-1 w-[260px] md:w-full max-h-64 overflow-y-auto bg-slate-900/95 border border-blue-500/30 rounded-lg hidden shadow-[0_10px_40px_rgba(0,0,0,0.8)] backdrop-blur-xl custom-scroll z-[9999]"></div>
             </div>
 
             <div class="relative shrink-0 flex justify-end">
                 <button onclick="window.toggleLegend()" onmouseenter="playHoverBtnSound(7)" class="px-2.5 py-1.5 md:px-3 md:py-1.5 rounded-full border border-purple-500/50 bg-purple-900/40 shadow-[0_0_10px_rgba(168,85,247,0.3)] backdrop-blur hover:bg-purple-600/60 transition-colors flex items-center gap-1.5 cursor-pointer text-purple-100 text-[10px] md:text-xs">
                     <svg id="legend-icon" class="w-3 h-3 md:w-3 md:h-3 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                    <span class="hidden md:inline">展开宇宙</span>图例
+                    <span class="hidden md:inline" data-i18n="legend_btn_prefix">展开宇宙</span><span data-i18n="legend_btn_suffix">图例</span>
                 </button>
+                <div class="ml-2 flex items-center gap-1.5">
+                    <button id="lang-toggle" type="button" class="px-2.5 py-1.5 md:px-3 md:py-1.5 rounded-full border border-slate-500/40 bg-black/40 backdrop-blur hover:bg-white/10 transition-colors text-slate-100 text-[10px] md:text-xs pointer-events-auto">
+                        EN / CN
+                    </button>
+                </div>
                 <div id="phase-legend" class="absolute top-full right-0 mt-3 w-[260px] md:w-[280px] bg-slate-950/95 backdrop-blur-xl border border-white/10 rounded-xl p-4 shadow-[0_0_30px_rgba(0,0,0,0.8)] flex flex-col gap-3 origin-top-right transition-all duration-300 scale-0 opacity-0 pointer-events-none z-[9999]">
                     <div class="flex items-center gap-3"><span class="w-2.5 h-2.5 rounded-full shadow-[0_0_8px_rgb(59,130,246)] shrink-0" style="background: rgb(59,130,246)"></span><span class="text-slate-200 text-xs">第一阶段（复仇者集结）</span></div>
                     <div class="flex items-center gap-3"><span class="w-2.5 h-2.5 rounded-full shadow-[0_0_8px_rgb(239,68,68)] shrink-0" style="background: rgb(239,68,68)"></span><span class="text-slate-200 text-xs">第二阶段（扩张与决裂）</span></div>
@@ -670,6 +676,100 @@
             } else if (audioCtx.state === 'suspended') {
                 audioCtx.resume();
             }
+        }
+
+        // 🌐 i18n (CN / EN) — international default: EN
+        const I18N = {
+            cn: {
+                title: "漫威宇宙(MARVEL)无限时间轴",
+                controls_hint: "左键推拉/环视 | 松开回弹 | Shift+左键: 平移",
+                category: "分类",
+                legend_btn_prefix: "展开宇宙",
+                legend_btn_suffix: "图例",
+                startup_hint: "[ 点击屏幕任意位置启动系统引擎 ]",
+                search_ph: "🔍 检索档案 (如:神盾局/Iron Man)...",
+                media_init: "INITIALIZING MEDIA...",
+                label_targets: "👥 核心观测目标",
+                label_impact: "💥 宇宙级影响",
+                yt_hq: "Watch HQ Trailer on YouTube"
+            },
+            en: {
+                title: "MARVEL MCU TIMELINE",
+                controls_hint: "Drag / look with LMB | Release to snap | Shift + LMB: Pan",
+                category: "Category",
+                legend_btn_prefix: "Universe",
+                legend_btn_suffix: "Legend",
+                startup_hint: "[ Click anywhere to start the system engine ]",
+                search_ph: "🔍 Search archives (e.g. SHIELD / Iron Man)...",
+                media_init: "INITIALIZING MEDIA...",
+                label_targets: "👥 Key characters",
+                label_impact: "💥 Universe impact",
+                yt_hq: "Watch HQ trailer on YouTube"
+            }
+        };
+
+        function getDefaultLang() {
+            const host = (location.hostname || '').toLowerCase();
+            return host.endsWith('wumatv.cn') ? 'cn' : 'en';
+        }
+        function getLang() {
+            return (localStorage.getItem('mcu_lang') || getDefaultLang()) === 'cn' ? 'cn' : 'en';
+        }
+        function setLang(lang) {
+            const v = lang === 'cn' ? 'cn' : 'en';
+            localStorage.setItem('mcu_lang', v);
+            applyI18n();
+            // 语言切换会影响卡片模板内容，重建一次时间轴
+            if (typeof buildTimeline === 'function' && currentData) buildTimeline(currentData);
+        }
+        function t(key) {
+            const lang = getLang();
+            return (I18N[lang] && I18N[lang][key]) || (I18N.cn && I18N.cn[key]) || key;
+        }
+        function getCategoryLabel(cat) {
+            const lang = getLang();
+            const map = {
+                cn: {
+                    ALL: "🌐 全宇宙",
+                    MCU_MAIN: "🚀 漫威主线",
+                    MCU_MOVIES: "🎬 主线电影",
+                    MCU_SHOWS: "📺 主线剧集",
+                    MARVEL_TV: "🦇 街头/特工",
+                    MULTIVERSE: "🌌 其他厂牌"
+                },
+                en: {
+                    ALL: "🌐 ALL",
+                    MCU_MAIN: "🚀 MCU CORE",
+                    MCU_MOVIES: "🎬 MOVIES",
+                    MCU_SHOWS: "📺 SERIES",
+                    MARVEL_TV: "🦇 STREET / AGENTS",
+                    MULTIVERSE: "🌌 MULTIVERSE"
+                }
+            };
+            return (map[lang] && map[lang][cat]) || cat;
+        }
+        function applyI18n() {
+            const lang = getLang();
+            document.documentElement.lang = lang === 'en' ? 'en' : 'zh-CN';
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (!key) return;
+                el.textContent = t(key);
+            });
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if (!key) return;
+                el.setAttribute('placeholder', t(key));
+            });
+            document.querySelectorAll('[data-i18n-cat]').forEach(el => {
+                const cat = el.getAttribute('data-i18n-cat');
+                if (!cat) return;
+                el.textContent = getCategoryLabel(cat);
+            });
+
+            const toggle = document.getElementById('lang-toggle');
+            if (toggle) toggle.textContent = lang === 'en' ? 'EN / CN' : 'CN / EN';
         }
         
         const SoundEngine = {
@@ -1044,7 +1144,12 @@
                     ? `<video class="local-video absolute inset-0 w-full h-full z-10 pointer-events-none opacity-0 transition-opacity duration-1000 bg-black object-cover" data-src="${vidSrc}" loop muted playsinline></video>`
                     : `<iframe class="video-iframe absolute inset-0 w-full h-full z-10 pointer-events-none opacity-0 transition-opacity duration-1000 bg-black" data-vid="${item.yt}" frameborder="0" allow="autoplay; encrypted-media"></iframe>`;
 
-                const loaderContent = `<div class="loader w-4 h-4 border-2 mb-2 border-t-slate-400"></div><span class="text-[9px] tracking-widest font-mono text-slate-400/80 uppercase">INITIALIZING MEDIA...</span>`;
+                const loaderContent = `<div class="loader w-4 h-4 border-2 mb-2 border-t-slate-400"></div><span class="text-[9px] tracking-widest font-mono text-slate-400/80 uppercase">${t('media_init')}</span>`;
+
+                const lang = getLang();
+                const mainTitle = (lang === 'en' ? (item.enTitle || item.title) : item.title);
+                const subTitle = (lang === 'en' ? item.title : (item.enTitle || ''));
+                const phaseLabel = item.phase;
 
                 el.innerHTML = `
                     <div class="connection-line"></div>
@@ -1052,31 +1157,31 @@
                     <div class="timeline-card shadow-2xl flex flex-col p-5 gap-3">
                         <div class="flex justify-between items-start shrink-0 z-10">
                             <span class="text-xs font-mono font-bold tracking-widest text-white border-b border-white/20 pb-1 drop-shadow-md">T+ ${item.time}</span>
-                            <span class="text-[10px] text-[rgb(${rgb})] font-mono font-bold border border-[rgba(${rgb},0.5)] px-1.5 py-0.5 rounded bg-black/50 shadow-sm">${item.phase}</span>
+                            <span class="text-[10px] text-[rgb(${rgb})] font-mono font-bold border border-[rgba(${rgb},0.5)] px-1.5 py-0.5 rounded bg-black/50 shadow-sm">${phaseLabel}</span>
                         </div>
                         <h3 class="text-xl font-black text-white leading-tight flex flex-col shrink-0 z-10 mt-1">
                             <span class="text-[10px] text-slate-400 font-normal mb-1 uppercase tracking-wider flex items-center gap-1.5">Release: ${item.year} ${item.type}</span>
-                            <span class="drop-shadow-[0_0_8px_rgba(${rgb},0.8)]">${item.title}</span>
+                            <span class="drop-shadow-[0_0_8px_rgba(${rgb},0.8)]">${mainTitle}</span>
                             <span class="self-start text-[13px] text-slate-200 font-mono mt-1.5 uppercase tracking-widest font-bold bg-white/10 px-2 py-0.5 rounded shadow-sm border border-white/10 flex items-center gap-2">
-                                ${item.enTitle}
+                                ${subTitle}
                                 <span class="text-[8px] bg-black/50 text-[rgb(${rgb})] px-1.5 py-0.5 rounded border border-[rgba(${rgb},0.3)] whitespace-nowrap">${item.studio}</span>
                             </span>
                         </h3>
                         <div class="flex-1 overflow-y-auto desc-scroll pr-2 flex flex-col gap-2 z-10 mask-image: linear-gradient(to bottom, black 80%, transparent 100%);">
                             <p class="text-[12px] text-slate-200 leading-relaxed font-medium mb-1 mt-1">${item.desc}</p>
                             <div class="bg-black/40 rounded p-2 border border-white/5">
-                                <span class="text-[10px] text-[rgb(${rgb})] block mb-0.5 font-bold">👥 核心观测目标</span>
+                                <span class="text-[10px] text-[rgb(${rgb})] block mb-0.5 font-bold">${t('label_targets')}</span>
                                 <span class="text-[11px] text-slate-300 font-mono">${item.chars}</span>
                             </div>
                             <div class="bg-black/40 rounded p-2 border border-white/5">
-                                <span class="text-[10px] text-orange-400 block mb-0.5 font-bold">💥 宇宙级影响</span>
+                                <span class="text-[10px] text-orange-400 block mb-0.5 font-bold">${t('label_impact')}</span>
                                 <span class="text-[11px] text-slate-300 font-mono">${item.impact}</span>
                             </div>
                         </div>
                         <div class="w-full h-[150px] rounded-lg border border-white/10 bg-black/80 overflow-hidden relative shrink-0 shadow-inner group/vid mb-2 z-10">
                             <div class="absolute inset-0 flex flex-col items-center justify-center text-slate-500/50">${loaderContent}</div>
                             ${mediaContent}
-                            <a href="https://www.youtube.com/watch?v=${item.yt}&t=8s" target="_blank" onmousedown="event.stopPropagation()" title="Watch HQ Trailer on YouTube" class="absolute bottom-2 right-2 z-20 bg-red-600/90 hover:bg-red-500 rounded flex items-center justify-center shadow-[0_0_15px_rgba(220,38,38,0.6)] transition-all hover:scale-110 px-2 py-1.5 pointer-events-auto opacity-0 group-hover/vid:opacity-100">
+                            <a href="https://www.youtube.com/watch?v=${item.yt}&t=8s" target="_blank" onmousedown="event.stopPropagation()" title="${t('yt_hq')}" class="absolute bottom-2 right-2 z-20 bg-red-600/90 hover:bg-red-500 rounded flex items-center justify-center shadow-[0_0_15px_rgba(220,38,38,0.6)] transition-all hover:scale-110 px-2 py-1.5 pointer-events-auto opacity-0 group-hover/vid:opacity-100">
                                 <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
                             </a>
                         </div>
@@ -1118,6 +1223,21 @@
                 }, 1000);
             });
         }
+
+        // i18n init + toggle
+        setTimeout(() => {
+            try {
+                applyI18n();
+                const toggle = document.getElementById('lang-toggle');
+                if (toggle) {
+                    toggle.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setLang(getLang() === 'en' ? 'cn' : 'en');
+                    });
+                }
+            } catch (_) {}
+        }, 0);
 
         setTimeout(() => {
             if (mcuData && mcuData.length > 0) {
