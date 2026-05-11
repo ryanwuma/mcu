@@ -5,10 +5,6 @@ A high‑fidelity, framework‑free, 3D depth interactive MCU timeline experienc
 
 ## Live
 
-### China (official)
-
-- [wumatv.cn/mcu-app/public/](https://wumatv.cn/mcu-app/public/)
-
 ### Global (GitHub Pages + custom domain)
 
 - [mcu.wumatv.net](https://mcu.wumatv.net/) — primary global URL (Cloudflare in front of GitHub Pages)
@@ -20,20 +16,15 @@ Large trailer files are served from a dedicated origin behind Cloudflare (not fr
 
 - [mcu-video.wumatv.net](https://mcu-video.wumatv.net/) — static video origin for the global site
 
+### China (official)
+
+- [wumatv.cn/mcu-app/public/](https://wumatv.cn/mcu-app/public/)
+
 ## What’s inside
 
 - **App shell**: `index.html` (HTML + CSS + JS in one file; includes a built‑in data fallback if JSON fails to load)
 - **Images**: `img/`
-- **Data (edit these to update content without touching code)**:
-  - `mcuData.json` — timeline cards
-  - `localVideoFiles.json` — local trailer filenames for fuzzy matching
-  - `heroDictionary.json` — search synonym / hero → keyword expansion
-  - `mcuData.en.json` — prebuilt English copy for instant EN mode on the global site
-- **Scripts** (optional, for maintainers):
-  - `scripts/extract-data-from-index.mjs` — regenerate JSON from embedded fallback (rare)
-  - `scripts/build-en-data.mjs` — refresh `mcuData.en.json` after you change Chinese `desc` / `chars` / `impact` in `mcuData.json`
-
-**Maintenance guide (Chinese):** see `开发笔记/MCU_站点维护更新手册_国内&国际.md`.
+- **Data**: `mcuData.json`, `localVideoFiles.json`, `heroDictionary.json`, `mcuData.en.json`
 
 ## Local run
 
