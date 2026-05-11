@@ -16,6 +16,9 @@ video/
 index copy*.html
 mcuData&localVideoFiles copy.html
 
+# Local-only notes (not published to GitHub)
+开发笔记/
+
 # Node / tooling (future-proof)
 node_modules/
 dist/
